@@ -1,4 +1,4 @@
-baseURL = "http://example.org/"
+baseURL = "https://gellardo.github.io/blog/"
 languageCode = "en-us"
 title = "Frank's Blog"
 theme = "beautifulhugo"
@@ -21,16 +21,16 @@ pygmentsStyle = "trac" # necessary to get same background as HLJS
 # Configuration of the shortcuts in the header
 [[menu.main]]
   name = "Blog"
-  url = "/"
+  url = ""
   weight = 1
 
 [[menu.main]]
   name = "About"
-  url = "/pages/about/"
+  url = "pages/about/"
   weight = 3
 
 
 [[menu.main]]
   name = "Tags"
-  url = "/tags"
+  url = "tags"
   weight = 3
