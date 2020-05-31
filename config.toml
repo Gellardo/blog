@@ -8,28 +8,29 @@ pygmentsStyle = "trac" # necessary to get same background as HLJS
 
 [Params]
   subtitle = "I wanted to try blogging, so here I go."
-	mainSections = ["posts"]
-	rss = true
-	useHLJS = true
-	dateFormat = "2006-01-02"
+  mainSections = ["posts"]
+  rss = true
+  useHLJS = true
+  dateFormat = "2006-01-02"
 
 
 [Author]
   name = "Frank Schmidt"
-	github = "Gellardo"
+  github = "Gellardo"
+
+# Configuration of the shortcuts in the header
+[[menu.main]]
+  name = "Blog"
+  url = "/"
+  weight = 1
 
 [[menu.main]]
-    name = "Blog"
-    url = "/"
-    weight = 1
-
-[[menu.main]]
-   name = "About"
-   url = "/pages/about/"
-   weight = 3
+  name = "About"
+  url = "/pages/about/"
+  weight = 3
 
 
 [[menu.main]]
-   name = "Tags"
-   url = "/tags"
-   weight = 3
+  name = "Tags"
+  url = "/tags"
+  weight = 3
