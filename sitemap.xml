@@ -3,45 +3,45 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>http://example.org/tags/blogging/</loc>
+    <loc>https://gellardo.github.io/blog/tags/blogging/</loc>
     <lastmod>2020-05-31T22:48:32+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://example.org/</loc>
+    <loc>https://gellardo.github.io/blog/</loc>
     <lastmod>2020-05-31T22:48:32+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://example.org/posts/2020-05-31-getting-hugo-to-run/</loc>
+    <loc>https://gellardo.github.io/blog/posts/2020-05-31-getting-hugo-to-run/</loc>
     <lastmod>2020-05-31T22:48:32+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://example.org/tags/hugo/</loc>
+    <loc>https://gellardo.github.io/blog/tags/hugo/</loc>
     <lastmod>2020-05-31T22:48:32+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://example.org/posts/</loc>
+    <loc>https://gellardo.github.io/blog/posts/</loc>
     <lastmod>2020-05-31T22:48:32+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://example.org/tags/</loc>
+    <loc>https://gellardo.github.io/blog/tags/</loc>
     <lastmod>2020-05-31T22:48:32+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://example.org/pages/about/</loc>
+    <loc>https://gellardo.github.io/blog/pages/about/</loc>
   </url>
   
   <url>
-    <loc>http://example.org/categories/</loc>
+    <loc>https://gellardo.github.io/blog/categories/</loc>
   </url>
   
   <url>
-    <loc>http://example.org/pages/</loc>
+    <loc>https://gellardo.github.io/blog/pages/</loc>
   </url>
   
 </urlset>

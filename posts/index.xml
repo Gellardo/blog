@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on Frank&#39;s Blog</title>
-    <link>http://example.org/posts/</link>
+    <link>https://gellardo.github.io/blog/posts/</link>
     <description>Recent content in Posts on Frank&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 31 May 2020 22:48:32 +0200</lastBuildDate>
     
-	<atom:link href="http://example.org/posts/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://gellardo.github.io/blog/posts/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Getting Hugo to run</title>
-      <link>http://example.org/posts/2020-05-31-getting-hugo-to-run/</link>
+      <link>https://gellardo.github.io/blog/posts/2020-05-31-getting-hugo-to-run/</link>
       <pubDate>Sun, 31 May 2020 22:48:32 +0200</pubDate>
       
-      <guid>http://example.org/posts/2020-05-31-getting-hugo-to-run/</guid>
+      <guid>https://gellardo.github.io/blog/posts/2020-05-31-getting-hugo-to-run/</guid>
       <description>&lt;p&gt;I wanted to have a really low friction way of practicing technical writing.
 As my current employer mostly uses Blogs as PR, my first idea was to try blogging, but to start small without anyone seeing it.&lt;/p&gt;</description>
     </item>
