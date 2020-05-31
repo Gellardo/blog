@@ -3,6 +3,36 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>http://example.org/tags/blogging/</loc>
+    <lastmod>2020-05-31T22:48:32+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://example.org/</loc>
+    <lastmod>2020-05-31T22:48:32+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://example.org/posts/2020-05-31-getting-hugo-to-run/</loc>
+    <lastmod>2020-05-31T22:48:32+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://example.org/tags/hugo/</loc>
+    <lastmod>2020-05-31T22:48:32+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://example.org/posts/</loc>
+    <lastmod>2020-05-31T22:48:32+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://example.org/tags/</loc>
+    <lastmod>2020-05-31T22:48:32+02:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://example.org/pages/about/</loc>
   </url>
   
@@ -11,15 +41,7 @@
   </url>
   
   <url>
-    <loc>http://example.org/</loc>
-  </url>
-  
-  <url>
     <loc>http://example.org/pages/</loc>
-  </url>
-  
-  <url>
-    <loc>http://example.org/tags/</loc>
   </url>
   
 </urlset>

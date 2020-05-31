@@ -7,8 +7,9 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <title>Frank&#39;s Blog - Frank&#39;s Blog</title>
-  <meta name="description" content="This is a page about me. Nothing here yet i guess.">
+  <title>Getting Hugo to run - Frank&#39;s Blog</title>
+  <meta name="description" content="I wanted to have a really low friction way of practicing technical writing.
+As my current employer mostly uses Blogs as PR, my first idea was to try blogging, but to start small without anyone seeing it.">
   <meta name="author" content="Frank Schmidt"/><script type="application/ld+json">
 {
     "@context": "http://schema.org",
@@ -44,8 +45,8 @@
         "@type": "ListItem",
         "position": 3,
         "item": {
-          "@id": "http:\/\/example.org\/pages\/about\/",
-          "name": ""
+          "@id": "http:\/\/example.org\/posts\/2020-05-31-getting-hugo-to-run\/",
+          "name": "Getting hugo to run"
         }
     }]
 }
@@ -56,15 +57,15 @@
   "author": {
     "name" : "Frank Schmidt"
   },
-  "headline": "",
-  "description" : "This is a page about me. Nothing here yet i guess.",
+  "headline": "Getting Hugo to run",
+  "description" : "I wanted to have a really low friction way of practicing technical writing. As my current employer mostly uses Blogs as PR, my first idea was to try blogging, but to start small without anyone seeing it.\n",
   "inLanguage" : "en",
-  "wordCount":  11 ,
-  "datePublished" : "0001-01-01T00:00:00",
-  "dateModified" : "0001-01-01T00:00:00",
+  "wordCount":  345 ,
+  "datePublished" : "2020-05-31T22:48:32",
+  "dateModified" : "2020-05-31T22:48:32",
   "image" : "http:\/\/example.org\/",
-  "keywords" : [ "" ],
-  "mainEntityOfPage" : "http:\/\/example.org\/pages\/about\/",
+  "keywords" : [ "blogging, Hugo" ],
+  "mainEntityOfPage" : "http:\/\/example.org\/posts\/2020-05-31-getting-hugo-to-run\/",
   "publisher" : {
     "@type": "Organization",
     "name" : "http:\/\/example.org\/",
@@ -78,14 +79,16 @@
 }
 </script>
 
-<meta property="og:title" content="Frank&#39;s Blog" />
-<meta property="og:description" content="This is a page about me. Nothing here yet i guess.">
-<meta property="og:url" content="http://example.org/pages/about/" />
+<meta property="og:title" content="Getting Hugo to run" />
+<meta property="og:description" content="I wanted to have a really low friction way of practicing technical writing.
+As my current employer mostly uses Blogs as PR, my first idea was to try blogging, but to start small without anyone seeing it.">
+<meta property="og:url" content="http://example.org/posts/2020-05-31-getting-hugo-to-run/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Frank&#39;s Blog" />
 
-  <meta name="twitter:title" content="Frank&#39;s Blog" />
-  <meta name="twitter:description" content="This is a page about me. Nothing here yet i guess.">
+  <meta name="twitter:title" content="Getting Hugo to run" />
+  <meta name="twitter:description" content="I wanted to have a really low friction way of practicing technical writing.
+As my current employer mostly uses Blogs as PR, my first idea was to try blogging, but to start small without anyone seeing …">
   <meta name="twitter:card" content="summary" />
   <meta name="generator" content="Hugo 0.71.1" />
   <link rel="alternate" href="http://example.org/index.xml" type="application/rss+xml" title="Frank&#39;s Blog"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
@@ -204,7 +207,29 @@
 
 
 
-  <div class="intro-header"></div>
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="posts-heading">
+              
+                <h1>Getting Hugo to run</h1>
+              
+              
+                <hr class="small">
+              
+              
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
 
 
     
@@ -212,10 +237,40 @@
   <div class="row">
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
       <article role="main" class="blog-post">
-        <p>This is a page about me.
-Nothing here yet i guess.</p>
+        <p>I wanted to have a really low friction way of practicing technical writing.
+As my current employer mostly uses Blogs as PR, my first idea was to try blogging, but to start small without anyone seeing it.</p>
+<!-- raw HTML omitted -->
+<h2 id="the-selection-process">The selection process</h2>
+<p>As a techie, I did the sensible thing and just started writing my first 1-2 posts before doing anything else&hellip;
+Of course not, there is so much interesting technologies out there and I have to choose the right one &ldquo;for the future&rdquo;.
+After scowering the internet for the best static site generator for blogs, I quickly decided to use <a href="gohugo.io">Hugo</a> with a nice <a href="https://github.com/halogenica/beautifulhugo">theme</a>.
+It was such a quick decision, only taking about 5-6h of googling competitors (<a href="https://11ty.dev/">11ty</a>, <a href="http://gatsbyjs.org/">gatsby</a>) and deciding between some top 20 Hugo themes.</p>
+<p>Setup of Hugo is pretty simple, a quick <code>brew install hugo</code> and adding the theme as a submodule in the <code>themes</code> directory and I had a local setup running.
+Now to make it (potentially) visible for other people, I also set up GitHub Pages.
+I chose the slightly more complicated way of using a seperate branch for the generated site, strictly splitting source files and generated files into different branches.</p>
+<h2 id="how-not-to-change-branches-all-the-time">How not to change branches all the time</h2>
+<p>Git has a neat feature called worktrees.
+It allows to checkout different branches into different folders in the filesystem.
+This makes it possible to e.g. review a PR of a seperate branch without having to stash/WIP-commit/&hellip; your current work.
+Or let Hugo generate the site directly to the right branch (<a href="https://gohugo.io/hosting-and-deployment/hosting-on-github/#deployment-of-project-pages-from-your-gh-pages-branch">docs</a>.</p>
+<p>After setting up an completely empty branch (using <code>checkout --orphan</code> and <code>commit --allow-empty</code>), we can checkout the branch in the <code>./public</code> directory:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git worktree add -B gh-pages public origin/gh-pages
+</code></pre></div><p>Now deployments are really simple:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#998;font-style:italic"># generates the site in ./public</span>
+hugo
+<span style="color:#998;font-style:italic"># change into dir for doing git commands</span>
+<span style="color:#999">cd</span> public <span style="font-weight:bold">&amp;&amp;</span> git add --all <span style="font-weight:bold">&amp;&amp;</span> git commit -m <span style="color:#b84">&#34;update blog&#34;</span> <span style="font-weight:bold">&amp;&amp;</span> <span style="color:#999">cd</span> ..
+</code></pre></div><p>Later on, I want to automate this using GitHub Actions to automatically update the site on pushes to <code>master</code>.
+But that&rsquo;s my time for today.</p>
 
-
+        
+          <div class="blog-tags">
+            
+              <a href="http://example.org//tags/blogging/">blogging</a>&nbsp;
+            
+              <a href="http://example.org//tags/hugo/">Hugo</a>&nbsp;
+            
+          </div>
         
 
         
