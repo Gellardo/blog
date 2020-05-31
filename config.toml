@@ -2,3 +2,34 @@ baseURL = "http://example.org/"
 languageCode = "en-us"
 title = "Frank's Blog"
 theme = "beautifulhugo"
+
+pygmentsStyle = "trac" # necessary to get same background as HLJS
+
+
+[Params]
+  subtitle = "I wanted to try blogging, so here I go."
+	mainSections = ["posts"]
+	rss = true
+	useHLJS = true
+	dateFormat = "2006-01-02"
+
+
+[Author]
+  name = "Frank Schmidt"
+	github = "Gellardo"
+
+[[menu.main]]
+    name = "Blog"
+    url = "/"
+    weight = 1
+
+[[menu.main]]
+   name = "About"
+   url = "/pages/about/"
+   weight = 3
+
+
+[[menu.main]]
+   name = "Tags"
+   url = "/tags"
+   weight = 3
