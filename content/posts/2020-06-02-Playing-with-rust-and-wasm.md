@@ -13,7 +13,7 @@ So I wanted to try it and document my experience using Rust+Wasm to build a game
 ## (Wasm? Rust?)
 - wasm is like assembler for the browser
 - stronger security guarantees built into the language
-- currently mostly browser, there are initiatives to provide a runtime for bare-metal (kinda jvm/graal? like)
+- currently mostly browser, there are projects working to provide a runtime for bare-metal (kinda jvm/graal? like)
 - rust is a systems programming language with focus on safety and performance
 - also has very nice tooling for wasm
 
@@ -32,7 +32,7 @@ To bootstap a crate for the game logic to reside in, I used one of the provided 
 Using `npm init rust-webpack` ([source](https://github.com/rustwasm/rust-webpack-template)), I have a starting point without having to fiddle with npm, webpack or cargo.
 Later I will go into more detail of what that template includes.
 
-Need a struct to hold the universe.
+A datastructure is needed to hold the state of the universe.
 I'm using a 2-dimensional array and store the current and last state, switching between them to avoid allocations.
 The `#[wasm_bindgen]` annotation exposes the struct in the wasm module.
 The build fails if an exposed function or type would expose an unexposed type as a field/in the signature.
@@ -48,8 +48,8 @@ pub struct GameOfLife {
 }
 ```
 
-Now I can implement a single tick of the universe by moving exchanging current and last state, rendering over the previous state.
-Since the universe has a fixed size, I have to choose how to handle the borders:
+Now I can implement a single tick of the universe by moving exchanging current and last state, overwriting the previous state.
+Since the universe has a limited size, I have to choose how to handle the borders:
 Either treat cells outside the border as dead or wrap around to the other side, basically creating a torus.
 I liked the idea of an endless glider, so I implemented the wrapping.
 ```rust
@@ -135,7 +135,7 @@ pub fn main_js() -> Result<(), JsValue> {
     let mut game = game();
 		for i in 0..100 {
 		    game.tick();
-				console::log_1(&JsValue::from_str(game.prettier_state));
+				console::log_1(&JsValue::from_str(&game.prettier_state()));
 		}
 
     Ok(())
@@ -154,24 +154,70 @@ pub fn main_js() -> Result<(), JsValue> {
 
 ## Bring the game to life in the browser
 The rust crate already simulates the game in the console.
-But nobody looks into there, so let's improve on that.
+But nobody looks there, so let's add some nicer visuals.
 ### Handing Strings from Wasm to JS
-- make it visible for normal ppl, set string as `textContent` of a `<pre>` element
-- have to write some glue js, since i could not figure out proper async import (required because of [webpack limitations](https://github.com/webpack/webpack/issues/6615)).
-- use `requestAnimationFrame()` to animate (some hardship to figure out how to wait between ticks to further slow down the animation)
+The easiest way to do that is to just move the printing from the console output to a text element of the site.
+So I write a minimal amount of JS, that takes the output of `game.prettier_state())` and sets the `textContent` of a `<pre>` element.
+Wrap that in a closure and recursively call `requestAnimationFrame(closure)` to run the simulation at a stable 60 FPS.
+We made a poor man's canvas!
+
+```javascript
+function game(wasm) {
+    const gameElement = document.getElementById("game")
+    const g = wasm.game()
+    const renderloop = async () => {
+        gameElement.textContent = g.prettier_state()
+        g.tick()
+        await new Promise(r => setTimeout(r, 100));
+        requestAnimationFrame(renderloop)
+    }
+    requestAnimationFrame(renderloop)
+}
+```
+
+Now I just skipped a minor and a major thing:
+1. 60 FPS (the goal of `requestAnimationFrame`) was to fast for my liking so I added a 100 ms sleep.
+2. Why does that function have the wasm module as a parameter?
+
+Before answering the second observation, I need to say that I have very little experience with JS so I might have solved this the complicated way.
+By default, the template contains the expression `import("../pkg/index.js")` to include the Wasm module.
+This is an asynchronous import of that module (notice the parentheses) and it does not make the module available immeidately like an usual import.
+My first try was to change that to a normal import statement, but that did not work:
+> WebAssembly module is included in initial chunk.
+> This is not allowed, because WebAssembly download and compilation must happen asynchronous.
+> Add an async splitpoint (i. e. import()) somewhere between your entrypoint and the WebAssembly module
+
+Hmm, alright it seems that the `import()` is needed after all.
+So I took the way of least resistance and future spaghetti code and added a callback to the `import()` statement, which calls the function with the imported module.
+
+```javascript
+import( "../pkg/index.js" ).then(wasm => game(wasm)).catch(console.error);
+```
+
+Some more googling suggests, that this might be a [limitation of webpack](https://github.com/webpack/webpack/issues/6615)).
+But it works like this and as long as I don't need to extend it, that's fine.
 
 ### Can I get rid of manual JS completely?
+- I could set the text content, but getting there relied on finding the right stackoverflow question
+- Kinda like JS: Get `window` (rust only) -> `document` -> `element_by_id`
+  (sideeffect: import of the `web-sys` crate needed a bunch more feature flags)
+- IDE says: use `sleep()` to sleep, browser/wasm says: whats that? time? nope
+- tried to call js `setTimeout` but failed constructing a fitting callback
 - I tried and failed, could not find nice documentation (once I reached `setTimeout`)
+  Possible sidetrack: Wasm modules, why it does not work, (how to fix it?)
 - `Gloo` and its posts might allow me to so now
-- (Perhaps do it for this post)
 
 ## It's really performant, right?
 - well no, same code is far faster in js
+- copy-pasted rust code and do minor changes to make it valid JS
+  (Find that rust fixed a bug in my code, not exchanging struct-fields)
+- on pageload run tick 1000 times and measure the time
 - `mem::swap` sometimes works and then goes back to not working
-- not multithreaded/parallel
+- not multithreaded/parallel, running the benchmark stops the visual simulation
 
 ## What's next
-- Try again to get rid of js glue code (PURE Rust!!)
+- Try again to get rid of js glue code (PURE Rust!!).
+  Came across Gloo(?) blog post that has exactly the problematic code, so I want to have a 2nd try
 - Explore using `wasm-bindgen-test` for headless browser tests from Rust
 - Performance optimizations? Wasm is supposed to be faster!
 
