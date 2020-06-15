@@ -8,9 +8,9 @@ I have read a lot about how Wasm is great for porting non-JS languages into the 
 Also better security and ability to compile libraries into Wasm and use them in other languages.
 So I wanted to try it and document my experience using Rust+Wasm to build a game of life using wasm (before knowing about the book).
 
-**TLDR:** Read the [official rust+wasm introduction][wasm-life-introduction] instead of reading about me stumbling around.
+**TLDR:** If you want to learn a lot more than fits into a post, read the [official rust+wasm introduction][wasm-life-introduction] instead of reading about me stumbling around.
 
-## (Wasm? Rust?)
+## Wasm? Rust?
 - wasm is like assembler for the browser
 - stronger security guarantees built into the language
 - currently mostly browser, there are projects working to provide a runtime for bare-metal (kinda jvm/graal? like)
@@ -70,8 +70,8 @@ impl GameOfLife {
     fn will_be_alive(state: Universe, x: usize, y: usize) -> u8 {
         let mut alive_neighbors = 0;
 
-				// Rust makes sure that usize can't get negative.
-				// So using addition and modulo is simpler than a bunch of casting.
+        // Rust makes sure that usize can't get negative.
+        // So using addition and modulo is simpler than a bunch of casting.
         for i in SIZE - 1..=SIZE + 1 {
             for j in SIZE - 1..=SIZE + 1 {
                 if i == SIZE && j == SIZE { // don' count self
@@ -112,6 +112,11 @@ impl GameOfLife {
 }
 ```
 
+As a sidenote, it is really nice that rust handles the glue code for moving data types across the JS-Wasm border.
+Otherwise, the only option for sharing is to write your own serializer/deserializer to the shared memory.
+The Wasm API only has basic valuetypes, so you end up converting to bytes and back on both sides.
+(And handling pointers into the Wasm memory).
+
 And generate the glider in the universe.
 ```rust
 #[wasm_bindgen]
@@ -140,7 +145,6 @@ pub fn main_js() -> Result<(), JsValue> {
 
     Ok(())
 }
-
 ```
 
 ### Looking into the template
@@ -149,8 +153,15 @@ pub fn main_js() -> Result<(), JsValue> {
 - `web_sys` for browser bindings like console (`println!` does not work)
 - crate `console_error_panic_hook` for having panics print a trace to the console (could be added only for dev)
 - `wasm-bindgen-test` to run tests in headless browsers (not used yet)
-### What I understood of wasm-pack
-- generated files
+
+### What I understood of what happens under the covers of wasm-pack
+Generated files:
+- `index_bg.d.wasm`: the compiled wasm binary
+- `index_bg.d.ts`: seems to be a "header" file of generated rust functions, not usable though (e.g. no body, using numbers (= pointers) as parameters)
+- `index_bg.js`: looks like the actual js implementation, nicely wrapping the the wasm heap pointer magic
+- `index.d.ts`: looks like typescript headers for things in `index_bg.js`
+- `index.js`: just imports the wasm file and `index_bg.js`, (optionally) calls the wasm `main_js` entrypoint
+
 
 ## Bring the game to life in the browser
 The rust crate already simulates the game in the console.
