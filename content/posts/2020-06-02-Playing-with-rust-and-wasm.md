@@ -1,7 +1,7 @@
 ---
 title: "Playing With Rust and Wasm"
 date: 2020-06-02T21:52:04+02:00
-tags: rust,wasm
+tags: [rust,wasm]
 draft: true
 ---
 
@@ -15,7 +15,7 @@ So I wanted to try it and document my experience using Rust+Wasm to build a game
 - wasm is like assembler for the browser [spec/intro](https://webassembly.github.io/spec/core/intro/introduction.html#id1)
 - stronger security guarantees built into the language
 - currently mostly browser, there are projects working to provide a runtime for bare-metal (kinda jvm/graal? like)
-- rust is a systems programming language with focus on safety and performance
+- Rust is a systems programming language with focus on safety and performance
 - also has very nice tooling for wasm
 
 ## Bootstraping a Rust Game of Life implementation
@@ -30,7 +30,7 @@ These simple rules can produce complex behaviour like this "glider gun" ([source
 
 ### Implement simulation logic
 To bootstap a crate for the game logic to reside in, I used one of the provided templates.
-Using `npm init rust-webpack` ([source](https://github.com/rustwasm/rust-webpack-template)), I have a starting point without having to fiddle with npm, webpack or cargo.
+Using `npm init Rust-webpack` ([source](https://github.com/rustwasm/rust-webpack-template)), I have a starting point without having to fiddle with npm, webpack or cargo.
 Later I will go into more detail of what that template includes.
 
 A datastructure is needed to hold the state of the universe.
@@ -113,7 +113,7 @@ impl GameOfLife {
 }
 ```
 
-As a sidenote, it is really nice that rust handles the glue code for moving data types across the JS-Wasm border.
+As a sidenote, it is really nice that Rust handles the glue code for moving data types across the JS-Wasm border.
 Otherwise, the only option for sharing is to write your own serializer/deserializer to the shared memory.
 The Wasm API only has basic valuetypes, so you end up converting to bytes and back on both sides.
 (And handling pointers into the Wasm memory).
@@ -158,14 +158,14 @@ pub fn main_js() -> Result<(), JsValue> {
 ### What I understood of what happens under the covers of wasm-pack
 Generated files:
 - `index_bg.d.wasm`: the compiled wasm binary
-- `index_bg.d.ts`: seems to be a "header" file of generated rust functions, not usable though (e.g. no body, using numbers (= pointers) as parameters)
+- `index_bg.d.ts`: seems to be a "header" file of generated Rust functions, not usable though (e.g. no body, using numbers (= pointers) as parameters)
 - `index_bg.js`: looks like the actual js implementation, nicely wrapping the the wasm heap pointer magic
 - `index.d.ts`: looks like typescript headers for things in `index_bg.js`
 - `index.js`: just imports the wasm file and `index_bg.js`, (optionally) calls the wasm `main_js` entrypoint
 
 
 ## Bring the game to life in the browser
-The rust crate already simulates the game in the console.
+The Rust crate already simulates the game in the console.
 But nobody looks there, so let's add some nicer visuals.
 ### Handing Strings from Wasm to JS
 The easiest way to do that is to just move the printing from the console output to a text element of the site.
@@ -233,12 +233,67 @@ But that did not go well, since I lacked any understanding if/how to hand in fun
 Having spent about 3-4 hours trying to figure out a solution, I decided to cut my losses and accept a minimal amount of JS.
 
 ## It's really performant, right?
-- well no, same code is far faster in js
-- copy-pasted rust code and do minor changes to make it valid JS
-  (Find that rust fixed a bug in my code, not exchanging struct-fields)
-- on pageload run tick 1000 times and measure the time
-- `mem::swap` sometimes works and then goes back to not working
-- not multithreaded/parallel, running the benchmark stops the visual simulation
+Time to get a look at the performance of this solution.
+So I copy&pasted the Rust code to JS and adjusted the syntax accordingly.
+As the benchmark, I use the same starting state and run it for 1000 ticks with each implementation.
+
+One thing to take into account is that the context switch between JS and Wasm might take some time.
+So there are 2 categories, one calling `tick()` multiple times from JS and having one call to the iteration implemented in Rust.
+
+Eagerly awaiting the first results:
+
+| JS | Rust | Rust with only one context switch |
+|---|---|---|
+| 14ms | 1.7s | 1.6s |
+
+Well, that's certainly not what I expected: 2 orders of magnitude slower!
+Let's see what I can find out.
+
+#### Too many allocations
+One thing I did not talk about, that my original code had a bug, that Rust thankfully fixed for me.
+Instead of exchanging the arrays holding last and the current state during tick, I only assigned the current to the last.
+To go into the specifics why it still worked correctly, is besides the point.
+Suffice to say Rust copied the array instead of moving it and therefore fixed my bug.
+
+But it also means, that for each tick, the Rust code copies the array (of arrays) once.
+Allocation is slow on normal architectures and it's the same here.
+So lets fix that:
+
+```patch
++  let tmp = self.last;
+   self.last = self.state;
++  self.state = tmp;
+```
+
+Alternatively, I also tried using `mem::swap` to directly swap the pointers.
+Now that did work, ... sometimes:
+
+| | JS | Rust | Rust with only one context switch |
+|---|---|---|---|
+| Before | 14ms | 1.7s | 1.6s |
+| Now (1) |  | 270ms | 250ms |
+| Now (2) |  | 1.7s | 1.6s |
+
+#### Huh?
+I'm stumped at that point.
+The code explicitly says, I want to swap the pointers, but the compiler ignores it.
+And I could find no real pattern, when the "correct" interpretation was used.
+Sometimes the 3-way swap worked, sometime the `mem::swap` did.
+Once the behavior changed, it took a few compiles to swap them again.
+Especially confusing was that I was only editing JS and HTML at the time it first occured (trying to add a "run benchmark" button).
+`¯\_(ツ)_/¯`
+
+Even in the best case, the code still runs an order of magnitude slower than JS.
+So I looked into the [official book][wasm-life-introduction] to see how their solution performed.
+One screenshot in the time profiling section shows that their ticks (with a larger universe) take about `1ms`.
+So improving my (best-case) code by another 2 orders of magniture should be possible.
+But this post is long enough, so I'll keep performance tuning for a future post.
+
+Interesting side note:
+I just assumed that, since I could create multiple game instances, that they could automatically be running in parallel.
+But while the benchmarks run, the visualized simulation is stopped.
+Even if I tried to import the module a second time using a seperate `import()` statement.
+On the other hand, JS also runs single-threaded in the Browser, unless you use webworkers.
 
 ## What's next
 - Try again to get rid of js glue code (PURE Rust!!).
@@ -247,6 +302,10 @@ Having spent about 3-4 hours trying to figure out a solution, I decided to cut m
 - Performance optimizations? Wasm is supposed to be faster!
 
 ## Links
+- [An official book which introduces rust+wasm][wasm-life-introduction]
+- [Docs for wasm-bindgen][wasm-bindgen-docs]
+- [Docs for wasm-pack][wasm-pack-docs]
+
 [wasm-life-introduction]: https://rustwasm.github.io/docs/book/introduction.html
 [wasm-bindgen-docs]: https://rustwasm.github.io/docs/wasm-bindgen/
 [wasm-pack-docs]: https://rustwasm.github.io/docs/wasm-pack/
