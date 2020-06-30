@@ -150,19 +150,17 @@ pub fn main_js() -> Result<(), JsValue> {
 
 ### Looking into the template
 - webpack -> wasm-pack-plugin -> runs wasm-pack -> runs wasm-bindgen
+  - wasmpack creates multiple files:
+	  - `index_bg.d.wasm`(the binary)
+		- `index_bg.js` (wrapper around wasm interaction)
+		- `index.js`(entry point)
+		- `*.d.ts` (declaration files containing typescript type information for the corresponding js file)
+
 - interaction via C ABI: can do "C" external calls for js functions and lib type is cdyn
 - `web_sys` for browser bindings like console (`println!` does not work)
 - crate `console_error_panic_hook` for having panics print a trace to the console (could be added only for dev)
-- `wasm-bindgen-test` to run tests in headless browsers (not used yet)
 
-### What I understood of what happens under the covers of wasm-pack
-Generated files:
-- `index_bg.d.wasm`: the compiled wasm binary
-- `index_bg.d.ts`: seems to be a "header" file of generated Rust functions, not usable though (e.g. no body, using numbers (= pointers) as parameters)
-- `index_bg.js`: looks like the actual js implementation, nicely wrapping the the wasm heap pointer magic
-- `index.d.ts`: looks like typescript headers for things in `index_bg.js`
-- `index.js`: just imports the wasm file and `index_bg.js`, (optionally) calls the wasm `main_js` entrypoint
-
+- `wasm-bindgen-test` to run tests in headless browsers (not tests as of yet)
 
 ## Bring the game to life in the browser
 The Rust crate already simulates the game in the console.
@@ -266,7 +264,7 @@ So lets fix that:
 ```
 
 Alternatively, I also tried using `mem::swap` to directly swap the pointers.
-Now that did work, ... sometimes:
+Both solutions did work, ... sometimes:
 
 | | JS | Rust | Rust with only one context switch |
 |---|---|---|---|
@@ -279,7 +277,7 @@ I'm stumped at that point.
 The code explicitly says, I want to swap the pointers, but the compiler ignores it.
 And I could find no real pattern, when the "correct" interpretation was used.
 Sometimes the 3-way swap worked, sometime the `mem::swap` did.
-Once the behavior changed, it took a few compiles to swap them again.
+Once the behavior changed, it took a few compiles to change again.
 Especially confusing was that I was only editing JS and HTML at the time it first occured (trying to add a "run benchmark" button).
 `¯\_(ツ)_/¯`
 
@@ -296,16 +294,24 @@ Even if I tried to import the module a second time using a seperate `import()` s
 On the other hand, JS also runs single-threaded in the Browser, unless you use webworkers.
 
 ## What's next
-- Try again to get rid of js glue code (PURE Rust!!).
-  Came across Gloo(?) blog post that has exactly the problematic code, so I want to have a 2nd try
-- Explore using `wasm-bindgen-test` for headless browser tests from Rust
-- Performance optimizations? Wasm is supposed to be faster!
+I will leave some topics open for future posts, because they either are not yet implemented or not researched enough.
+
+1. Optimize the performance of my implementation.
+   This involves learning about the necessary tools, performance measurement and debugging and sounds like an interesting challenge.
+	 Wasm should be faster and I want to better understand why my implementation isn't.
+1. I want to try getting rid of the JS glue code again, just out of spite.
+   Reading a [blogpost by Gloo][gloo-post], a modular wasm toolkit, I found solutions for all the unsolved problems I have encountered.
+1. Explore using `wasm-bindgen-test` for headless browser tests from Rust
+
+Thanks for reading!
 
 ## Links
 - [An official book which introduces rust+wasm][wasm-life-introduction]
 - [Docs for wasm-bindgen][wasm-bindgen-docs]
 - [Docs for wasm-pack][wasm-pack-docs]
+- [Blogpost by Gloo][gloo-post]
 
 [wasm-life-introduction]: https://rustwasm.github.io/docs/book/introduction.html
 [wasm-bindgen-docs]: https://rustwasm.github.io/docs/wasm-bindgen/
 [wasm-pack-docs]: https://rustwasm.github.io/docs/wasm-pack/
+[gloo-post]: https://rustwasm.github.io/2019/03/26/gloo-onion-layers.html
