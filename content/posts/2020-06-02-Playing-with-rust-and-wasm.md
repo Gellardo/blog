@@ -1,6 +1,6 @@
 ---
 title: "Playing With Rust and Wasm"
-date: 2020-06-02T21:52:04+02:00
+date: 2020-07-01T21:52:04+02:00
 tags: [rust,wasm]
 draft: true
 ---
@@ -41,8 +41,9 @@ Otherwise the cell will be dead.
 These simple rules can produce complex behaviour like this "glider gun" ([source](https://commons.wikimedia.org/wiki/File:Gospers_glider_gun.gif)):
 ![glider gun](https://upload.wikimedia.org/wikipedia/commons/e/e5/Gospers_glider_gun.gif)
 
-### Implement simulation logic
-To bootstap a crate for the game logic to reside in, I used one of the provided templates.
+### Implementing the simulation
+Rust organizes code into creates which might contain further modules.
+To bootstap a crate for the game logic to reside in, I used one of the official templates.
 Using `npm init Rust-webpack` ([source](https://github.com/rustwasm/rust-webpack-template)), I have a starting point without having to fiddle with npm, webpack or cargo.
 Later I will go into more detail of what that template includes.
 
@@ -162,18 +163,34 @@ pub fn main_js() -> Result<(), JsValue> {
 ```
 
 ### Looking into the template
-- webpack -> wasm-pack-plugin -> runs wasm-pack -> runs wasm-bindgen
-  - wasmpack creates multiple files:
-	  - `index_bg.d.wasm`(the binary)
-		- `index_bg.js` (wrapper around wasm interaction)
-		- `index.js`(entry point)
-		- `*.d.ts` (declaration files containing typescript type information for the corresponding js file)
+Since the simulation works, let's move on to my (shallow) understanding of what is happening behind the scenes of the template.
 
-- interaction via C ABI: can do "C" external calls for js functions and lib type is cdyn
-- `web_sys` for browser bindings like console (`println!` does not work)
-- crate `console_error_panic_hook` for having panics print a trace to the console (could be added only for dev)
+The most important part is the inclusion of a webpack plugin for [`wasm-pack`](https://github.com/rustwasm/wasm-pack).
+The plugin automatically (re-)generates the wasm module and the JS glue code (with TypeScript type information) to use it comfortably.
+Multiple files are created for this purpose:
+- `index_bg.d.wasm`: the Wasm module created from the crate
+- `index_bg.js`: JS glue code to allow access to WASM functions and values without having to resort to the low level API and memory access for information exchange.
+- `index.js`: Combines the other files into a single import and runs static setup functions (e.g. functions with `#[wasm_bindgen(start)]`).
+   The template included a single line `index.js` which performs the import for the served web page.
 
-- `wasm-bindgen-test` to run tests in headless browsers (not tests as of yet)
+Since wasm-pack handles all of the compilation, what else is there?
+The Rust crate is using the library type `cdyn` (C dynamic library) which hints that interactions use the C ABI (or at least some step of the compilation pipeline).
+
+Wasm is highly modular, and appropriately there are a number crates that provide necessary and/or nice-to-have bindings for the web platform.
+`web_sys` is an auto-generated crate that translates all browser JS functions to Rust functions.
+This includes e.g. accessing elements in the DOM or using the browser console for printing.
+(There is no `stdout` in the browser, so `println!` is not possible).
+That is also the crate `js_sys` for pure JS bindings.
+
+The crate `console_error_panic_hook` improves the development process by changing the output for runtime panics.
+By default the console output is rather cryptic.
+The crate adds enough context information about the stack trace, source file and line numbers to make debugging panics much easier.
+And with some feature flag magic, it can only be included in dev to reduce the Wasm file size of the production build.
+
+I haven't really used the last crate, but the inital tests looked interesting:
+`wasm-bindgen-test` allows to specify tests that run in a headless browsers.
+This is quite helpful for writing end-to-end tests of the Wasm functionality but I did not have the time to play with it.
+*Yet*.
 
 ## Bring the game to life in the browser
 The Rust crate already simulates the game in the console.
