@@ -12,11 +12,24 @@ So I wanted to try it and document my experience using Rust+Wasm to build a game
 **TLDR:** If you want to learn a lot more than fits into a post, read the [official rust+wasm introduction][wasm-life-introduction] instead of reading about me stumbling around.
 
 ## Wasm? Rust?
-- wasm is like assembler for the browser [spec/intro](https://webassembly.github.io/spec/core/intro/introduction.html#id1)
-- stronger security guarantees built into the language
-- currently mostly browser, there are projects working to provide a runtime for bare-metal (kinda jvm/graal? like)
-- Rust is a systems programming language with focus on safety and performance
-- also has very nice tooling for wasm
+Let's start with my technology choices:
+
+> WebAssembly (abbreviated Wasm) is a binary instruction format for a stack-based virtual machine.
+> [Wasm homepage](https://webassembly.org/)
+
+So Wasm started out to be like binary assembly for the browser, allowing e.g. languages other than JS to be compiled to Wasm and run in the browser.
+Wasm also has built-in safety guarantees like memory-safety and sandboxed execution.
+It also has a strong integration with the JS VM in the broser, allowing calls from and to regular JS.
+It is designed with modularity in mind, providing platform specific functionality (time, JS access, file access, ...) through modules only.
+Also there are non-web platforms like node.js and [wasi](https://wasi.dev/) that allow using Wasm outside of the browser.
+
+Wasm's main selling point is speeding up compute-heavy tasks in the browser and using it to allow running any code safely almost anywhere.
+
+[Rust](https://www.rust-lang.org/) is a systems programming language with a focus on safety and performance.
+It's unique borrow-checker/data ownership rules also prevent data races and promise thread-safety at compile time.
+The Rust community is also pretty active in the Wasm space, resulting in some nice tooling that I can just pick up and use.
+
+Enough with the introductions, let's get started.
 
 ## Bootstraping a Rust Game of Life implementation
 Quick recap:
