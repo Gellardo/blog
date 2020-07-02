@@ -1,6 +1,6 @@
 ---
 title: "Playing With Rust and Wasm"
-date: 2020-07-01T21:52:04+02:00
+date: 2020-07-02T21:52:04+02:00
 tags: [rust,wasm]
 draft: true
 ---
