@@ -6,10 +6,20 @@
     <description>Recent content in Posts on Frank&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 31 May 2020 22:48:32 +0200</lastBuildDate>
+    <lastBuildDate>Thu, 02 Jul 2020 21:52:04 +0200</lastBuildDate>
     
 	<atom:link href="https://gellardo.github.io/blog/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Playing With Rust and Wasm</title>
+      <link>https://gellardo.github.io/blog/posts/2020-07-02-playing-with-rust-and-wasm/</link>
+      <pubDate>Thu, 02 Jul 2020 21:52:04 +0200</pubDate>
+      
+      <guid>https://gellardo.github.io/blog/posts/2020-07-02-playing-with-rust-and-wasm/</guid>
+      <description>I have read a lot about how Wasm is great for porting non-JS languages into the browser and maybe even into a general Lambda runtime. Also better security and ability to compile libraries into Wasm and use them in other languages. So I wanted to try it and document my experience using Rust+Wasm to build Game of Life using Wasm.
+TLDR: If you want to learn a lot more than I can cover here, read the official rust+wasm introduction instead of watching me stumbling around here.</description>
+    </item>
     
     <item>
       <title>Getting Hugo to run</title>

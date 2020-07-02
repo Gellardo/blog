@@ -6,10 +6,28 @@
     <description>Recent content in Tags on Frank&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 31 May 2020 22:48:32 +0200</lastBuildDate>
+    <lastBuildDate>Thu, 02 Jul 2020 21:52:04 +0200</lastBuildDate>
     
 	<atom:link href="https://gellardo.github.io/blog/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>rust</title>
+      <link>https://gellardo.github.io/blog/tags/rust/</link>
+      <pubDate>Thu, 02 Jul 2020 21:52:04 +0200</pubDate>
+      
+      <guid>https://gellardo.github.io/blog/tags/rust/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>wasm</title>
+      <link>https://gellardo.github.io/blog/tags/wasm/</link>
+      <pubDate>Thu, 02 Jul 2020 21:52:04 +0200</pubDate>
+      
+      <guid>https://gellardo.github.io/blog/tags/wasm/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>blogging</title>
