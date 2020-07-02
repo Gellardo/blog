@@ -2,31 +2,29 @@
 title: "Playing With Rust and Wasm"
 date: 2020-07-02T21:52:04+02:00
 tags: [rust,wasm]
-draft: true
 ---
 
 I have read a lot about how Wasm is great for porting non-JS languages into the browser and maybe even into a general Lambda runtime.
 Also better security and ability to compile libraries into Wasm and use them in other languages.
-So I wanted to try it and document my experience using Rust+Wasm to build a game of life using Wasm (before knowing about the book).
+So I wanted to try it and document my experience using Rust+Wasm to build Game of Life using Wasm.
 
-**TLDR:** If you want to learn a lot more than fits into a post, read the [official rust+wasm introduction][wasm-life-introduction] instead of reading about me stumbling around.
+**TLDR:** If you want to learn a lot more than I can cover here, read the [official rust+wasm introduction][wasm-life-introduction] instead of watching me stumbling around [here](https://github.com/Gellardo/wasm-game-of-life).
 
 ## Wasm? Rust?
 Let's start with my technology choices:
 
 > WebAssembly (abbreviated Wasm) is a binary instruction format for a stack-based virtual machine.
-> [Wasm homepage](https://webassembly.org/)
+> \[[Wasm homepage](https://webassembly.org/)]
 
-So Wasm started out to be like binary assembly for the browser, allowing e.g. languages other than JS to be compiled to Wasm and run in the browser.
-Wasm also has built-in safety guarantees like memory-safety and sandboxed execution.
-It also has a strong integration with the JS VM in the browser, allowing calls from and to regular JS.
-It is designed with modularity in mind, providing platform specific functionality (time, JS access, file access, ...) through modules only.
-Also there are non-web platforms like node.js and [wasi](https://wasi.dev/) that allow using Wasm outside of the browser.
+So Wasm started out to be like binary assembly for the browser, e.g. allowing languages other than JS to be compiled to Wasm and run in the browser.
+Wasm has built-in safety guarantees like memory-safety and sandboxed execution, while also having a strong integration with the JS VM of the browser, allowing calls from and to regular JS.
+It is designed with a focus on modularity, providing platform specific functionality (time, JS access, file access, ...) only through modules.
+Also there are projects supporting non-web platforms like node.js and [wasi](https://wasi.dev/) that allow using Wasm outside of the browser.
 
 Wasm's main selling point is speeding up compute-heavy tasks in the browser and using it to allow running any code safely almost anywhere.
 
 [Rust](https://www.rust-lang.org/) is a systems programming language with a focus on safety and performance.
-It's unique borrow-checker/data ownership rules also prevent data races and promise thread-safety at compile time.
+Its unique borrow-checker/data ownership rules also prevent data races and promise thread-safety at compile time.
 The Rust community is also pretty active in the Wasm space, resulting in some nice tooling that I can just pick up and use.
 
 Enough with the introductions, let's get started.
@@ -42,15 +40,15 @@ These simple rules can produce complex behavior like this "glider gun" ([source]
 ![glider gun](https://upload.wikimedia.org/wikipedia/commons/e/e5/Gospers_glider_gun.gif)
 
 ### Implementing the simulation
-Rust organizes code into creates which might contain further modules.
+Rust organizes code into crates which can contain further modules.
 To bootstrap a crate for the game logic to reside in, I used one of the official templates.
-Using `npm init Rust-webpack` ([source](https://github.com/rustwasm/rust-webpack-template)), I have a starting point without having to fiddle with npm, webpack or cargo.
-Later I will go into more detail of what that template includes.
+Using `npm init rust-webpack` ([source](https://github.com/rustwasm/rust-webpack-template)), I have a starting point without having to fiddle with npm, webpack or cargo.
+I will postphone going into the template details until the simulation logic is running.
 
-A data structure is needed to hold the state of the universe.
+A data structure is necessary to hold the state of the simulation's universe.
 I'm using a 2-dimensional array and store the current and last state, switching between them to avoid allocations.
 The `#[wasm_bindgen]` annotation exposes the struct in the Wasm module.
-The build fails if an exposed function or type would expose an unexposed type as a field/in the signature.
+The build would fail if an exposed function or type includes an unexposed type as a field or in the signature.
 ```rust
 const SIZE: usize = 16;
 type Universe = [[u8; SIZE]; SIZE];
@@ -63,10 +61,10 @@ pub struct GameOfLife {
 }
 ```
 
-Now I can implement a single tick of the universe by moving exchanging current and last state, overwriting the previous state.
+Now I can implement a single tick of the universe by exchanging the current and last state and overwriting the now current state.
 Since the universe has a limited size, I have to choose how to handle the borders:
 Either treat cells outside the border as dead or wrap around to the other side, basically creating a torus.
-I liked the idea of an endless glider, so I implemented the wrapping.
+I liked the idea of an endless glider, so I went with the wrapping option.
 ```rust
 #[wasm_bindgen]
 impl GameOfLife {
@@ -128,7 +126,7 @@ impl GameOfLife {
 ```
 
 As a side note, it is really nice that Rust handles the glue code for moving data types across the JS-Wasm border.
-Otherwise, the only option for sharing is to write your own serializer/deserializer to the shared memory.
+Otherwise, the only data-sharing option is to write your own serializer/deserializer for the shared memory.
 The Wasm API only has basic value types, so you end up converting to bytes and back on both sides.
 (And handling pointers into the Wasm memory).
 
@@ -153,14 +151,16 @@ In there, the game can be set up and the state is printed after each tick to `co
 #[wasm_bindgen(start)]
 pub fn main_js() -> Result<(), JsValue> {
     let mut game = game();
-		for i in 0..100 {
-		    game.tick();
-				console::log_1(&JsValue::from_str(&game.prettier_state()));
-		}
+    for i in 0..100 {
+        game.tick();
+        console::log_1(&JsValue::from_str(&game.prettier_state()));
+    }
 
     Ok(())
 }
 ```
+
+And that's it for the simulation code.
 
 ### Looking into the template
 Since the simulation works, let's move on to my (shallow) understanding of what is happening behind the scenes of the template.
@@ -174,32 +174,32 @@ Multiple files are created for this purpose:
    The template included a single line `index.js` which performs the import for the served web page.
 
 Since wasm-pack handles all of the compilation, what else is there?
-The Rust crate is using the library type `cdyn` (C dynamic library) which hints that interactions use the C ABI (or at least some step of the compilation pipeline).
+The Rust crate is using the library type `cdyn` (C dynamic library) which hints that interactions use the C ABI (or at least some step of the compilation pipeline does).
 
 Wasm is highly modular, and appropriately there are a number crates that provide necessary and/or nice-to-have bindings for the web platform.
 `web_sys` is an auto-generated crate that translates all browser JS functions to Rust functions.
 This includes e.g. accessing elements in the DOM or using the browser console for printing.
-(There is no `stdout` in the browser, so `println!` is not possible).
-That is also the crate `js_sys` for pure JS bindings.
+(Since there is no `stdout` in the browser, `println!` is not possible).
+There is also the crate `js_sys` for pure JS bindings.
 
-The crate `console_error_panic_hook` improves the development process by changing the output for runtime panics.
-By default the console output is rather cryptic.
+The crate `console_error_panic_hook` improves the development process by changing the output of runtime panics.
+By default, the console output is rather cryptic.
 The crate adds enough context information about the stack trace, source file and line numbers to make debugging panics much easier.
-And with some feature flag magic, it can only be included in dev to reduce the Wasm file size of the production build.
+And with some feature flag magic, it can be included only for development builds to reduce the Wasm file size of the production build.
 
 I haven't really used the last crate, but the initial tests looked interesting:
-`wasm-bindgen-test` allows to specify tests that run in a headless browsers.
-This is quite helpful for writing end-to-end tests of the Wasm functionality but I did not have the time to play with it.
+`wasm-bindgen-test` allows you to specify tests that run in a headless browsers.
+This could be quite helpful for writing end-to-end tests of the Wasm functionality but I did not have the time to play with it.
 *Yet*.
 
 ## Bring the game to life in the browser
 The Rust crate already simulates the game in the console.
 But nobody looks there, so let's add some nicer visuals.
 ### Handing Strings from Wasm to JS
-The easiest way to do that is to just move the printing from the console output to a text element of the site.
+The easiest way to do that is to just move the printing from the console output to a text element on the site.
 So I write a minimal amount of JS, that takes the output of `game.prettier_state()` and sets the `textContent` of a `<pre>` element.
 Wrap that in a closure and recursively call `requestAnimationFrame(closure)` to run the simulation at a stable 60 FPS.
-We made a poor man's canvas!
+Now I am rendering on a poor man's canvas!
 
 ```javascript
 function game(wasm) {
@@ -222,20 +222,20 @@ Now I just skipped a minor and a major thing:
 Before answering the second observation, I need to say that I have very little experience with JS so I might have solved this the complicated way.
 By default, the template contains the expression `import("../pkg/index.js")` to include the Wasm module.
 This is an asynchronous import of that module (notice the parentheses) and it does not make the module available immediately like an usual import.
-My first try was to change that to a normal import statement, but that did not work:
+My first try was to change that to a normal import statement, but it did not work:
 > WebAssembly module is included in initial chunk.
 > This is not allowed, because WebAssembly download and compilation must happen asynchronous.
 > Add an async splitpoint (i. e. import()) somewhere between your entrypoint and the WebAssembly module
 
 Hmm, alright it seems that the `import()` is needed after all.
-So I took the way of least resistance and future spaghetti code and added a callback to the `import()` statement, which calls the function with the imported module.
+So I took the way of least resistance (and future spaghetti code) and added a callback to the `import()` statement, which calls the function with the imported module.
 
 ```javascript
 import( "../pkg/index.js" ).then(wasm => game(wasm)).catch(console.error);
 ```
 
-Some more googling suggests, that this might be a [limitation of webpack](https://github.com/webpack/webpack/issues/6615)).
-But it works like this and as long as I don't need to extend it, that's fine.
+Some more googling suggests, that this might be a [limitation of webpack](https://github.com/webpack/webpack/issues/6615).
+But it works for now and as long as I don't need to extend it, that's fine.
 
 ### Can I get rid of manual JS completely?
 Most of the logic is written in Rust, but there is still some JS glue needed.
@@ -243,7 +243,7 @@ So I tried to change that.
 
 First, I looked into setting `textContent` from Rust.
 There is a `Document` type in the `web-sys` crate, but the [documentation](https://docs.rs/web-sys/0.3.39/i686-unknown-linux-gnu/web_sys/struct.Document.html) only tells me that it can create a new `Document`.
-As well as about 4000 other things, since it is auto-generated and has every, EVERY function the browser provides for the document.
+As well as about 4000 other things, since it is auto-generated and has EVERY function the browser provides for the document.
 But I want the already existing `Document`, the same that JS provides by default.
 
 Off to see if anybody else had that problem and luckily, [someone did](https://stackoverflow.com/questions/61635487/rust-wasm-how-to-access-htmldocument-from-web-sys):
@@ -253,11 +253,11 @@ And the docs just tell you which ones you need. Neat.
 
 Now only run `tick()` and `setText` in an endless loop and it works.
 Or not: The text content was not updated and the page was not responding.
-So, perhaps add some `sleep()` calls in the loop to yield control back to the browser?
-Well, since is strictly sandboxed, there is no access to a time source without a module provided by the runtime.
+Perhaps add some `sleep()` calls in the loop to yield control back to the browser?
+Well, since Wasm is strictly sandboxed, there is no access to a time source without a module provided by the runtime.
 
-Last, I tried to rewrite the same `requestAnimationFrame` code with `setTimeout` as in JS.
-But that did not go well, since I lacked any understanding if/how to hand in functions from JS or use Rust closures to be called by `requestAnimationFrame`.
+So I tried to write the same `requestAnimationFrame` code with `setTimeout` as in JS.
+But that did not go well, since I lacked any understanding if/how to hand in functions from JS or use a Rust closures to be called by `requestAnimationFrame`.
 Having spent about 3-4 hours trying to figure out a solution, I decided to cut my losses and accept a minimal amount of JS.
 
 ## It's really performant, right?
@@ -266,7 +266,7 @@ So I copy&pasted the Rust code to JS and adjusted the syntax accordingly.
 As the benchmark, I use the same starting state and run it for 1000 ticks with each implementation.
 
 One thing to take into account is that the context switch between JS and Wasm might take some time.
-So there are 2 categories, one calling `tick()` multiple times from JS and having one call to the iteration implemented in Rust.
+So there are 2 categories, one calling `tick()` multiple times from JS and one doing the iteration in Rust.
 
 Eagerly awaiting the first results:
 
@@ -275,13 +275,14 @@ Eagerly awaiting the first results:
 | 14ms | 1.7s | 1.6s |
 
 Well, that's certainly not what I expected: 2 orders of magnitude slower!
-Let's see what I can find out.
+Let's see if I can find out more.
 
 #### Too many allocations
-One thing I did not talk about, that my original code had a bug, that Rust thankfully fixed for me.
-Instead of exchanging the arrays holding last and the current state during tick, I only assigned the current to the last.
-To go into the specifics why it still worked correctly, is besides the point.
-Suffice to say Rust copied the array instead of moving it and therefore fixed my bug.
+One thing I did not talk about is that my original code had a bug, that Rust thankfully fixed for me.
+Instead of exchanging the arrays holding the last and the current state during tick, I only assigned `current` to `last`.
+That should result the `current` array is either sharing the same array with `last` or uninitialized.
+To go into the specifics why it still worked correctly is besides the point.
+Suffice to say Rust copied the array instead of moving/sharing it and therefore fixed my bug.
 
 But it also means, that for each tick, the Rust code copies the array (of arrays) once.
 Allocation is slow on normal architectures and it's the same here.
@@ -304,9 +305,9 @@ Both solutions did work, ... sometimes:
 
 #### Huh?
 I'm stumped at that point.
-The code explicitly says, I want to swap the pointers, but the compiler ignores it.
+The code explicitly says, I want to swap what each variable contains, but the compiler ignored it.
 And I could find no real pattern, when the "correct" interpretation was used.
-Sometimes the 3-way swap worked, sometime the `mem::swap` did.
+Sometimes the 3-way swap worked, sometime `mem::swap` did.
 Once the behavior changed, it took a few compiles to change again.
 Especially confusing was that I was only editing JS and HTML at the time it first occurred (trying to add a "run benchmark" button).
 `¯\_(ツ)_/¯`
@@ -318,10 +319,11 @@ So improving my (best-case) code by another 2 orders of magnitude should be poss
 But this post is long enough, so I'll keep performance tuning for a future post.
 
 Interesting side note:
-I just assumed that, since I could create multiple game instances, that they could automatically be running in parallel.
-But while the benchmarks run, the visualized simulation is stopped.
+I just assumed, since I could create multiple game instances, that they would automatically be running in parallel.
+But when the benchmarks were running, the visualized simulation stopped.
 Even if I tried to import the module a second time using a separate `import()` statement.
-On the other hand, JS also runs single-threaded in the Browser, unless you use webworkers.
+On the other hand, JS always runs single-threaded in the Browser, unless you use webworkers.
+So my assumption was flawed anyways.
 
 ## What's next
 I will leave some topics open for future posts, because they either are not yet implemented or not researched enough.
