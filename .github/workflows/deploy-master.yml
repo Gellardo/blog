@@ -35,16 +35,15 @@ jobs:
         id: diff
         working-directory: ./public
         run: |
-          echo '::set-output name=changes::none'
-          #          if [[ "$(git status --porcelain)" != "" ]]
-          #          then
-          #            echo '::set-output name=changes::none'
-          #          else
-          #            echo '::set-output name=changes::none'
-          #          fi
+          if [[ "$(git status --porcelain)" != "" ]]
+          then
+            echo '::set-output name=changes::none'
+          else
+            echo '::set-output name=changes::none'
+          fi
       - name: Commit changes to gh-pages branch
         working-directory: ./public
-        if: steps.diff.changes == 'none'
+        if: steps.diff.outputs.changes == 'none'
         # TODO perhaps reuse the commit message from the original commit
         run: |
           git add --all
