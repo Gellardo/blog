@@ -4,7 +4,7 @@ date: 2020-07-02T21:52:04+02:00
 tags: [rust,wasm]
 ---
 
-I have read a lot about how Wasm is great for porting non-JS languages into the browser and maybe even into a general Lambda runtime.
+I read a lot about how Wasm is great for porting non-JS languages into the browser and maybe even into a general Lambda runtime.
 Also better security and ability to compile libraries into Wasm and use them in other languages.
 So I wanted to try it and document my experience using Rust+Wasm to build Game of Life using Wasm.
 
