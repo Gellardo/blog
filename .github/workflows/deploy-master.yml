@@ -35,15 +35,10 @@ jobs:
         id: diff
         working-directory: ./public
         run: |
-          if git diff-index --name-only HEAD
-          then
             echo '::set-output name=changes::none'
-          else
-            echo '::set-output name=changes::some'
-          fi
       - name: Commit changes to gh-pages branch
         working-directory: ./public
-        if: steps.diff.changes != 'none'
+        if: steps.diff.changes == 'none'
         # TODO perhaps reuse the commit message from the original commit
         run: |
           git add --all
