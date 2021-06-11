@@ -1,1 +1,4 @@
+# generated files, should only be committed on the corresponding branch
 public/
+# cached files?
+resources/
