@@ -35,12 +35,13 @@ jobs:
         id: diff
         working-directory: ./public
         run: |
-          if [[ "$(git status --porcelain)" != "" ]]
-          then
-            echo '::set-output name=changes::none'
-          else
-            echo '::set-output name=changes::none'
-          fi
+          echo '::set-output name=changes::none'
+          #          if [[ "$(git status --porcelain)" != "" ]]
+          #          then
+          #            echo '::set-output name=changes::none'
+          #          else
+          #            echo '::set-output name=changes::none'
+          #          fi
       - name: Commit changes to gh-pages branch
         working-directory: ./public
         if: steps.diff.changes == 'none'
