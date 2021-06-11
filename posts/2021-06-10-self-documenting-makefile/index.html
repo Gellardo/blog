@@ -8,9 +8,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
   <title>Self-Documenting Makefile - Frank&#39;s Blog</title>
-  <meta name="description" content="A short one i really liked and I want to document for future-me: Self-documenting Makefiles. Just add a new help target and now you can comment all targets by using ## &lt;comment&gt; after the prerequisites.
-The displayed help is generated on the fly so just keep the documentation updated right next to the scripting and enjoy a nicely formatted help for all the important make-targets.
-clean: ## clean up leftover files 	@echo &#39;removing files&#39; # will not be included in the help output internal: some-file @echo &#39;doing some internal, not to be called manually things&#39; .">
+  <meta name="description" content="A short one i really liked and I want to document for future-me:
+Self-documenting Makefiles.
+Just add a new help target and now you can comment all targets by using ## &lt;comment&gt; after the prerequisites.
+Having to remembering which targets are available in each project (and what they do) is not ideal and I have not used them enough to standardize on a certain naming.
+Enter: a short article about self-documenting Makefiles.">
   <meta name="author" content="Frank Schmidt"/><script type="application/ld+json">
 {
     "@context": "http://schema.org",
@@ -59,9 +61,9 @@ clean: ## clean up leftover files 	@echo &#39;removing files&#39; # will not be 
     "name" : "Frank Schmidt"
   },
   "headline": "Self-Documenting Makefile",
-  "description" : "A short one i really liked and I want to document for future-me: Self-documenting Makefiles. Just add a new help target and now you can comment all targets by using ## \x26lt;comment\x26gt; after the prerequisites.\nThe displayed help is generated on the fly so just keep the documentation updated right next to the scripting and enjoy a nicely formatted help for all the important make-targets.\nclean: ## clean up leftover files \t@echo \x26#39;removing files\x26#39; # will not be included in the help output internal: some-file @echo \x26#39;doing some internal, not to be called manually things\x26#39; .",
+  "description" : "A short one i really liked and I want to document for future-me: Self-documenting Makefiles. Just add a new help target and now you can comment all targets by using ## \x26lt;comment\x26gt; after the prerequisites.\nHaving to remembering which targets are available in each project (and what they do) is not ideal and I have not used them enough to standardize on a certain naming. Enter: a short article about self-documenting Makefiles.\n",
   "inLanguage" : "en",
-  "wordCount":  137 ,
+  "wordCount":  328 ,
   "datePublished" : "2021-06-10T16:07:25",
   "dateModified" : "2021-06-10T16:07:25",
   "image" : "https:\/\/gellardo.github.io\/blog\/",
@@ -81,15 +83,19 @@ clean: ## clean up leftover files 	@echo &#39;removing files&#39; # will not be 
 </script>
 
 <meta property="og:title" content="Self-Documenting Makefile" />
-<meta property="og:description" content="A short one i really liked and I want to document for future-me: Self-documenting Makefiles. Just add a new help target and now you can comment all targets by using ## &lt;comment&gt; after the prerequisites.
-The displayed help is generated on the fly so just keep the documentation updated right next to the scripting and enjoy a nicely formatted help for all the important make-targets.
-clean: ## clean up leftover files 	@echo &#39;removing files&#39; # will not be included in the help output internal: some-file @echo &#39;doing some internal, not to be called manually things&#39; .">
+<meta property="og:description" content="A short one i really liked and I want to document for future-me:
+Self-documenting Makefiles.
+Just add a new help target and now you can comment all targets by using ## &lt;comment&gt; after the prerequisites.
+Having to remembering which targets are available in each project (and what they do) is not ideal and I have not used them enough to standardize on a certain naming.
+Enter: a short article about self-documenting Makefiles.">
 <meta property="og:url" content="https://gellardo.github.io/blog/posts/2021-06-10-self-documenting-makefile/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Frank&#39;s Blog" />
 
   <meta name="twitter:title" content="Self-Documenting Makefile" />
-  <meta name="twitter:description" content="A short one i really liked and I want to document for future-me: Self-documenting Makefiles. Just add a new help target and now you can comment all targets by using ## &lt;comment&gt; after the …">
+  <meta name="twitter:description" content="A short one i really liked and I want to document for future-me:
+Self-documenting Makefiles.
+Just add a new help target and now you can comment all targets by using ## &lt;comment&gt; after the …">
   <meta name="twitter:card" content="summary" />
   <meta name="generator" content="Hugo 0.68.3" />
   <link rel="alternate" href="https://gellardo.github.io/blog/index.xml" type="application/rss+xml" title="Frank&#39;s Blog"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
@@ -241,7 +247,21 @@ clean: ## clean up leftover files 	@echo &#39;removing files&#39; # will not be 
         <p>A short one i really liked and I want to document for future-me:
 <a href="https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html">Self-documenting <code>Makefile</code>s</a>.
 Just add a new <code>help</code> target and now you can comment all targets by using <code>## &lt;comment&gt;</code> after the prerequisites.</p>
-<p>The displayed help is generated on the fly so just keep the documentation updated right next to the scripting and enjoy a nicely formatted help for all the important <code>make</code>-targets.</p>
+<p>Having to remembering which targets are available in each project (and what they do) is not ideal and I have not used them enough to standardize on a certain naming.
+Enter: a short article about <a href="https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html">self-documenting Makefiles</a>.</p>
+<!-- raw HTML omitted -->
+<p>I really liked the idea and want to document it for future-me:
+Makefiles can get big and cluncky quick and soon you are going to need some documentation about which target is doing what.
+So either put that information into the <code>Readme.md</code> or&hellip; just add a new target that pulls the information directly from the <code>Makefile</code>.</p>
+<p>Extracting the information from the Makefile itself has several advantages:</p>
+<ol>
+<li>The Makefile is self-contained and does not need additional documentation.</li>
+<li>Keeping the documentation close to the actual code makes it easy to (remember to) update it.</li>
+</ol>
+<p>The implementation only needs an additional target, e.g. <code>help</code> that greps over the Makefile and extracts all targets which have a <code>## &lt;COMMENT&gt;</code> after the prerequisites.
+Some <code>awk</code> shenanigans to pretty print the result and it is done.
+Bonus points for setting <code>help</code> as the <code>.DEFAULT_GOAL</code> to run it if <code>make</code> is called without any arguments.</p>
+<p>Example:</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-make" data-lang="make"><span style="color:#900;font-weight:bold">clean</span><span style="font-weight:bold">:</span> <span style="color:#998;font-style:italic">## clean up leftover files
 </span><span style="color:#998;font-style:italic"></span>	@echo <span style="color:#b84">&#39;removing files&#39;</span>
 
@@ -253,7 +273,10 @@ Just add a new <code>help</code> target and now you can comment all targets by u
 <span style="color:#900;font-weight:bold">.PHONY</span><span style="font-weight:bold">:</span> help
 <span style="color:#900;font-weight:bold">help</span><span style="font-weight:bold">:</span> <span style="color:#998;font-style:italic">## prints all targets followed by a &#39;## Comment&#39; indicating they can be used in a CLI
 </span><span style="color:#998;font-style:italic"></span>	@grep -E <span style="color:#b84">&#39;^[a-zA-Z_-]+:.*?## .*$$&#39;</span> <span style="font-weight:bold">$(</span>MAKEFILE_LIST<span style="font-weight:bold">)</span> | sort | awk <span style="color:#b84">&#39;BEGIN {FS = &#34;:.*?## &#34;}; {printf &#34;\033[36m%-20s\033[0m %s\n&#34;, $$1, $$2}&#39;</span>
-</code></pre></div>
+</code></pre></div><div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">% make
+clean                clean up leftover files
+<span style="color:#999">help</span>                 Comment<span style="color:#a61717;background-color:#e3d2d2">&#39;</span> indicating they can be used in a CLI
+</code></pre></div><p><strong>TIP</strong>:Only use <code>##</code> as the seperator between prerequisites and comment, otherwise stuff like in the example happens ;)</p>
 
         
           <div class="blog-tags">

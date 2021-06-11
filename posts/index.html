@@ -213,9 +213,11 @@
     </p>
     <div class="post-entry">
         
-        A short one i really liked and I want to document for future-me: Self-documenting Makefiles. Just add a new help target and now you can comment all targets by using ## &lt;comment&gt; after the prerequisites.
-The displayed help is generated on the fly so just keep the documentation updated right next to the scripting and enjoy a nicely formatted help for all the important make-targets.
-clean: ## clean up leftover files 	@echo &#39;removing files&#39; # will not be included in the help output internal: some-file @echo &#39;doing some internal, not to be called manually things&#39; .
+        <p>A short one i really liked and I want to document for future-me:
+<a href="https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html">Self-documenting <code>Makefile</code>s</a>.
+Just add a new <code>help</code> target and now you can comment all targets by using <code>## &lt;comment&gt;</code> after the prerequisites.</p>
+<p>Having to remembering which targets are available in each project (and what they do) is not ideal and I have not used them enough to standardize on a certain naming.
+Enter: a short article about <a href="https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html">self-documenting Makefiles</a>.</p>
         <a href="https://gellardo.github.io/blog/posts/2021-06-10-self-documenting-makefile/" class="post-read-more">[Read More]</a>
         
     </div>

@@ -17,9 +17,11 @@
       <pubDate>Thu, 10 Jun 2021 16:07:25 +0200</pubDate>
       
       <guid>https://gellardo.github.io/blog/posts/2021-06-10-self-documenting-makefile/</guid>
-      <description>A short one i really liked and I want to document for future-me: Self-documenting Makefiles. Just add a new help target and now you can comment all targets by using ## &amp;lt;comment&amp;gt; after the prerequisites.
-The displayed help is generated on the fly so just keep the documentation updated right next to the scripting and enjoy a nicely formatted help for all the important make-targets.
-clean: ## clean up leftover files 	@echo &amp;#39;removing files&amp;#39; # will not be included in the help output internal: some-file @echo &amp;#39;doing some internal, not to be called manually things&amp;#39; .</description>
+      <description>&lt;p&gt;A short one i really liked and I want to document for future-me:
+&lt;a href=&#34;https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html&#34;&gt;Self-documenting &lt;code&gt;Makefile&lt;/code&gt;s&lt;/a&gt;.
+Just add a new &lt;code&gt;help&lt;/code&gt; target and now you can comment all targets by using &lt;code&gt;## &amp;lt;comment&amp;gt;&lt;/code&gt; after the prerequisites.&lt;/p&gt;
+&lt;p&gt;Having to remembering which targets are available in each project (and what they do) is not ideal and I have not used them enough to standardize on a certain naming.
+Enter: a short article about &lt;a href=&#34;https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html&#34;&gt;self-documenting Makefiles&lt;/a&gt;.&lt;/p&gt;</description>
     </item>
     
   </channel>
