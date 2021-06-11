@@ -30,19 +30,23 @@ jobs:
       - name: Build the site
         run: hugo version && hugo
 
+       # Hugo builds to `./public` by default, which is where the gh-branch is checked out to
       - name: Check for changes
         id: diff
         working-directory: ./public
         run: |
-          git add --all
-          git diff
-          echo '::set-output name=changes::none'
-        # Hugo builds to `./public` by default, which is where the gh-branch is checked out to
+          if git diff-index --name-only HEAD
+          then
+            echo '::set-output name=changes::none'
+          else
+            echo '::set-output name=changes::some'
+          fi
       - name: Commit changes to gh-pages branch
         working-directory: ./public
         if: steps.diff.changes != 'none'
         # TODO perhaps reuse the commit message from the original commit
         run: |
+          git add --all
           git config user.name "GitHub Actions"
           git config user.email "<>"
           git add --all && git commit -m "Update blog" && git push
