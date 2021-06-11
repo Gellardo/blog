@@ -12,7 +12,9 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
+    outputs:
+      changes:
+        description: "'none' if the generated site has no changes"
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
@@ -31,11 +33,19 @@ jobs:
       - name: Build the site
         run: hugo version && hugo
 
+      - name: Check for changes
+        id: diff
+        working-directory: ./public
+        run: |
+          git add --all
+          git diff
+          echo '::set-output name=changes::none'
         # Hugo builds to `./public` by default, which is where the gh-branch is checked out to
       - name: Commit changes to gh-pages branch
+        working-directory: ./public
+        if: steps.diff.changes != 'none'
         # TODO perhaps reuse the commit message from the original commit
         run: |
-          cd public
           git config user.name "GitHub Actions"
           git config user.email "<>"
           git add --all && git commit -m "Update blog" && git push
