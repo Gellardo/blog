@@ -12,9 +12,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    outputs:
-      changes:
-        description: "'none' if the generated site has no changes"
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
