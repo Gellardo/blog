@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Playing With Rust and Wasm - Frank&#39;s Blog</title>
+  <meta name="description" content="I have read a lot about how Wasm is great for porting non-JS languages into the browser and maybe even into a general Lambda runtime. Also better security and ability to compile libraries into Wasm and use them in other languages. So I wanted to try it and document my experience using Rust&#43;Wasm to build Game of Life using Wasm.
+TLDR: If you want to learn a lot more than I can cover here, read the official rust&#43;wasm introduction instead of watching me stumbling around here.">
+  <meta name="author" content="Frank Schmidt"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "Frank\x27s Blog",
+    
+    "url": "https:\/\/gellardo.github.io\/blog\/"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/gellardo.github.io\/blog\/"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/gellardo.github.io\/blog\/",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/gellardo.github.io\/blog\/posts\/2020-07-02-playing-with-rust-and-wasm\/",
+          "name": "Playing with rust and wasm"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "Frank Schmidt"
+  },
+  "headline": "Playing With Rust and Wasm",
+  "description" : "I have read a lot about how Wasm is great for porting non-JS languages into the browser and maybe even into a general Lambda runtime. Also better security and ability to compile libraries into Wasm and use them in other languages. So I wanted to try it and document my experience using Rust\x2bWasm to build Game of Life using Wasm.\nTLDR: If you want to learn a lot more than I can cover here, read the official rust\x2bwasm introduction instead of watching me stumbling around here.",
+  "inLanguage" : "en",
+  "wordCount":  2430 ,
+  "datePublished" : "2020-07-02T21:52:04",
+  "dateModified" : "2020-07-02T21:52:04",
+  "image" : "https:\/\/gellardo.github.io\/blog\/",
+  "keywords" : [ "rust, wasm" ],
+  "mainEntityOfPage" : "https:\/\/gellardo.github.io\/blog\/posts\/2020-07-02-playing-with-rust-and-wasm\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/gellardo.github.io\/blog\/",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/gellardo.github.io\/blog\/",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="Playing With Rust and Wasm" />
+<meta property="og:description" content="I have read a lot about how Wasm is great for porting non-JS languages into the browser and maybe even into a general Lambda runtime. Also better security and ability to compile libraries into Wasm and use them in other languages. So I wanted to try it and document my experience using Rust&#43;Wasm to build Game of Life using Wasm.
+TLDR: If you want to learn a lot more than I can cover here, read the official rust&#43;wasm introduction instead of watching me stumbling around here.">
+<meta property="og:url" content="https://gellardo.github.io/blog/posts/2020-07-02-playing-with-rust-and-wasm/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Frank&#39;s Blog" />
+
+  <meta name="twitter:title" content="Playing With Rust and Wasm" />
+  <meta name="twitter:description" content="I have read a lot about how Wasm is great for porting non-JS languages into the browser and maybe even into a general Lambda runtime. Also better security and ability to compile libraries into Wasm …">
+  <meta name="twitter:card" content="summary" />
+  <meta name="generator" content="Hugo 0.68.3" />
+  <link rel="alternate" href="https://gellardo.github.io/blog/index.xml" type="application/rss+xml" title="Frank&#39;s Blog"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://gellardo.github.io/blog/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://gellardo.github.io/blog/css/highlight.min.css" /><link rel="stylesheet" href="https://gellardo.github.io/blog/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://gellardo.github.io/blog/">Frank&#39;s Blog</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="Blog" href="/blog/">Blog</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="About" href="/blog/pages/about/">About</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Tags" href="/blog/tags">Tags</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="posts-heading">
+              
+                <h1>Playing With Rust and Wasm</h1>
+              
+              
+                <hr class="small">
+              
+              
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <p>I have read a lot about how Wasm is great for porting non-JS languages into the browser and maybe even into a general Lambda runtime.
+Also better security and ability to compile libraries into Wasm and use them in other languages.
+So I wanted to try it and document my experience using Rust+Wasm to build Game of Life using Wasm.</p>
+<p><strong>TLDR:</strong> If you want to learn a lot more than I can cover here, read the <a href="https://rustwasm.github.io/docs/book/introduction.html">official rust+wasm introduction</a> instead of watching me stumbling around <a href="https://github.com/Gellardo/wasm-game-of-life">here</a>.</p>
+<h2 id="wasm-rust">Wasm? Rust?</h2>
+<p>Let&rsquo;s start with my technology choices:</p>
+<blockquote>
+<p>WebAssembly (abbreviated Wasm) is a binary instruction format for a stack-based virtual machine.
+[<a href="https://webassembly.org/">Wasm homepage</a>]</p>
+</blockquote>
+<p>So Wasm started out to be like binary assembly for the browser, e.g. allowing languages other than JS to be compiled to Wasm and run in the browser.
+Wasm has built-in safety guarantees like memory-safety and sandboxed execution, while also having a strong integration with the JS VM of the browser, allowing calls from and to regular JS.
+It is designed with a focus on modularity, providing platform specific functionality (time, JS access, file access, &hellip;) only through modules.
+Also there are projects supporting non-web platforms like node.js and <a href="https://wasi.dev/">wasi</a> that allow using Wasm outside of the browser.</p>
+<p>Wasm&rsquo;s main selling point is speeding up compute-heavy tasks in the browser and using it to allow running any code safely almost anywhere.</p>
+<p><a href="https://www.rust-lang.org/">Rust</a> is a systems programming language with a focus on safety and performance.
+Its unique borrow-checker/data ownership rules also prevent data races and promise thread-safety at compile time.
+The Rust community is also pretty active in the Wasm space, resulting in some nice tooling that I can just pick up and use.</p>
+<p>Enough with the introductions, let&rsquo;s get started.</p>
+<h2 id="bootstrapping-a-rust-game-of-life-implementation">Bootstrapping a Rust Game of Life implementation</h2>
+<p>Quick recap:
+Conway&rsquo;s Game of Life is a game/simulation of a universe of cells that live or die depending on their neighbors.
+Each tick, if the cell was previously alive, it will stay alive if 2-3 of its neighbors were alive.
+If it was dead, it needs exactly 3 of it&rsquo;s neighbors to be alive.
+Otherwise the cell will be dead.</p>
+<p>These simple rules can produce complex behavior like this &ldquo;glider gun&rdquo; (<a href="https://commons.wikimedia.org/wiki/File:Gospers_glider_gun.gif">source</a>):
+<img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Gospers_glider_gun.gif" alt="glider gun"></p>
+<h3 id="implementing-the-simulation">Implementing the simulation</h3>
+<p>Rust organizes code into crates which can contain further modules.
+To bootstrap a crate for the game logic to reside in, I used one of the official templates.
+Using <code>npm init rust-webpack</code> (<a href="https://github.com/rustwasm/rust-webpack-template">source</a>), I have a starting point without having to fiddle with npm, webpack or cargo.
+I will postphone going into the template details until the simulation logic is running.</p>
+<p>A data structure is necessary to hold the state of the simulation&rsquo;s universe.
+I&rsquo;m using a 2-dimensional array and store the current and last state, switching between them to avoid allocations.
+The <code>#[wasm_bindgen]</code> annotation exposes the struct in the Wasm module.
+The build would fail if an exposed function or type includes an unexposed type as a field or in the signature.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="font-weight:bold">const</span><span style="color:#bbb"> </span>SIZE: <span style="color:#458;font-weight:bold">usize</span> <span style="font-weight:bold">=</span><span style="color:#bbb"> </span><span style="color:#099">16</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="font-weight:bold">type</span> <span style="color:#458;font-weight:bold">Universe</span><span style="color:#bbb"> </span><span style="font-weight:bold">=</span><span style="color:#bbb"> </span>[[<span style="color:#458;font-weight:bold">u8</span>;<span style="color:#bbb"> </span>SIZE];<span style="color:#bbb"> </span>SIZE];<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#999;font-weight:bold">#[wasm_bindgen]</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#999;font-weight:bold">#[derive(Debug)]</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="font-weight:bold">struct</span> <span style="color:#458;font-weight:bold">GameOfLife</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>state: <span style="color:#458;font-weight:bold">Universe</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>last: <span style="color:#458;font-weight:bold">Universe</span>,<span style="color:#bbb">
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span></code></pre></div><p>Now I can implement a single tick of the universe by exchanging the current and last state and overwriting the now current state.
+Since the universe has a limited size, I have to choose how to handle the borders:
+Either treat cells outside the border as dead or wrap around to the other side, basically creating a torus.
+I liked the idea of an endless glider, so I went with the wrapping option.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#999;font-weight:bold">#[wasm_bindgen]</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="font-weight:bold">impl</span><span style="color:#bbb"> </span>GameOfLife<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="font-weight:bold">fn</span> <span style="color:#900;font-weight:bold">tick</span>(<span style="font-weight:bold">&amp;</span><span style="font-weight:bold">mut</span><span style="color:#bbb"> </span>self)<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="font-weight:bold">let</span><span style="color:#bbb"> </span>tmp<span style="color:#bbb"> </span><span style="font-weight:bold">=</span><span style="color:#bbb"> </span>self.last;<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>self.last<span style="color:#bbb"> </span><span style="font-weight:bold">=</span><span style="color:#bbb"> </span>self.state;<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>self.state<span style="color:#bbb"> </span><span style="font-weight:bold">=</span><span style="color:#bbb"> </span>tmp;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="font-weight:bold">for</span><span style="color:#bbb"> </span>x<span style="color:#bbb"> </span><span style="font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#099">0</span>..self.last.len()<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="font-weight:bold">for</span><span style="color:#bbb"> </span>y<span style="color:#bbb"> </span><span style="font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#099">0</span>..self.last[x].len()<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">                </span>self.state[x][y]<span style="color:#bbb"> </span><span style="font-weight:bold">=</span><span style="color:#bbb"> </span>Self::will_be_alive(self.last,<span style="color:#bbb"> </span>x,<span style="color:#bbb"> </span>y)<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>}<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>}<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>}<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="font-weight:bold">fn</span> <span style="color:#900;font-weight:bold">will_be_alive</span>(state: <span style="color:#458;font-weight:bold">Universe</span>,<span style="color:#bbb"> </span>x: <span style="color:#458;font-weight:bold">usize</span>,<span style="color:#bbb"> </span>y: <span style="color:#458;font-weight:bold">usize</span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#458;font-weight:bold">u8</span> {<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="font-weight:bold">let</span><span style="color:#bbb"> </span><span style="font-weight:bold">mut</span><span style="color:#bbb"> </span>alive_neighbors<span style="color:#bbb"> </span><span style="font-weight:bold">=</span><span style="color:#bbb"> </span><span style="color:#099">0</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#998;font-style:italic">// Rust makes sure that usize can&#39;t get negative.
+</span><span style="color:#998;font-style:italic"></span><span style="color:#bbb">        </span><span style="color:#998;font-style:italic">// So using addition and modulo is simpler than a bunch of casting.
+</span><span style="color:#998;font-style:italic"></span><span style="color:#bbb">        </span><span style="font-weight:bold">for</span><span style="color:#bbb"> </span>i<span style="color:#bbb"> </span><span style="font-weight:bold">in</span><span style="color:#bbb"> </span>SIZE<span style="color:#bbb"> </span><span style="font-weight:bold">-</span><span style="color:#bbb"> </span><span style="color:#099">1</span>..<span style="font-weight:bold">=</span>SIZE<span style="color:#bbb"> </span><span style="font-weight:bold">+</span><span style="color:#bbb"> </span><span style="color:#099">1</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="font-weight:bold">for</span><span style="color:#bbb"> </span>j<span style="color:#bbb"> </span><span style="font-weight:bold">in</span><span style="color:#bbb"> </span>SIZE<span style="color:#bbb"> </span><span style="font-weight:bold">-</span><span style="color:#bbb"> </span><span style="color:#099">1</span>..<span style="font-weight:bold">=</span>SIZE<span style="color:#bbb"> </span><span style="font-weight:bold">+</span><span style="color:#bbb"> </span><span style="color:#099">1</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">                </span><span style="font-weight:bold">if</span><span style="color:#bbb"> </span>i<span style="color:#bbb"> </span><span style="font-weight:bold">==</span><span style="color:#bbb"> </span>SIZE<span style="color:#bbb"> </span><span style="font-weight:bold">&amp;&amp;</span><span style="color:#bbb"> </span>j<span style="color:#bbb"> </span><span style="font-weight:bold">==</span><span style="color:#bbb"> </span>SIZE<span style="color:#bbb"> </span>{<span style="color:#bbb"> </span><span style="color:#998;font-style:italic">// don&#39; count self
+</span><span style="color:#998;font-style:italic"></span><span style="color:#bbb">                    </span><span style="font-weight:bold">continue</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">                </span>}<span style="color:#bbb">
+</span><span style="color:#bbb">                </span><span style="color:#998;font-style:italic">// turns into a wrapping universe
+</span><span style="color:#998;font-style:italic"></span><span style="color:#bbb">                </span><span style="font-weight:bold">let</span><span style="color:#bbb"> </span>x_i<span style="color:#bbb"> </span><span style="font-weight:bold">=</span><span style="color:#bbb"> </span>(x<span style="color:#bbb"> </span><span style="font-weight:bold">+</span><span style="color:#bbb"> </span>i)<span style="color:#bbb"> </span><span style="font-weight:bold">%</span><span style="color:#bbb"> </span>SIZE;<span style="color:#bbb">
+</span><span style="color:#bbb">                </span><span style="font-weight:bold">let</span><span style="color:#bbb"> </span>y_j<span style="color:#bbb"> </span><span style="font-weight:bold">=</span><span style="color:#bbb"> </span>(y<span style="color:#bbb"> </span><span style="font-weight:bold">+</span><span style="color:#bbb"> </span>j)<span style="color:#bbb"> </span><span style="font-weight:bold">%</span><span style="color:#bbb"> </span>SIZE;<span style="color:#bbb">
+</span><span style="color:#bbb">                </span>alive_neighbors<span style="color:#bbb"> </span><span style="font-weight:bold">+=</span><span style="color:#bbb"> </span>state[x_i][y_j];<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>}<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>}<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="font-weight:bold">return</span><span style="color:#bbb"> </span><span style="font-weight:bold">match</span><span style="color:#bbb"> </span>(state[x][y],<span style="color:#bbb"> </span>alive_neighbors)<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>(<span style="color:#099">0</span>,<span style="color:#bbb"> </span><span style="color:#099">3</span>)<span style="color:#bbb"> </span><span style="font-weight:bold">|</span><span style="color:#bbb"> </span>(<span style="color:#099">1</span>,<span style="color:#bbb"> </span><span style="color:#099">2</span>)<span style="color:#bbb"> </span><span style="font-weight:bold">|</span><span style="color:#bbb"> </span>(<span style="color:#099">1</span>,<span style="color:#bbb"> </span><span style="color:#099">3</span>)<span style="color:#bbb"> </span><span style="font-weight:bold">=&gt;</span><span style="color:#bbb"> </span><span style="color:#099">1</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>_<span style="color:#bbb"> </span><span style="font-weight:bold">=&gt;</span><span style="color:#bbb"> </span><span style="color:#099">0</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>};<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>}<span style="color:#bbb">
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span></code></pre></div><p>Add a method to translate the <code>Universe</code> into a <code>String</code> for easy pretty printing in JS.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#999;font-weight:bold">#[wasm_bindgen]</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="font-weight:bold">impl</span><span style="color:#bbb"> </span>GameOfLife<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="font-weight:bold">fn</span> <span style="color:#900;font-weight:bold">prettier_state</span>(<span style="font-weight:bold">&amp;</span>self)<span style="color:#bbb"> </span>-&gt; <span style="color:#999">String</span> {<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="font-weight:bold">let</span><span style="color:#bbb"> </span><span style="font-weight:bold">mut</span><span style="color:#bbb"> </span>s<span style="color:#bbb"> </span><span style="font-weight:bold">=</span><span style="color:#bbb"> </span><span style="color:#999">String</span>::new();<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="font-weight:bold">for</span><span style="color:#bbb"> </span>line<span style="color:#bbb"> </span><span style="font-weight:bold">in</span><span style="color:#bbb"> </span><span style="font-weight:bold">&amp;</span>self.state<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="font-weight:bold">for</span><span style="color:#bbb"> </span>cell<span style="color:#bbb"> </span><span style="font-weight:bold">in</span><span style="color:#bbb"> </span>line<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">                </span>s<span style="color:#bbb"> </span><span style="font-weight:bold">+=</span><span style="color:#bbb"> </span><span style="font-weight:bold">match</span><span style="color:#bbb"> </span>cell<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">                    </span><span style="color:#099">1</span><span style="color:#bbb"> </span><span style="font-weight:bold">=&gt;</span><span style="color:#bbb"> </span><span style="color:#b84">&#34;█&#34;</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">                    </span>_<span style="color:#bbb"> </span><span style="font-weight:bold">=&gt;</span><span style="color:#bbb"> </span><span style="color:#b84">&#34;░&#34;</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">                </span>}<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>}<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>s<span style="color:#bbb"> </span><span style="font-weight:bold">+=</span><span style="color:#bbb"> </span><span style="color:#b84">&#34;\n&#34;</span><span style="color:#bbb">
+</span><span style="color:#bbb">        </span>}<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>s<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>}<span style="color:#bbb">
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span></code></pre></div><p>As a side note, it is really nice that Rust handles the glue code for moving data types across the JS-Wasm border.
+Otherwise, the only data-sharing option is to write your own serializer/deserializer for the shared memory.
+The Wasm API only has basic value types, so you end up converting to bytes and back on both sides.
+(And handling pointers into the Wasm memory).</p>
+<p>And generate the glider in the universe.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#999;font-weight:bold">#[wasm_bindgen]</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="font-weight:bold">fn</span> <span style="color:#900;font-weight:bold">game</span>()<span style="color:#bbb"> </span>-&gt; <span style="color:#458;font-weight:bold">GameOfLife</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="font-weight:bold">let</span><span style="color:#bbb"> </span><span style="font-weight:bold">mut</span><span style="color:#bbb"> </span>game<span style="color:#bbb"> </span><span style="font-weight:bold">=</span><span style="color:#bbb"> </span>gameoflife::GameOfLife::new();<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>game.set_alive(<span style="color:#099">1</span>,<span style="color:#bbb"> </span><span style="color:#099">2</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>game.set_alive(<span style="color:#099">2</span>,<span style="color:#bbb"> </span><span style="color:#099">3</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>game.set_alive(<span style="color:#099">3</span>,<span style="color:#bbb"> </span><span style="color:#099">1</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>game.set_alive(<span style="color:#099">3</span>,<span style="color:#bbb"> </span><span style="color:#099">2</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>game.set_alive(<span style="color:#099">3</span>,<span style="color:#bbb"> </span><span style="color:#099">3</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>game<span style="color:#bbb">
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span></code></pre></div><p>Notice that all those functions are annotated with <code>#[wasm_bindgen]</code> so that they can be called from JS later on.
+Lastly, the template provides a function with <code>#[wasm_bindgen(start)]</code> that is run once the module is imported.
+In there, the game can be set up and the state is printed after each tick to <code>console.log()</code></p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#999;font-weight:bold">#[wasm_bindgen(start)]</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="font-weight:bold">fn</span> <span style="color:#900;font-weight:bold">main_js</span>()<span style="color:#bbb"> </span>-&gt; <span style="color:#999">Result</span><span style="font-weight:bold">&lt;</span>(),<span style="color:#bbb"> </span>JsValue<span style="font-weight:bold">&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="font-weight:bold">let</span><span style="color:#bbb"> </span><span style="font-weight:bold">mut</span><span style="color:#bbb"> </span>game<span style="color:#bbb"> </span><span style="font-weight:bold">=</span><span style="color:#bbb"> </span>game();<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="font-weight:bold">for</span><span style="color:#bbb"> </span>i<span style="color:#bbb"> </span><span style="font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#099">0</span>..<span style="color:#099">100</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>game.tick();<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>console::log_1(<span style="font-weight:bold">&amp;</span>JsValue::from_str(<span style="font-weight:bold">&amp;</span>game.prettier_state()));<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>}<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#999">Ok</span>(())<span style="color:#bbb">
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span></code></pre></div><p>And that&rsquo;s it for the simulation code.</p>
+<h3 id="looking-into-the-template">Looking into the template</h3>
+<p>Since the simulation works, let&rsquo;s move on to my (shallow) understanding of what is happening behind the scenes of the template.</p>
+<p>The most important part is the inclusion of a webpack plugin for <a href="https://github.com/rustwasm/wasm-pack"><code>wasm-pack</code></a>.
+The plugin automatically (re-)generates the Wasm module and the JS glue code (with TypeScript type information) to use it comfortably.
+Multiple files are created for this purpose:</p>
+<ul>
+<li><code>index_bg.d.wasm</code>: the Wasm module created from the crate</li>
+<li><code>index_bg.js</code>: JS glue code to allow access to WASM functions and values without having to resort to the low level API and memory access for information exchange.</li>
+<li><code>index.js</code>: Combines the other files into a single import and runs static setup functions (e.g. functions with <code>#[wasm_bindgen(start)]</code>).
+The template included a single line <code>index.js</code> which performs the import for the served web page.</li>
+</ul>
+<p>Since wasm-pack handles all of the compilation, what else is there?
+The Rust crate is using the library type <code>cdyn</code> (C dynamic library) which hints that interactions use the C ABI (or at least some step of the compilation pipeline does).</p>
+<p>Wasm is highly modular, and appropriately there are a number crates that provide necessary and/or nice-to-have bindings for the web platform.
+<code>web_sys</code> is an auto-generated crate that translates all browser JS functions to Rust functions.
+This includes e.g. accessing elements in the DOM or using the browser console for printing.
+(Since there is no <code>stdout</code> in the browser, <code>println!</code> is not possible).
+There is also the crate <code>js_sys</code> for pure JS bindings.</p>
+<p>The crate <code>console_error_panic_hook</code> improves the development process by changing the output of runtime panics.
+By default, the console output is rather cryptic.
+The crate adds enough context information about the stack trace, source file and line numbers to make debugging panics much easier.
+And with some feature flag magic, it can be included only for development builds to reduce the Wasm file size of the production build.</p>
+<p>I haven&rsquo;t really used the last crate, but the initial tests looked interesting:
+<code>wasm-bindgen-test</code> allows you to specify tests that run in a headless browsers.
+This could be quite helpful for writing end-to-end tests of the Wasm functionality but I did not have the time to play with it.
+<em>Yet</em>.</p>
+<h2 id="bring-the-game-to-life-in-the-browser">Bring the game to life in the browser</h2>
+<p>The Rust crate already simulates the game in the console.
+But nobody looks there, so let&rsquo;s add some nicer visuals.</p>
+<h3 id="handing-strings-from-wasm-to-js">Handing Strings from Wasm to JS</h3>
+<p>The easiest way to do that is to just move the printing from the console output to a text element on the site.
+So I write a minimal amount of JS, that takes the output of <code>game.prettier_state()</code> and sets the <code>textContent</code> of a <code>&lt;pre&gt;</code> element.
+Wrap that in a closure and recursively call <code>requestAnimationFrame(closure)</code> to run the simulation at a stable 60 FPS.
+Now I am rendering on a poor man&rsquo;s canvas!</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="font-weight:bold">function</span> game(wasm) {
+    <span style="font-weight:bold">const</span> gameElement <span style="font-weight:bold">=</span> <span style="color:#999">document</span>.getElementById(<span style="color:#b84">&#34;game&#34;</span>)
+    <span style="font-weight:bold">const</span> g <span style="font-weight:bold">=</span> wasm.game()
+    <span style="font-weight:bold">const</span> renderloop <span style="font-weight:bold">=</span> async () =&gt; {
+        gameElement.textContent <span style="font-weight:bold">=</span> g.prettier_state()
+        g.tick()
+        await <span style="font-weight:bold">new</span> <span style="color:#999">Promise</span>(r =&gt; setTimeout(r, <span style="color:#099">100</span>));
+        requestAnimationFrame(renderloop)
+    }
+    requestAnimationFrame(renderloop)
+}
+</code></pre></div><p>Now I just skipped a minor and a major thing:</p>
+<ol>
+<li>60 FPS (the goal of <code>requestAnimationFrame</code>) was to fast for my liking so I added a 100 ms sleep.</li>
+<li>Why does that function have the Wasm module as a parameter?</li>
+</ol>
+<p>Before answering the second observation, I need to say that I have very little experience with JS so I might have solved this the complicated way.
+By default, the template contains the expression <code>import(&quot;../pkg/index.js&quot;)</code> to include the Wasm module.
+This is an asynchronous import of that module (notice the parentheses) and it does not make the module available immediately like an usual import.
+My first try was to change that to a normal import statement, but it did not work:</p>
+<blockquote>
+<p>WebAssembly module is included in initial chunk.
+This is not allowed, because WebAssembly download and compilation must happen asynchronous.
+Add an async splitpoint (i. e. import()) somewhere between your entrypoint and the WebAssembly module</p>
+</blockquote>
+<p>Hmm, alright it seems that the <code>import()</code> is needed after all.
+So I took the way of least resistance (and future spaghetti code) and added a callback to the <code>import()</code> statement, which calls the function with the imported module.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="font-weight:bold">import</span>( <span style="color:#b84">&#34;../pkg/index.js&#34;</span> ).then(wasm =&gt; game(wasm)).<span style="font-weight:bold">catch</span>(console.error);
+</code></pre></div><p>Some more googling suggests, that this might be a <a href="https://github.com/webpack/webpack/issues/6615">limitation of webpack</a>.
+But it works for now and as long as I don&rsquo;t need to extend it, that&rsquo;s fine.</p>
+<h3 id="can-i-get-rid-of-manual-js-completely">Can I get rid of manual JS completely?</h3>
+<p>Most of the logic is written in Rust, but there is still some JS glue needed.
+So I tried to change that.</p>
+<p>First, I looked into setting <code>textContent</code> from Rust.
+There is a <code>Document</code> type in the <code>web-sys</code> crate, but the <a href="https://docs.rs/web-sys/0.3.39/i686-unknown-linux-gnu/web_sys/struct.Document.html">documentation</a> only tells me that it can create a new <code>Document</code>.
+As well as about 4000 other things, since it is auto-generated and has EVERY function the browser provides for the document.
+But I want the already existing <code>Document</code>, the same that JS provides by default.</p>
+<p>Off to see if anybody else had that problem and luckily, <a href="https://stackoverflow.com/questions/61635487/rust-wasm-how-to-access-htmldocument-from-web-sys">someone did</a>:
+By going through <code>Window</code> to <code>Document</code>, I could finally use <code>element_by_id</code> to get the correct element and set its content.
+One interesting side note: pretty much every feature of <code>web-sys</code> is behind a feature-flag to reduce the footprint of the dependency, unless you actually need certain functionality.
+And the docs just tell you which ones you need. Neat.</p>
+<p>Now only run <code>tick()</code> and <code>setText</code> in an endless loop and it works.
+Or not: The text content was not updated and the page was not responding.
+Perhaps add some <code>sleep()</code> calls in the loop to yield control back to the browser?
+Well, since Wasm is strictly sandboxed, there is no access to a time source without a module provided by the runtime.</p>
+<p>So I tried to write the same <code>requestAnimationFrame</code> code with <code>setTimeout</code> as in JS.
+But that did not go well, since I lacked any understanding if/how to hand in functions from JS or use a Rust closures to be called by <code>requestAnimationFrame</code>.
+Having spent about 3-4 hours trying to figure out a solution, I decided to cut my losses and accept a minimal amount of JS.</p>
+<h2 id="its-really-performant-right">It&rsquo;s really performant, right?</h2>
+<p>Time to get a look at the performance of this solution.
+So I copy&amp;pasted the Rust code to JS and adjusted the syntax accordingly.
+As the benchmark, I use the same starting state and run it for 1000 ticks with each implementation.</p>
+<p>One thing to take into account is that the context switch between JS and Wasm might take some time.
+So there are 2 categories, one calling <code>tick()</code> multiple times from JS and one doing the iteration in Rust.</p>
+<p>Eagerly awaiting the first results:</p>
+<table>
+<thead>
+<tr>
+<th>JS</th>
+<th>Rust</th>
+<th>Rust with only one context switch</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>14ms</td>
+<td>1.7s</td>
+<td>1.6s</td>
+</tr>
+</tbody>
+</table>
+<p>Well, that&rsquo;s certainly not what I expected: 2 orders of magnitude slower!
+Let&rsquo;s see if I can find out more.</p>
+<h4 id="too-many-allocations">Too many allocations</h4>
+<p>One thing I did not talk about is that my original code had a bug, that Rust thankfully fixed for me.
+Instead of exchanging the arrays holding the last and the current state during tick, I only assigned <code>current</code> to <code>last</code>.
+That should result the <code>current</code> array is either sharing the same array with <code>last</code> or uninitialized.
+To go into the specifics why it still worked correctly is besides the point.
+Suffice to say Rust copied the array instead of moving/sharing it and therefore fixed my bug.</p>
+<p>But it also means, that for each tick, the Rust code copies the array (of arrays) once.
+Allocation is slow on normal architectures and it&rsquo;s the same here.
+So lets fix that:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-patch" data-lang="patch"><span style="color:#000;background-color:#dfd">+  let tmp = self.last;
+</span><span style="color:#000;background-color:#dfd"></span>   self.last = self.state;
+<span style="color:#000;background-color:#dfd">+  self.state = tmp;
+</span></code></pre></div><p>Alternatively, I also tried using <code>mem::swap</code> to directly swap the pointers.
+Both solutions did work, &hellip; sometimes:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>JS</th>
+<th>Rust</th>
+<th>Rust with only one context switch</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Before</td>
+<td>14ms</td>
+<td>1.7s</td>
+<td>1.6s</td>
+</tr>
+<tr>
+<td>Now (1)</td>
+<td></td>
+<td>270ms</td>
+<td>250ms</td>
+</tr>
+<tr>
+<td>Now (2)</td>
+<td></td>
+<td>1.7s</td>
+<td>1.6s</td>
+</tr>
+</tbody>
+</table>
+<h4 id="huh">Huh?</h4>
+<p>I&rsquo;m stumped at that point.
+The code explicitly says, I want to swap what each variable contains, but the compiler ignored it.
+And I could find no real pattern, when the &ldquo;correct&rdquo; interpretation was used.
+Sometimes the 3-way swap worked, sometime <code>mem::swap</code> did.
+Once the behavior changed, it took a few compiles to change again.
+Especially confusing was that I was only editing JS and HTML at the time it first occurred (trying to add a &ldquo;run benchmark&rdquo; button).
+<code>¯\_(ツ)_/¯</code></p>
+<p>Even in the best case, the code still runs an order of magnitude slower than JS.
+So I looked into the <a href="https://rustwasm.github.io/docs/book/introduction.html">official book</a> to see how their solution performed.
+One screenshot in the time profiling section shows that their ticks (with a larger universe) take about <code>1ms</code>.
+So improving my (best-case) code by another 2 orders of magnitude should be possible.
+But this post is long enough, so I&rsquo;ll keep performance tuning for a future post.</p>
+<p>Interesting side note:
+I just assumed, since I could create multiple game instances, that they would automatically be running in parallel.
+But when the benchmarks were running, the visualized simulation stopped.
+Even if I tried to import the module a second time using a separate <code>import()</code> statement.
+On the other hand, JS always runs single-threaded in the Browser, unless you use webworkers.
+So my assumption was flawed anyways.</p>
+<h2 id="whats-next">What&rsquo;s next</h2>
+<p>I will leave some topics open for future posts, because they either are not yet implemented or not researched enough.</p>
+<ol>
+<li>Optimize the performance of my implementation.
+This involves learning about the necessary tools, performance measurement and debugging and sounds like an interesting challenge.
+Wasm should be faster and I want to better understand why my implementation isn&rsquo;t.</li>
+<li>I want to try getting rid of the JS glue code again, just out of spite.
+Reading a <a href="https://rustwasm.github.io/2019/03/26/gloo-onion-layers.html">blogpost by Gloo</a>, a modular Wasm toolkit, I found solutions for all the unsolved problems I have encountered.</li>
+<li>Explore using <code>wasm-bindgen-test</code> for headless browser tests from Rust</li>
+</ol>
+<p>Thanks for reading!</p>
+<h2 id="links">Links</h2>
+<ul>
+<li><a href="https://rustwasm.github.io/docs/book/introduction.html">An official book which introduces rust+wasm</a></li>
+<li><a href="https://rustwasm.github.io/docs/wasm-bindgen/">Docs for wasm-bindgen</a></li>
+<li><a href="https://rustwasm.github.io/docs/wasm-pack/">Docs for wasm-pack</a></li>
+<li><a href="https://rustwasm.github.io/2019/03/26/gloo-onion-layers.html">Blogpost by Gloo</a></li>
+</ul>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://gellardo.github.io/blog//tags/rust/">rust</a>&nbsp;
+            
+              <a href="https://gellardo.github.io/blog//tags/wasm/">wasm</a>&nbsp;
+            
+          </div>
+        
+
+        
+
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://gellardo.github.io/blog/posts/2020-05-31-getting-hugo-to-run/" data-toggle="tooltip" data-placement="top" title="Getting Hugo to run">&larr; Previous Post</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="https://gellardo.github.io/blog/posts/2021-06-10-self-documenting-makefile/" data-toggle="tooltip" data-placement="top" title="Self-Documenting Makefile">Next Post &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+
+    </div>
+  </div>
+</div>
+
+      
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+                <a href="https://github.com/Gellardo" title="GitHub">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            <a href="" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              Frank Schmidt
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2021
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://gellardo.github.io/blog/">Frank&#39;s Blog</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="https://gohugo.io">Hugo v0.68.3</a> powered &nbsp;&bull;&nbsp; Theme <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> adapted from <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://gellardo.github.io/blog/js/main.js"></script>
+<script src="https://gellardo.github.io/blog/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://gellardo.github.io/blog/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+

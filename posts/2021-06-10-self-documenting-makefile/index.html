@@ -7,8 +7,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <title>Overview of all pages with the tag #blogging - Frank&#39;s Blog</title>
-  <meta name="description" content="Overview of all pages with the tag #blogging, such as: Getting Hugo to run">
+  <title>Self-Documenting Makefile - Frank&#39;s Blog</title>
+  <meta name="description" content="A short one i really liked and I want to document for future-me: Self-documenting Makefiles. Just add a new help target and now you can comment all targets by using ## &lt;comment&gt; after the prerequisites.
+The displayed help is generated on the fly so just keep the documentation updated right next to the scripting and enjoy a nicely formatted help for all the important make-targets.
+clean: ## clean up leftover files 	@echo &#39;removing files&#39; # will not be included in the help output internal: some-file @echo &#39;doing some internal, not to be called manually things&#39; .">
   <meta name="author" content="Frank Schmidt"/><script type="application/ld+json">
 {
     "@context": "http://schema.org",
@@ -29,13 +31,65 @@
   
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/gellardo.github.io\/blog\/",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/gellardo.github.io\/blog\/posts\/2021-06-10-self-documenting-makefile\/",
+          "name": "Self documenting makefile"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "Frank Schmidt"
+  },
+  "headline": "Self-Documenting Makefile",
+  "description" : "A short one i really liked and I want to document for future-me: Self-documenting Makefiles. Just add a new help target and now you can comment all targets by using ## \x26lt;comment\x26gt; after the prerequisites.\nThe displayed help is generated on the fly so just keep the documentation updated right next to the scripting and enjoy a nicely formatted help for all the important make-targets.\nclean: ## clean up leftover files \t@echo \x26#39;removing files\x26#39; # will not be included in the help output internal: some-file @echo \x26#39;doing some internal, not to be called manually things\x26#39; .",
+  "inLanguage" : "en",
+  "wordCount":  137 ,
+  "datePublished" : "2021-06-10T16:07:25",
+  "dateModified" : "2021-06-10T16:07:25",
+  "image" : "https:\/\/gellardo.github.io\/blog\/",
+  "keywords" : [ "shell" ],
+  "mainEntityOfPage" : "https:\/\/gellardo.github.io\/blog\/posts\/2021-06-10-self-documenting-makefile\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/gellardo.github.io\/blog\/",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/gellardo.github.io\/blog\/",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
 
-<meta property="og:title" content="blogging" />
-<meta property="og:url" content="https://gellardo.github.io/blog/tags/blogging/" />
+<meta property="og:title" content="Self-Documenting Makefile" />
+<meta property="og:description" content="A short one i really liked and I want to document for future-me: Self-documenting Makefiles. Just add a new help target and now you can comment all targets by using ## &lt;comment&gt; after the prerequisites.
+The displayed help is generated on the fly so just keep the documentation updated right next to the scripting and enjoy a nicely formatted help for all the important make-targets.
+clean: ## clean up leftover files 	@echo &#39;removing files&#39; # will not be included in the help output internal: some-file @echo &#39;doing some internal, not to be called manually things&#39; .">
+<meta property="og:url" content="https://gellardo.github.io/blog/posts/2021-06-10-self-documenting-makefile/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Frank&#39;s Blog" />
 
-  <meta name="twitter:title" content="blogging" />
+  <meta name="twitter:title" content="Self-Documenting Makefile" />
+  <meta name="twitter:description" content="A short one i really liked and I want to document for future-me: Self-documenting Makefiles. Just add a new help target and now you can comment all targets by using ## &lt;comment&gt; after the …">
   <meta name="twitter:card" content="summary" />
   <meta name="generator" content="Hugo 0.68.3" />
   <link rel="alternate" href="https://gellardo.github.io/blog/index.xml" type="application/rss+xml" title="Frank&#39;s Blog"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
@@ -162,9 +216,9 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-            <div class="tags-heading">
+            <div class="posts-heading">
               
-                <h1>blogging</h1>
+                <h1>Self-Documenting Makefile</h1>
               
               
                 <hr class="small">
@@ -180,63 +234,57 @@
 
 
     
-  <div class="container" role="main">
-    <div class="row">
-      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <p>A short one i really liked and I want to document for future-me:
+<a href="https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html">Self-documenting <code>Makefile</code>s</a>.
+Just add a new <code>help</code> target and now you can comment all targets by using <code>## &lt;comment&gt;</code> after the prerequisites.</p>
+<p>The displayed help is generated on the fly so just keep the documentation updated right next to the scripting and enjoy a nicely formatted help for all the important <code>make</code>-targets.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-make" data-lang="make"><span style="color:#900;font-weight:bold">clean</span><span style="font-weight:bold">:</span> <span style="color:#998;font-style:italic">## clean up leftover files
+</span><span style="color:#998;font-style:italic"></span>	@echo <span style="color:#b84">&#39;removing files&#39;</span>
+
+<span style="color:#998;font-style:italic"># will not be included in the help output
+</span><span style="color:#998;font-style:italic"></span><span style="color:#900;font-weight:bold">internal</span><span style="font-weight:bold">:</span> some-file
+	@echo <span style="color:#b84">&#39;doing some internal, not to be called manually things&#39;</span>
+
+<span style="color:#008080">.DEFAULT_GOAL</span> <span style="font-weight:bold">:=</span> <span style="color:#999">help</span>
+<span style="color:#900;font-weight:bold">.PHONY</span><span style="font-weight:bold">:</span> help
+<span style="color:#900;font-weight:bold">help</span><span style="font-weight:bold">:</span> <span style="color:#998;font-style:italic">## prints all targets followed by a &#39;## Comment&#39; indicating they can be used in a CLI
+</span><span style="color:#998;font-style:italic"></span>	@grep -E <span style="color:#b84">&#39;^[a-zA-Z_-]+:.*?## .*$$&#39;</span> <span style="font-weight:bold">$(</span>MAKEFILE_LIST<span style="font-weight:bold">)</span> | sort | awk <span style="color:#b84">&#39;BEGIN {FS = &#34;:.*?## &#34;}; {printf &#34;\033[36m%-20s\033[0m %s\n&#34;, $$1, $$2}&#39;</span>
+</code></pre></div>
+
         
-        <div class="posts-list">
+          <div class="blog-tags">
+            
+              <a href="https://gellardo.github.io/blog//tags/shell/">shell</a>&nbsp;
+            
+          </div>
+        
+
+        
+
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
           
-            <article class="post-preview">
-    <a href="https://gellardo.github.io/blog/posts/2020-05-31-getting-hugo-to-run/">
-        <h2 class="post-title">Getting Hugo to run</h2>
-        
-        
-        
-    </a>
-
-    <p class="post-meta">
-        <span class="post-meta">
-  
-  
-  <i class="fas fa-calendar"></i>&nbsp;Posted on 2020-05-31
-  
-  
-  
-  
-    
-      &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Frank Schmidt
-    
-  
-  
-</span>
-
-
-    </p>
-    <div class="post-entry">
-        
-        <p>I wanted to have a really low friction way of practicing technical writing.
-As my current employer mostly uses Blogs as PR, my first idea was to try blogging, but to start small without anyone seeing it.</p>
-        <a href="https://gellardo.github.io/blog/posts/2020-05-31-getting-hugo-to-run/" class="post-read-more">[Read More]</a>
-        
-    </div>
-
-    
-    <div class="blog-tags">
-        
-        <a href="https://gellardo.github.io/blog//tags/blogging/">blogging</a>&nbsp;
-        
-        <a href="https://gellardo.github.io/blog//tags/hugo/">Hugo</a>&nbsp;
-        
-    </div>
-    
-
-</article>
+            <li class="previous">
+              <a href="https://gellardo.github.io/blog/posts/2020-07-02-playing-with-rust-and-wasm/" data-toggle="tooltip" data-placement="top" title="Playing With Rust and Wasm">&larr; Previous Post</a>
+            </li>
           
-        </div>
-        
-      </div>
+          
+        </ul>
+      
+
+
+      
+
     </div>
   </div>
+</div>
 
       
 <footer>
@@ -255,7 +303,7 @@ As my current employer mostly uses Blogs as PR, my first idea was to try bloggin
               </li>
           
           <li>
-            <a href="/blog/tags/blogging/index.xml" title="RSS">
+            <a href="" title="RSS">
               <span class="fa-stack fa-lg">
                 <i class="fas fa-circle fa-stack-2x"></i>
                 <i class="fas fa-rss fa-stack-1x fa-inverse"></i>

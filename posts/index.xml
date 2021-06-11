@@ -6,10 +6,21 @@
     <description>Recent content in Posts on Frank&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 02 Jul 2020 21:52:04 +0200</lastBuildDate>
+    <lastBuildDate>Thu, 10 Jun 2021 16:07:25 +0200</lastBuildDate>
     
 	<atom:link href="https://gellardo.github.io/blog/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Self-Documenting Makefile</title>
+      <link>https://gellardo.github.io/blog/posts/2021-06-10-self-documenting-makefile/</link>
+      <pubDate>Thu, 10 Jun 2021 16:07:25 +0200</pubDate>
+      
+      <guid>https://gellardo.github.io/blog/posts/2021-06-10-self-documenting-makefile/</guid>
+      <description>A short one i really liked and I want to document for future-me: Self-documenting Makefiles. Just add a new help target and now you can comment all targets by using ## &amp;lt;comment&amp;gt; after the prerequisites.
+The displayed help is generated on the fly so just keep the documentation updated right next to the scripting and enjoy a nicely formatted help for all the important make-targets.
+clean: ## clean up leftover files 	@echo &amp;#39;removing files&amp;#39; # will not be included in the help output internal: some-file @echo &amp;#39;doing some internal, not to be called manually things&amp;#39; .</description>
+    </item>
     
     <item>
       <title>Playing With Rust and Wasm</title>
