@@ -1,0 +1,41 @@
+name: Deploy master branch
+
+on:
+  # Triggers the workflow on push events but only for the master branch
+  push:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v2
+        with:
+          path: "public"
+          ref: gh-pages
+
+      - name: Install hugo
+        run: sudo apt-get -q install hugo
+
+      - name: Build the site
+        run: hugo version && hugo
+
+        # Hugo builds to `./public` by default, which is where the gh-branch is checked out to
+      - name: Commit changes to gh-pages branch
+        # TODO perhaps reuse the commit message from the original commit
+        run: |
+          cd public
+          git config user.name "GitHub Actions"
+          git config user.email "<>"
+          git add --all && git commit -m "Update blog" && git push
