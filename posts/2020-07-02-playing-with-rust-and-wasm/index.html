@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
   <title>Playing With Rust and Wasm - Frank&#39;s Blog</title>
-  <meta name="description" content="I have read a lot about how Wasm is great for porting non-JS languages into the browser and maybe even into a general Lambda runtime. Also better security and ability to compile libraries into Wasm and use them in other languages. So I wanted to try it and document my experience using Rust&#43;Wasm to build Game of Life using Wasm.
+  <meta name="description" content="I read a lot about how Wasm is great for porting non-JS languages into the browser and maybe even into a general Lambda runtime. Also better security and ability to compile libraries into Wasm and use them in other languages. So I wanted to try it and document my experience using Rust&#43;Wasm to build Game of Life using Wasm.
 TLDR: If you want to learn a lot more than I can cover here, read the official rust&#43;wasm introduction instead of watching me stumbling around here.">
   <meta name="author" content="Frank Schmidt"/><script type="application/ld+json">
 {
@@ -58,9 +58,9 @@ TLDR: If you want to learn a lot more than I can cover here, read the official r
     "name" : "Frank Schmidt"
   },
   "headline": "Playing With Rust and Wasm",
-  "description" : "I have read a lot about how Wasm is great for porting non-JS languages into the browser and maybe even into a general Lambda runtime. Also better security and ability to compile libraries into Wasm and use them in other languages. So I wanted to try it and document my experience using Rust\x2bWasm to build Game of Life using Wasm.\nTLDR: If you want to learn a lot more than I can cover here, read the official rust\x2bwasm introduction instead of watching me stumbling around here.",
+  "description" : "I read a lot about how Wasm is great for porting non-JS languages into the browser and maybe even into a general Lambda runtime. Also better security and ability to compile libraries into Wasm and use them in other languages. So I wanted to try it and document my experience using Rust\x2bWasm to build Game of Life using Wasm.\nTLDR: If you want to learn a lot more than I can cover here, read the official rust\x2bwasm introduction instead of watching me stumbling around here.",
   "inLanguage" : "en",
-  "wordCount":  2430 ,
+  "wordCount":  2429 ,
   "datePublished" : "2020-07-02T21:52:04",
   "dateModified" : "2020-07-02T21:52:04",
   "image" : "https:\/\/gellardo.github.io\/blog\/",
@@ -80,14 +80,14 @@ TLDR: If you want to learn a lot more than I can cover here, read the official r
 </script>
 
 <meta property="og:title" content="Playing With Rust and Wasm" />
-<meta property="og:description" content="I have read a lot about how Wasm is great for porting non-JS languages into the browser and maybe even into a general Lambda runtime. Also better security and ability to compile libraries into Wasm and use them in other languages. So I wanted to try it and document my experience using Rust&#43;Wasm to build Game of Life using Wasm.
+<meta property="og:description" content="I read a lot about how Wasm is great for porting non-JS languages into the browser and maybe even into a general Lambda runtime. Also better security and ability to compile libraries into Wasm and use them in other languages. So I wanted to try it and document my experience using Rust&#43;Wasm to build Game of Life using Wasm.
 TLDR: If you want to learn a lot more than I can cover here, read the official rust&#43;wasm introduction instead of watching me stumbling around here.">
 <meta property="og:url" content="https://gellardo.github.io/blog/posts/2020-07-02-playing-with-rust-and-wasm/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Frank&#39;s Blog" />
 
   <meta name="twitter:title" content="Playing With Rust and Wasm" />
-  <meta name="twitter:description" content="I have read a lot about how Wasm is great for porting non-JS languages into the browser and maybe even into a general Lambda runtime. Also better security and ability to compile libraries into Wasm …">
+  <meta name="twitter:description" content="I read a lot about how Wasm is great for porting non-JS languages into the browser and maybe even into a general Lambda runtime. Also better security and ability to compile libraries into Wasm and use …">
   <meta name="twitter:card" content="summary" />
   <meta name="generator" content="Hugo 0.68.3" />
   <link rel="alternate" href="https://gellardo.github.io/blog/index.xml" type="application/rss+xml" title="Frank&#39;s Blog"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
@@ -236,7 +236,7 @@ TLDR: If you want to learn a lot more than I can cover here, read the official r
   <div class="row">
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
       <article role="main" class="blog-post">
-        <p>I have read a lot about how Wasm is great for porting non-JS languages into the browser and maybe even into a general Lambda runtime.
+        <p>I read a lot about how Wasm is great for porting non-JS languages into the browser and maybe even into a general Lambda runtime.
 Also better security and ability to compile libraries into Wasm and use them in other languages.
 So I wanted to try it and document my experience using Rust+Wasm to build Game of Life using Wasm.</p>
 <p><strong>TLDR:</strong> If you want to learn a lot more than I can cover here, read the <a href="https://rustwasm.github.io/docs/book/introduction.html">official rust+wasm introduction</a> instead of watching me stumbling around <a href="https://github.com/Gellardo/wasm-game-of-life">here</a>.</p>
