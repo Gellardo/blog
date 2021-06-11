@@ -12,6 +12,8 @@ Having to remembering which targets are available in each project (and what they
 Enter: a short article about [self-documenting Makefiles](https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html).
 <!--more--><!-- necessary because of bug(?), setting summary in frontmatter shows the whole content instead of the summary -->
 
+{{% tip %}}
+
 I really liked the idea and want to document it for future-me:
 Makefiles can get big and cluncky quick and soon you are going to need some documentation about which target is doing what.
 So either put that information into the `Readme.md` or... just add a new target that pulls the information directly from the `Makefile`.
