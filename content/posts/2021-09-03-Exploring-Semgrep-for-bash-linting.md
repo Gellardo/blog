@@ -2,6 +2,7 @@
 title: "Exploring Semgrep for Bash linting"
 date: 2021-09-03T09:29:30+02:00
 tags: ["Semgrep"]
+draft: true
 ---
 
 Found some failure in bash scripts: using unexported functions in subshells.
@@ -242,3 +243,6 @@ rules:
           export($Y)
 ```
 same problem..., matches on a and b instead of just on a
+
+## TODO
+try to use `pattern-not-inside` as in open-never-close [here](https://www.i-programmer.info/news/90-tools/13725-semgrep-more-than-just-a-glorified-grep.html)
