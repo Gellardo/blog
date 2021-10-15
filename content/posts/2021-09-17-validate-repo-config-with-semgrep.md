@@ -22,7 +22,9 @@ And since those practices are new, they might change a few times before settling
 How do you ensure that after multiple months of migration, all repositories are in a similar state?
 
 By writing automation that checks repositories against the best codified validation of the best practices possible.
-I want to explain to you why and how I ended up on useing Semgrep for most of those validations.
+I want to explain to you why and how I ended up on using Semgrep for most of those validations.
+
+If you want to see code, you can [skip all the fluff]({{< relref "#finally-checking-things" >}}).
 
 
 ## The Problem
@@ -60,37 +62,91 @@ No domain-specific language to learn, just normal code.
   - setup test framework
   - need to remember to check all exceptional cases (json = dict = a lot of dict accesses that all can fail)
   - can get very complex for more advanced patterns
-### General validation frameworks: Just build custom rules on that
-Hmm, so should already be validation frameworks for json (since most of our checks are json anyays) so perhaps check for a specialized framework for that.
 
-- less problems for all the exceptional cases for json
-- json (perhaps yaml) only, no solution for other languages if we want them
-- the main usecases of those is to enforce schemas for APIs, which does not quite fit what I want to do
+### General validation frameworks: Just build custom rules on that
+Hmm, so thereshould already be validation frameworks for json (since most of our checks are json anyays).
+So how avout using a specialized framework for that.
+
+- less problems for all the exceptional dict-access cases for json
+- json (perhaps yaml) only, no solution for other languages if we ever need them
+- the main usecases of those is to enforce schemas for APIs, which does not quite fit what I want to do.
+  Too rigid in the cases I tried.
+
 ### Validation engines
-[OPA](https://www.openpolicyagent.org/docs/latest/kubernetes-tutorial/) (specifically Rego policies), json only.
+Next consideration was a n validation engine.
+When working with kubernetes, you will at one point come across [OPA](https://www.openpolicyagent.org/docs/latest/kubernetes-tutorial/) (specifically Rego policies).
+This is technically another json validator but with a focus on writing/enforcing validation policies.
 
 - very general
 - big investment to be able to read/write rules
+- json/yaml only again
+
 ### Semgrep as a SAST with custom rules
-[Semgrep](https://semgrep.dev) (can also be run without the SaaS stuff).
+As the title already spoiled, I will be using [Semgrep](https://semgrep.dev) to perform most of the validations.
+The webpage is heavyly about their SaaS solution, but it easily be run from python/the cli too.
+
+How it works: Basically write patterns in yaml and let semgrep find all the matches.
+Since it works on ASTs, no need to be able to compile things (not that relevant for JSON though).
 
 - multi-language support in case I need it
-- patterns are just the same format with some easy to understand additional syntax
+- patterns are just the same format with some intuitive additional syntax
 - can add messages (with parts from the match), metadata and rule identifiers
-- patterns can be tricky / need some experience
-- some of my rules are impractical to translate(have branch protections for exactly these 4 branches)
+- patterns can be tricky / need some experience about pattern interactions and how semgrep will group elements in the AST
+- some of my rules are impractical to translate <!-- (have branch protections for exactly these 4 branches) TODO link to future work -->
 - very simplistic testing possibilities
 
-So: on to use semgrep as my finding generator (except for certain checks that are hard to do with it)
-<!-- multiple options: write parsing code in python, json validation library, semgrep (pattern matching), OPA -->
+So let us have a closer look instead of just singing praises at it.
 
 ## Semgrep Overview
 
-<!-- easy to write patterns, relatively consistent across languages -->
-<!-- patterns look easy but you need some time to get a feel for the grouping behavior -->
+As I already mentioned, Semgrep is all about patterns and matching them to a wide variety of languages/filetypes.
+To do so robustly, it applies patterns on parsed abstract syntax trees instead of the original text.
+If you want to play around with it, have a look at the [playground](https://semgrep.dev/editor).
+
+The nice thing is that you don't have to know almost anything about ASTs, most of it is abstracted away from the pattern editor.
+Instead, patterns mostly look like the language that is beeing searched with some additional options for matching bits of code.
+The most important ones to understand are:
+-`$NAME` which matches (and stores) a single identifier/value, called a metavariable
+- `...` which is basically saying "I don't care what is here"
+
+<iframe title="Semgrep example no prints" src="https://semgrep.dev/embed/editor?snippet=ievans:print-to-logger" width="100%" height="432px" frameborder="0"></iframe>
+
+```python
+print(...)
+```
+This will find any `print` function call in your python code, no matter what parameters were supplied.
+
+```python
+$SECRET = get_secret(...)
+...
+logger.$FUNC(..., $SECRET, ...)
+```
+This will find any instance where a secet is retrieved and subsequently logged.
+
+Things to keep in mind:
+- This pattern matches one very specific case for the underlying problem (secrets printed to the log). There can be othersthat do the same thing but would not match. For example, funnelling the variable through a second variable/the identity function, using an `f""` string instead of the logger string interpolation, ...
+- You can add addtional patterns/false-positive patterns/pattern on metavariables to increase the coverage. But you will get false positives and negatives anyways.
+- Malicious minds will always be able to get around those patterns. So in the end semgrep rules are good for providing guardrails/codifying standards in a codebase, not preventing any possible issue. For example enforcing that a logger is used everywhere instead of `print` statements..
+- There are efforts for adding taint analysis to Semgrep but generally patterns are restricted to a single file/function.
+
+As you saw, the pattern was basically python code with placeholders wherever necessary.
+This becomes even more apperent when matching functions.
+
+```
+def $FUNC(...):
+  ...
+```
+
+You need to provide an additional placeholder for the body.
+Otherwise Semgrep's parser will shout at you because it could not parse the pattern, since it was not a complete python function definition (even if the body is unspecified anyways).
+
+Semgrep is relatively consistent between languages, but there are some subtle changes to placeholder matching behavior depending on both the curreent code and the language that can be hard to catch witthout some experience.
+In JSON, `{"a":1,...}` will match both `{"b":2,"a":1}` and `{"a":1,"b":2}`, but to match both `[1,2]` and `[2,1]  you need to use `[...,2,...]`.
+
+<!-- some basics about pattern, pattern-not, etc -->
 <!-- no infos about how to debug patterns -->
 
-## Let's check things
+## Finally checking things
 
 <!-- default branch -->
 <!-- branch protections -->
