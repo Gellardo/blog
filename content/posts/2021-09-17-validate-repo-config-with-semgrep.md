@@ -143,8 +143,26 @@ Otherwise Semgrep's parser will shout at you because it could not parse the patt
 Semgrep is relatively consistent between languages, but there are some subtle changes to placeholder matching behavior depending on both the curreent code and the language that can be hard to catch witthout some experience.
 In JSON, `{"a":1,...}` will match both `{"b":2,"a":1}` and `{"a":1,"b":2}`, but to match both `[1,2]` and `[2,1]  you need to use `[...,2,...]`.
 
-<!-- some basics about pattern, pattern-not, etc -->
-<!-- no infos about how to debug patterns -->
+Everything up until now is just a fancier way of grepping for strings.
+But Semgrep allows us to combine patterns using `and`, `or` and `not` as well as specifiying patterns for captured meta variables.
+This allows us to further narrow down on what exactly you want to match.
+
+You already know, that your pattern will match a known good case?
+Add a `pattern-not` pattern to exclude that false positive.
+There is a case that does not quite fit your original pattern but has the same problem?
+Wrap your original pattern in a `pattern-either` and add a specialized pattern for that case.
+Want to match all functions that start with `unsafe_`?
+Match all functions and capture the function name in a metavariable and add a `metavariable-regex` pattern to match the captured function name.
+
+```yaml
+- patterns:
+  - pattern: print(...)
+  - pattern-not-inside: |
+      def log(...):
+          ...
+```
+Pretty easy to understand, right?
+Find all `print` calls, except if it is inside a `log` function because that is allowed for some reason.
 
 ## Finally checking things
 
