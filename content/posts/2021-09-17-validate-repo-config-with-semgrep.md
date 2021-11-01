@@ -15,6 +15,7 @@ basic structure:
 -->
 
 <!-- Teaser: In this post I will use python and semgrep to validate GitLab repositories against codified guiderails. -->
+<!-- Teaser: Pretrending to do Gitlab config validations to talk about Semgrep -->
 
 Imagine this: You are migrating 50+ Repositories to a new GitLab instance.
 In addition to changing CI from Jenkins to GitLab CI, you are also trying to enforce a certain set of best practices like "don't allow people to force-push the main branch".
@@ -141,7 +142,7 @@ You need to provide an additional placeholder for the body.
 Otherwise Semgrep's parser will shout at you because it could not parse the pattern, since it was not a complete python function definition (even if the body is unspecified anyways).
 
 Semgrep is relatively consistent between languages, but there are some subtle changes to placeholder matching behavior depending on both the curreent code and the language that can be hard to catch witthout some experience.
-In JSON, `{"a":1,...}` will match both `{"b":2,"a":1}` and `{"a":1,"b":2}`, but to match both `[1,2]` and `[2,1]  you need to use `[...,2,...]`.
+In JSON, `{"a":1,...}` will match both `{"b":2,"a":1}` and `{"a":1,"b":2}`, but to match both `[1,2]` and `[2,1]`  you need to use `[...,2,...]`.
 
 Everything up until now is just a fancier way of grepping for strings.
 But Semgrep allows us to combine patterns using `and`, `or` and `not` as well as specifiying patterns for captured meta variables.
@@ -166,9 +167,78 @@ Find all `print` calls, except if it is inside a `log` function because that is 
 
 ## Finally checking things
 
-<!-- default branch -->
-<!-- branch protections -->
-<!-- file content? -->
+Now that we are past the basics, let's look at how to accomplish the original task: validating GitLab configs.
+
+### Default branch
+Let's start with a simple one, validating the default branch.
+Say our organization is using Git flow or similar.
+Then all repositories should have a branch `develop` as the default branch.
+
+First let us find an API call that contains the information that we want:
+The [Projects REST call](https://docs.gitlab.com/ee/api/projects.html#get-single-project) looks promising:
+
+```bash
+$ curl -H "Content-Type: application/json" -H "PRIVATE_TOKEN:xxxxxx" gitlab.example.com/api/v4/projects/3
+{
+  "id": 3,
+  "default_branch": "develop",
+  "name": "Example Project",
+  ...
+}
+```
+
+As a nice sideeffect, the result also has other interesting fields for futher checks, e.g. `only_allow_merge_if_pipeline_succeeds`.
+But the current rule is a pretty simple one, match all objects with a `default_branch` key, except if the branchname is `develop`.
+We can put this (and further rules) into a file `gitlab-configs.yaml`.
+
+```yaml
+rules:
+- id: default-branch-develop
+  patterns:
+    - pattern: |
+        { "default_branch": $BRANCH, ...}
+    - pattern-not: |
+        { "default_branch": "develop", ...}
+  message: default branch set to $BRANCH instead of develop
+  languages: [json]
+  severity: INFO
+```
+
+We first need to have a matching pattern, which just finds all objects with a default branch.
+Once the inital scope has been set, we can use `patter-not` to exclude the known good case where the branch is develop.
+We also specify a human readable message, an id for the rule and a severity to finish the configuration.
+
+Now if we want to test those rules, let's save the results of the last curl call to `project.json`.
+We can invoke Semgrep on the CLI on that file:
+
+```
+$ semgrep --config gitlab-configs.yaml project.json
+```
+
+As long as the branch name is `develop` only some status information is printed, but if the project has a different branch name, semgrep will print a finding:
+```
+severity:info rule:default-branch-develop: default branch set to "master" instead of develop
+1:{
+2:  "id": 3,
+3:  "default_branch": "master",
+4:  "name": "Example Project"
+5:}
+```
+
+One "problem" for larger json objects like in this case is that the smallest match seems to be a full object.
+Therefore even though we are only looking at one field, the full json object / the first <n> lines are printed.
+This makes visually checking the result annoying and makes useful messages a necessity.
+
+Anyways, let's continue with a slightly more complex rule.
+
+### Branch protections
+Since we are using Git flow, there should be some basic branch protections in place everywhere.
+
+- Noone except the CI is allowed to push to protected branches
+- must protect master and develop, feature branches are ok without (ignoring release/hotfix branches)
+- >=developer is allowed to merge
+
+<!-- rules + some testing -->
 
 ## What more to do?
 
