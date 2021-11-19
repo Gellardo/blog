@@ -238,10 +238,75 @@ Since we are using Git flow, there should be some basic branch protections in pl
 - must protect master and develop, feature branches are ok without (ignoring release/hotfix branches)
 - >=developer is allowed to merge
 
-<!-- rules + some testing -->
+Let's start with where to get the information necessary for those rules.
+Luckily there is an endpoint that does just what we want it to: `/api/v4/projects/<project_id>/protected_branches`.
+See [the docs](https://docs.gitlab.com/ee/api/protected_branches.html#list-protected-branches) to view an example response.
+
+I will dump the semgrep rules on you and then explain what is going on in detail.
+
+```yaml
+- id: branch-protection-unknown-targets
+  patterns:
+    - pattern: |
+        {"name":$BRANCH,...}
+    - metavariable-regex:
+        metavariable: $BRANCH
+        regex: \"(?!(develop|master)").*
+  message: found branch protection for unknown target $BRANCH
+  languages: [json]
+  severity: WARNING
+```
+
+This is one case where the pattern matching can get very annoying.
+We are technically looking at a list of branch-protections and want to say:
+> This contains exactly 1 entry for `develop` and one for `master`
+After playing around with writing a pattern for a list with 2 objects with the right names, I basically gave up and put most of the logic into python.
+The main problem is that the order of a list is fixed, so I would need to write a `pattern-not` for all possible permutations.
+
+Now I hear you say: "But that is only 2 permutations, just do that"- yeah well, the actual rule had 4 branch names.
+That makes 24 permutations, which is a no-go.
+I also tried playing around with meta-variables, but meta-variables and `pattern-not` do not play well together.
+They are only assigned in a `pattern`, which we can not use to avoid matching only faulty lists with exactly 4 elements.
+Even if that worked, it is not clear to me how to formulate the "all permutations" part for the matched metavariables.
+
+Anyways, some quick python, collecting the branch names and doing a quick `set(actual) == set(expected)` and is's done.
+The rule I wrote in addition to that just showcases capturing a metavariable and then running a regex on it.
+The regex basically does a negative match (using negative look-ahead) and reports all unexpected names.
+
+```yaml
+- id: branch-protection-push-access-user
+  patterns:
+    - pattern: |
+        {"name":$BRANCH,...}
+    - pattern: |
+        { "push_access_levels": [
+          ...,
+          { "access_level_description": $GLUSER, ...  },
+          ...
+        ], ... }
+    - metavariable-regex:
+        metavariable: $GLUSER
+        regex: \"(?!.*\.gitlab|No one).*\"
+  message: push allowed to non-team user $GLUSER for $BRANCH
+  languages: [json]
+  severity: WARNING
+```
+This rule checks who is allowed to push to protected branches.
+It is using the same logic as the previous rule but extends it to also capture the field that contains the user/group/roles required to push.
+Matching strings here is not ideal, but all my CI machine users are named `<group>.gitlab` so it is sufficient for my usecase.
+
+The value also has the role name, meaning that we can match "No one" as another valid option.
+Therefore, the branch protection can only allow pushes to the machine users or noone, otherwise the rule will match.
+
+Since this is a little more complex logic going on now, it makes me want to have some assurance that the rules actually do what I expect them to do.
+Semgrep already has some rudimentary unit-test-like functionality built in.
+
+
+<!-- some testing -->
 
 ## What more to do?
 
+<!-- special case of the list matching hopefully a json specific problem -->
 <!-- different rules for different project types -->
 <!-- make the rules explainable / how to document what is enforced -->
 <!-- filter false positives -->
