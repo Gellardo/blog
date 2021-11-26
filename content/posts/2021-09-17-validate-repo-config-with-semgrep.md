@@ -107,7 +107,7 @@ If you want to play around with it, have a look at the [playground](https://semg
 The nice thing is that you don't have to know almost anything about ASTs, most of it is abstracted away from the pattern editor.
 Instead, patterns mostly look like the language that is beeing searched with some additional options for matching bits of code.
 The most important ones to understand are:
--`$NAME` which matches (and stores) a single identifier/value, called a metavariable
+- `$NAME` which matches (and stores) a single identifier/value, called a metavariable
 - `...` which is basically saying "I don't care what is here"
 
 <iframe title="Semgrep example no prints" src="https://semgrep.dev/embed/editor?snippet=ievans:print-to-logger" width="100%" height="432px" frameborder="0"></iframe>
@@ -125,10 +125,10 @@ logger.$FUNC(..., $SECRET, ...)
 This will find any instance where a secet is retrieved and subsequently logged.
 
 Things to keep in mind:
-- This pattern matches one very specific case for the underlying problem (secrets printed to the log). There can be othersthat do the same thing but would not match. For example, funnelling the variable through a second variable/the identity function, using an `f""` string instead of the logger string interpolation, ...
+- This pattern matches one very specific case for the underlying problem (secrets printed to the log). There can be othersthat do the same thing but would not match. For example, funnelling the variable through a second variable/the identity function or using an `f""` string instead of the logger string interpolation or ...
 - You can add addtional patterns/false-positive patterns/pattern on metavariables to increase the coverage. But you will get false positives and negatives anyways.
 - Malicious minds will always be able to get around those patterns. So in the end semgrep rules are good for providing guardrails/codifying standards in a codebase, not preventing any possible issue. For example enforcing that a logger is used everywhere instead of `print` statements..
-- There are efforts for adding taint analysis to Semgrep but generally patterns are restricted to a single file/function.
+- There are efforts for adding taint analysis and joining findings across files to Semgrep but generally patterns are restricted to a single file/function.
 
 As you saw, the pattern was basically python code with placeholders wherever necessary.
 This becomes even more apperent when matching functions.
@@ -148,7 +148,7 @@ Everything up until now is just a fancier way of grepping for strings.
 But Semgrep allows us to combine patterns using `and`, `or` and `not` as well as specifiying patterns for captured meta variables.
 This allows us to further narrow down on what exactly you want to match.
 
-You already know, that your pattern will match a known good case?
+You already know that your pattern will match a known good case?
 Add a `pattern-not` pattern to exclude that false positive.
 There is a case that does not quite fit your original pattern but has the same problem?
 Wrap your original pattern in a `pattern-either` and add a specialized pattern for that case.
@@ -175,7 +175,7 @@ Say our organization is using Git flow or similar.
 Then all repositories should have a branch `develop` as the default branch.
 
 First let us find an API call that contains the information that we want:
-The [Projects REST call](https://docs.gitlab.com/ee/api/projects.html#get-single-project) looks promising:
+The [/projects REST call](https://docs.gitlab.com/ee/api/projects.html#get-single-project) looks promising:
 
 ```bash
 $ curl -H "Content-Type: application/json" -H "PRIVATE_TOKEN:xxxxxx" gitlab.example.com/api/v4/projects/3
@@ -236,7 +236,7 @@ Since we are using Git flow, there should be some basic branch protections in pl
 
 - Noone except the CI is allowed to push to protected branches
 - must protect master and develop, feature branches are ok without (ignoring release/hotfix branches)
-- >=developer is allowed to merge
+- roles >=developer is allowed to merge
 
 Let's start with where to get the information necessary for those rules.
 Luckily there is an endpoint that does just what we want it to: `/api/v4/projects/<project_id>/protected_branches`.
@@ -259,7 +259,9 @@ I will dump the semgrep rules on you and then explain what is going on in detail
 
 This is one case where the pattern matching can get very annoying.
 We are technically looking at a list of branch-protections and want to say:
+
 > This contains exactly 1 entry for `develop` and one for `master`
+
 After playing around with writing a pattern for a list with 2 objects with the right names, I basically gave up and put most of the logic into python.
 The main problem is that the order of a list is fixed, so I would need to write a `pattern-not` for all possible permutations.
 
