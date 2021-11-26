@@ -301,14 +301,74 @@ The value also has the role name, meaning that we can match "No one" as another 
 Therefore, the branch protection can only allow pushes to the machine users or noone, otherwise the rule will match.
 
 Since this is a little more complex logic going on now, it makes me want to have some assurance that the rules actually do what I expect them to do.
-Semgrep already has some rudimentary unit-test-like functionality built in.
+Thankfully, Semgrep already has some rudimentary unit-test-like functionality built in.
 
+If our rules are in a file `rules.yaml`, we can create a `rules.json` file which contains individual test cases.
+For each testcase, a "comment" with either `ruleid: <rule-id>` or `ok: <rule-id>` to indicate if a match should start at that location.
+Adding `ok` is useful to protect us against known good cases matching while `ruleid` marks known bad cases that should be matched.
 
-<!-- some testing -->
+For our branch protection, this could look like:
+```json
+// ruleid:branch-protection-push-access-user,branch-protection-unknown-targets
+{
+  "id": 128,
+  "name": "some-branch",
+  "push_access_levels": [
+    {
+      "access_level": 40,
+      "access_level_description": "some.person",
+      "user_id": 23,
+      "group_id": null
+    },
+  ],
+  "merge_access_levels": [
+    {
+      "access_level": 30,
+      "access_level_description": "Developers + Maintainers",
+      "user_id": null,
+      "group_id": null
+    }
+  ],
+  "allow_force_push": true,
+  "unprotect_access_levels": [],
+  "code_owner_approval_required": false
+}
+```
 
-## What more to do?
+Since the rules above always match the whole object, the test comments have to be at the beginning of the whole object.
+And both our rules will match this object because there is a non-standard team user and the protection is for branch that is not 'master' or 'develop'.
 
-<!-- special case of the list matching hopefully a json specific problem -->
-<!-- different rules for different project types -->
-<!-- make the rules explainable / how to document what is enforced -->
-<!-- filter false positives -->
+Now if we execute the tests, it looks like this:
+```sh
+% semgrep --test
+100%|███████████████████████████████████████████████████████████████████████|2/2
+1 yaml files tested
+check id scoring:
+--------------------------------------------------------------------------------
+(TODO: 0) branch-protection-rules.yaml
+	✔ branch-protection-push-access-user                   TP: 1 TN: 0 FP: 0 FN: 0
+	✔ branch-protection-unknown-targets                    TP: 1 TN: 0 FP: 0 FN: 0
+```
+
+If one of the expectations fails, it produces output that only reports the expected line numbers and the actually matched lines.
+```
+test: <path>/branch-protection-rules.json, expected lines: [1], reported lines: [5]
+```
+While that is not the best reporting, it is good enough to notice regressions and then run the rules again interactively to see what went wrong.
+
+## Conclusion and what else to do?
+
+I liked working with semgrep.
+Starting off, it was a little annoying to find out the right combination of patterns for them to behave how I wanted.
+But once I got some experience on how to write rules, it felt pretty productive.
+I did open one [issue regarding test reporting](https://github.com/returntocorp/semgrep/issues/3850).
+
+One shortcoming was having to work with json lists, because the API returned items in an inconsistent order.
+I was not able to handle that in Semgrep, but luckily I could fall back to python for that and it might be a json specific problem.
+
+The rules are relatively easy to explore and understand what is being enforced compared to arbitrary python.
+At least the ones that I wrote for this project.
+Having individual ids allows me to later add another layer on top.
+I'm thinking about having different project types which might enforce different rules.
+So Gitflow based projects might enforce a different subset of the branch protection rules that trunk-based projects.
+But thats a task for another time.
