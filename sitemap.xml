@@ -1,72 +1,50 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
   <url>
     <loc>https://gellardo.github.io/blog/</loc>
-    <lastmod>2021-06-10T16:07:25+02:00</lastmod>
-  </url>
-  
-  <url>
+    <lastmod>2021-09-17T22:37:06+02:00</lastmod>
+  </url><url>
     <loc>https://gellardo.github.io/blog/posts/</loc>
-    <lastmod>2021-06-10T16:07:25+02:00</lastmod>
-  </url>
-  
-  <url>
+    <lastmod>2021-09-17T22:37:06+02:00</lastmod>
+  </url><url>
+    <loc>https://gellardo.github.io/blog/tags/semgrep/</loc>
+    <lastmod>2021-09-17T22:37:06+02:00</lastmod>
+  </url><url>
+    <loc>https://gellardo.github.io/blog/tags/</loc>
+    <lastmod>2021-09-17T22:37:06+02:00</lastmod>
+  </url><url>
+    <loc>https://gellardo.github.io/blog/posts/2021-09-17-validate-repo-config-with-semgrep/</loc>
+    <lastmod>2021-09-17T22:37:06+02:00</lastmod>
+  </url><url>
     <loc>https://gellardo.github.io/blog/posts/2021-06-10-self-documenting-makefile/</loc>
     <lastmod>2021-06-10T16:07:25+02:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://gellardo.github.io/blog/tags/shell/</loc>
     <lastmod>2021-06-10T16:07:25+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://gellardo.github.io/blog/tags/</loc>
-    <lastmod>2021-06-10T16:07:25+02:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://gellardo.github.io/blog/posts/2020-07-02-playing-with-rust-and-wasm/</loc>
     <lastmod>2020-07-02T21:52:04+02:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://gellardo.github.io/blog/tags/rust/</loc>
     <lastmod>2020-07-02T21:52:04+02:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://gellardo.github.io/blog/tags/wasm/</loc>
     <lastmod>2020-07-02T21:52:04+02:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://gellardo.github.io/blog/tags/blogging/</loc>
     <lastmod>2020-05-31T22:48:32+02:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://gellardo.github.io/blog/posts/2020-05-31-getting-hugo-to-run/</loc>
     <lastmod>2020-05-31T22:48:32+02:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://gellardo.github.io/blog/tags/hugo/</loc>
     <lastmod>2020-05-31T22:48:32+02:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://gellardo.github.io/blog/pages/about/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://gellardo.github.io/blog/categories/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://gellardo.github.io/blog/pages/</loc>
   </url>
-  
 </urlset>
