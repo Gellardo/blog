@@ -84,16 +84,16 @@ This is technically another json validator but with a focus on writing/enforcing
 
 ### Semgrep as a SAST with custom rules
 As the title already spoiled, I will be using [Semgrep](https://semgrep.dev) to perform most of the validations.
-The web page is heavily about their SaaS solution, but it easily be run from python/the cli too.
+The web page is heavily about their SaaS solution, but it can easily be run from python/the cli too.
 
 How it works: Basically write patterns in yaml and let Semgrep find all the matches.
-Since it works on ASTs, no need to be able to compile things (not that relevant for JSON though).
+And since it works on ASTs, there is no need to be able to compile anything (not that relevant for JSON though).
 
 - multi-language support in case I need it
-- patterns are just the same format with some intuitive additional syntax
-- can add messages (with parts from the match), metadata and rule identifiers
+- patterns are just the same format as what is being searched with some additional syntax
+- can add messages (with parts of the match), metadata and rule identifiers
 - patterns can be tricky / need some experience about pattern interactions and how Semgrep will group elements in the AST
-- some of my rules are impractical to translate <!-- (have branch protections for exactly these 4 branches) TODO link to future work -->
+- some of my rules are impractical to translate
 - very simplistic testing possibilities
 
 So let us have a closer look instead of just singing praises at it.
@@ -127,7 +127,7 @@ This will find any instance where a secret is retrieved and subsequently logged.
 Things to keep in mind:
 - This pattern matches one very specific case for the underlying problem (secrets printed to the log). There can be others that do the same thing but would not match. For example, funneling the variable through a second variable/the identity function or using an `f""` string instead of the logger string interpolation or ...
 - You can add additional patterns/false-positive patterns/pattern on metavariables to increase the coverage. But you will get false positives and negatives anyways.
-- Malicious minds will always be able to get around those patterns. So in the end Semgrep rules are good for providing guardrails/codifying standards in a codebase, not preventing any possible issue. For example enforcing that a logger is used everywhere instead of `print` statements..
+- Malicious minds will always be able to get around those patterns. In the end, Semgrep rules are good for providing guardrails/codifying standards in a codebase, not preventing any possible issue. For example enforcing that a logger is used everywhere instead of `print` statements..
 - There are efforts for adding taint analysis and joining findings across files to Semgrep but generally patterns are restricted to a single file/function.
 
 As you saw, the pattern was basically python code with placeholders wherever necessary.
@@ -143,6 +143,7 @@ Otherwise Semgrep's parser will shout at you because it could not parse the patt
 
 Semgrep is relatively consistent between languages, but there are some subtle changes to placeholder matching behavior depending on both the current code and the language that can be hard to catch without some experience.
 In JSON, `{"a":1,...}` will match both `{"b":2,"a":1}` and `{"a":1,"b":2}`, but to match both `[1,2]` and `[2,1]`  you need to use `[...,2,...]`.
+We will see later on how this exact property can complicate things.
 
 Everything up until now is just a fancier way of grepping for strings.
 But Semgrep allows us to combine patterns using `and`, `or` and `not` as well as specifying patterns for captured meta variables.
@@ -171,7 +172,7 @@ Now that we are past the basics, let's look at how to accomplish the original ta
 
 ### Default branch
 Let's start with a simple one, validating the default branch.
-Say our organization is using Git flow or similar.
+Say our organization is using Gitflow or similar.
 Then all repositories should have a branch `develop` as the default branch.
 
 First let us find an API call that contains the information that we want:
@@ -205,17 +206,17 @@ rules:
 ```
 
 We first need to have a matching pattern, which just finds all objects with a default branch.
-Once the initial scope has been set, we can use `patter-not` to exclude the known good case where the branch is develop.
+Once the initial scope has been set, we can use `pattern-not` to exclude the known good case where the branch is develop.
 We also specify a human readable message, an id for the rule and a severity to finish the configuration.
 
 Now if we want to test those rules, let's save the results of the last curl call to `project.json`.
-We can invoke Semgrep on the CLI on that file:
+We can invoke Semgrep on that file using its CLI:
 
 ```
 $ semgrep --config gitlab-configs.yaml project.json
 ```
 
-As long as the branch name is `develop` only some status information is printed, but if the project has a different branch name, Semgrep will print a finding:
+As long as the branch name is `develop`, only some status information is printed, but if the project has a different branch name, Semgrep will print a finding:
 ```
 severity:info rule:default-branch-develop: default branch set to "master" instead of develop
 1:{
@@ -236,13 +237,15 @@ Since we are using Git flow, there should be some basic branch protections in pl
 
 - Noone except the CI is allowed to push to protected branches
 - must protect master and develop, feature branches are OK without (ignoring release/hotfix branches)
-- roles >=developer is allowed to merge
+- roles >=developer are allowed to merge
 
 Let's start with where to get the information necessary for those rules.
 Luckily there is an endpoint that does just what we want it to: `/api/v4/projects/<project_id>/protected_branches`.
 See [the docs](https://docs.gitlab.com/ee/api/protected_branches.html#list-protected-branches) to view an example response.
 
 I will dump the Semgrep rules on you and then explain what is going on in detail.
+
+#### Branch protection targets
 
 ```yaml
 - id: branch-protection-unknown-targets
@@ -263,17 +266,19 @@ We are technically looking at a list of branch-protections and want to say:
 > This contains exactly 1 entry for `develop` and one for `master`
 
 After playing around with writing a pattern for a list with 2 objects with the right names, I basically gave up and put most of the logic into python.
-The main problem is that the order of a list is fixed, so I would need to write a `pattern-not` for all possible permutations.
+The main problem is that the order of a list is fixed (remember the foreshadowing?), so I would need to write a `pattern-not` for all possible good permutations.
 
-Now I hear you say: "But that is only 2 permutations, just do that"- yeah well, the actual rule had 4 branch names.
+Now I hear you say: "But that is only 2 permutations, just do that" - yeah well, the actual rule had 4 branch patterns.
 That makes 24 permutations, which is a no-go.
 I also tried playing around with meta-variables, but meta-variables and `pattern-not` do not play well together.
 They are only assigned in a `pattern`, which we can not use to avoid matching only faulty lists with exactly 4 elements.
 Even if that worked, it is not clear to me how to formulate the "all permutations" part for the matched metavariables.
 
 Anyways, some quick python, collecting the branch names and doing a quick `set(actual) == set(expected)` and it's done.
-The rule I wrote in addition to that just showcases capturing a metavariable and then running a regex on it.
-The regex basically does a negative match (using negative look-ahead) and reports all unexpected names.
+The rule above reports all unexpected names but mostly showcases what can be done with metavariables.
+After capturing the metavariable, it is run trough a regex that does a negative match (using negative look-ahead) to determine if there is a match.
+
+#### Branch push access
 
 ```yaml
 - id: branch-protection-push-access-user
@@ -336,7 +341,7 @@ For our branch protection, this could look like:
 ```
 
 Since the rules above always match the whole object, the test comments have to be at the beginning of the whole object.
-And both our rules will match this object because there is a non-standard team user and the protection is for branch that is not 'master' or 'develop'.
+And both our rules will match this object because there is a non-standard team user and the protection is for a branch that is not 'master' or 'develop'.
 
 Now if we execute the tests, it looks like this:
 ```sh
@@ -362,13 +367,16 @@ I liked working with Semgrep.
 Starting off, it was a little annoying to find out the right combination of patterns for them to behave how I wanted.
 But once I got some experience on how to write rules, it felt pretty productive.
 I did open one [issue regarding test reporting](https://github.com/returntocorp/semgrep/issues/3850).
+(rant: The issue  was closed by stale bot. After migrating it to an internal tracker... so I don't know if/what is happening with it \*angry grumbling noises*).
 
 One shortcoming was having to work with json lists, because the API returned items in an inconsistent order.
-I was not able to handle that in Semgrep, but luckily I could fall back to python for that and it might be a json specific problem.
+I was not able to handle it in Semgrep, but luckily I could fall back to python for that and it might be a json/use case specific problem.
 
 The rules are relatively easy to explore and understand what is being enforced compared to arbitrary python.
 At least the ones that I wrote for this project.
 Having individual ids allows me to later add another layer on top.
 I'm thinking about having different project types which might enforce different rules.
 So Gitflow based projects might enforce a different subset of the branch protection rules that trunk-based projects.
+Checking the matched ids against the "allowed" set for a project type is one way to do that.
+
 But that's a task for another time.
