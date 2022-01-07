@@ -15,6 +15,11 @@ publish:  setup
   git commit -am "Update Blog \"$ORIGIN_COMMIT\""
   git push
 
+# checks a running local hugo site for broken links, takes a while
+broken-links:
+  wget --spider -r -nd -nv -H -l 1 -w 2 -o run1.log  http://localhost:1313/blog/
+  grep -B1 "broken link"
+
 # idempotent setup logic
 @setup:
   @# not doing package management, assumes that hugo is installed
