@@ -14,7 +14,7 @@ TLDR: If you want to learn a lot more than I can cover here, read the official r
 {
     "@context": "http://schema.org",
     "@type": "WebSite",
-    "name": "Frank\u0027s Blog",
+    "name": "Frank\x27s Blog",
     
     "url": "https:\/\/gellardo.github.io\/blog\/"
 }
@@ -58,7 +58,7 @@ TLDR: If you want to learn a lot more than I can cover here, read the official r
     "name" : "Frank Schmidt"
   },
   "headline": "Playing With Rust and Wasm",
-  "description" : "I have read a lot about how Wasm is great for porting non-JS languages into the browser and maybe even into a general Lambda runtime. Also better security and ability to compile libraries into Wasm and use them in other languages. So I wanted to try it and document my experience using Rust\u002bWasm to build Game of Life using Wasm.\nTLDR: If you want to learn a lot more than I can cover here, read the official rust\u002bwasm introduction instead of watching me stumbling around here.",
+  "description" : "I have read a lot about how Wasm is great for porting non-JS languages into the browser and maybe even into a general Lambda runtime. Also better security and ability to compile libraries into Wasm and use them in other languages. So I wanted to try it and document my experience using Rust\x2bWasm to build Game of Life using Wasm.\nTLDR: If you want to learn a lot more than I can cover here, read the official rust\x2bwasm introduction instead of watching me stumbling around here.",
   "inLanguage" : "en",
   "wordCount":  2430 ,
   "datePublished" : "2020-07-02T21:52:04",
@@ -89,7 +89,7 @@ TLDR: If you want to learn a lot more than I can cover here, read the official r
   <meta name="twitter:title" content="Playing With Rust and Wasm" />
   <meta name="twitter:description" content="I have read a lot about how Wasm is great for porting non-JS languages into the browser and maybe even into a general Lambda runtime. Also better security and ability to compile libraries into Wasm …">
   <meta name="twitter:card" content="summary" />
-  <meta name="generator" content="Hugo 0.91.2" />
+  <meta name="generator" content="Hugo 0.68.3" />
   <link rel="alternate" href="https://gellardo.github.io/blog/index.xml" type="application/rss+xml" title="Frank&#39;s Blog"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://gellardo.github.io/blog/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
@@ -272,7 +272,7 @@ I will postphone going into the template details until the simulation logic is r
 I&rsquo;m using a 2-dimensional array and store the current and last state, switching between them to avoid allocations.
 The <code>#[wasm_bindgen]</code> annotation exposes the struct in the Wasm module.
 The build would fail if an exposed function or type includes an unexposed type as a field or in the signature.</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="font-weight:bold">const</span><span style="color:#bbb"> </span>SIZE: <span style="color:#458;font-weight:bold">usize</span> <span style="font-weight:bold">=</span><span style="color:#bbb"> </span><span style="color:#099">16</span>;<span style="color:#bbb">
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="font-weight:bold">const</span><span style="color:#bbb"> </span>SIZE: <span style="color:#458;font-weight:bold">usize</span> <span style="font-weight:bold">=</span><span style="color:#bbb"> </span><span style="color:#099">16</span>;<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="font-weight:bold">type</span> <span style="color:#458;font-weight:bold">Universe</span><span style="color:#bbb"> </span><span style="font-weight:bold">=</span><span style="color:#bbb"> </span>[[<span style="color:#458;font-weight:bold">u8</span>;<span style="color:#bbb"> </span>SIZE];<span style="color:#bbb"> </span>SIZE];<span style="color:#bbb">
 </span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#999;font-weight:bold">#[wasm_bindgen]</span><span style="color:#bbb">
@@ -285,15 +285,15 @@ The build would fail if an exposed function or type includes an unexposed type a
 Since the universe has a limited size, I have to choose how to handle the borders:
 Either treat cells outside the border as dead or wrap around to the other side, basically creating a torus.
 I liked the idea of an endless glider, so I went with the wrapping option.</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#999;font-weight:bold">#[wasm_bindgen]</span><span style="color:#bbb">
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#999;font-weight:bold">#[wasm_bindgen]</span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="font-weight:bold">impl</span><span style="color:#bbb"> </span>GameOfLife<span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">    </span><span style="font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="font-weight:bold">fn</span> <span style="color:#900;font-weight:bold">tick</span>(<span style="font-weight:bold">&amp;</span><span style="font-weight:bold">mut</span><span style="color:#bbb"> </span>self)<span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">        </span><span style="font-weight:bold">let</span><span style="color:#bbb"> </span>tmp<span style="color:#bbb"> </span><span style="font-weight:bold">=</span><span style="color:#bbb"> </span>self.last;<span style="color:#bbb">
 </span><span style="color:#bbb">        </span>self.last<span style="color:#bbb"> </span><span style="font-weight:bold">=</span><span style="color:#bbb"> </span>self.state;<span style="color:#bbb">
 </span><span style="color:#bbb">        </span>self.state<span style="color:#bbb"> </span><span style="font-weight:bold">=</span><span style="color:#bbb"> </span>tmp;<span style="color:#bbb">
 </span><span style="color:#bbb">
-</span><span style="color:#bbb">        </span><span style="font-weight:bold">for</span><span style="color:#bbb"> </span>x<span style="color:#bbb"> </span><span style="font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#099">0</span><span style="font-weight:bold">..</span>self.last.len()<span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb">            </span><span style="font-weight:bold">for</span><span style="color:#bbb"> </span>y<span style="color:#bbb"> </span><span style="font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#099">0</span><span style="font-weight:bold">..</span>self.last[x].len()<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="font-weight:bold">for</span><span style="color:#bbb"> </span>x<span style="color:#bbb"> </span><span style="font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#099">0</span>..self.last.len()<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="font-weight:bold">for</span><span style="color:#bbb"> </span>y<span style="color:#bbb"> </span><span style="font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#099">0</span>..self.last[x].len()<span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">                </span>self.state[x][y]<span style="color:#bbb"> </span><span style="font-weight:bold">=</span><span style="color:#bbb"> </span>Self::will_be_alive(self.last,<span style="color:#bbb"> </span>x,<span style="color:#bbb"> </span>y)<span style="color:#bbb">
 </span><span style="color:#bbb">            </span>}<span style="color:#bbb">
 </span><span style="color:#bbb">        </span>}<span style="color:#bbb">
@@ -304,8 +304,8 @@ I liked the idea of an endless glider, so I went with the wrapping option.</p>
 </span><span style="color:#bbb">
 </span><span style="color:#bbb">        </span><span style="color:#998;font-style:italic">// Rust makes sure that usize can&#39;t get negative.
 </span><span style="color:#998;font-style:italic"></span><span style="color:#bbb">        </span><span style="color:#998;font-style:italic">// So using addition and modulo is simpler than a bunch of casting.
-</span><span style="color:#998;font-style:italic"></span><span style="color:#bbb">        </span><span style="font-weight:bold">for</span><span style="color:#bbb"> </span>i<span style="color:#bbb"> </span><span style="font-weight:bold">in</span><span style="color:#bbb"> </span>SIZE<span style="color:#bbb"> </span><span style="font-weight:bold">-</span><span style="color:#bbb"> </span><span style="color:#099">1</span><span style="font-weight:bold">..=</span>SIZE<span style="color:#bbb"> </span><span style="font-weight:bold">+</span><span style="color:#bbb"> </span><span style="color:#099">1</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb">            </span><span style="font-weight:bold">for</span><span style="color:#bbb"> </span>j<span style="color:#bbb"> </span><span style="font-weight:bold">in</span><span style="color:#bbb"> </span>SIZE<span style="color:#bbb"> </span><span style="font-weight:bold">-</span><span style="color:#bbb"> </span><span style="color:#099">1</span><span style="font-weight:bold">..=</span>SIZE<span style="color:#bbb"> </span><span style="font-weight:bold">+</span><span style="color:#bbb"> </span><span style="color:#099">1</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#998;font-style:italic"></span><span style="color:#bbb">        </span><span style="font-weight:bold">for</span><span style="color:#bbb"> </span>i<span style="color:#bbb"> </span><span style="font-weight:bold">in</span><span style="color:#bbb"> </span>SIZE<span style="color:#bbb"> </span><span style="font-weight:bold">-</span><span style="color:#bbb"> </span><span style="color:#099">1</span>..<span style="font-weight:bold">=</span>SIZE<span style="color:#bbb"> </span><span style="font-weight:bold">+</span><span style="color:#bbb"> </span><span style="color:#099">1</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="font-weight:bold">for</span><span style="color:#bbb"> </span>j<span style="color:#bbb"> </span><span style="font-weight:bold">in</span><span style="color:#bbb"> </span>SIZE<span style="color:#bbb"> </span><span style="font-weight:bold">-</span><span style="color:#bbb"> </span><span style="color:#099">1</span>..<span style="font-weight:bold">=</span>SIZE<span style="color:#bbb"> </span><span style="font-weight:bold">+</span><span style="color:#bbb"> </span><span style="color:#099">1</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">                </span><span style="font-weight:bold">if</span><span style="color:#bbb"> </span>i<span style="color:#bbb"> </span><span style="font-weight:bold">==</span><span style="color:#bbb"> </span>SIZE<span style="color:#bbb"> </span><span style="font-weight:bold">&amp;&amp;</span><span style="color:#bbb"> </span>j<span style="color:#bbb"> </span><span style="font-weight:bold">==</span><span style="color:#bbb"> </span>SIZE<span style="color:#bbb"> </span>{<span style="color:#bbb"> </span><span style="color:#998;font-style:italic">// don&#39; count self
 </span><span style="color:#998;font-style:italic"></span><span style="color:#bbb">                    </span><span style="font-weight:bold">continue</span>;<span style="color:#bbb">
 </span><span style="color:#bbb">                </span>}<span style="color:#bbb">
@@ -323,7 +323,7 @@ I liked the idea of an endless glider, so I went with the wrapping option.</p>
 </span><span style="color:#bbb">    </span>}<span style="color:#bbb">
 </span><span style="color:#bbb"></span>}<span style="color:#bbb">
 </span></code></pre></div><p>Add a method to translate the <code>Universe</code> into a <code>String</code> for easy pretty printing in JS.</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#999;font-weight:bold">#[wasm_bindgen]</span><span style="color:#bbb">
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#999;font-weight:bold">#[wasm_bindgen]</span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="font-weight:bold">impl</span><span style="color:#bbb"> </span>GameOfLife<span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">    </span><span style="font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="font-weight:bold">fn</span> <span style="color:#900;font-weight:bold">prettier_state</span>(<span style="font-weight:bold">&amp;</span>self)<span style="color:#bbb"> </span>-&gt; <span style="color:#999">String</span> {<span style="color:#bbb">
 </span><span style="color:#bbb">        </span><span style="font-weight:bold">let</span><span style="color:#bbb"> </span><span style="font-weight:bold">mut</span><span style="color:#bbb"> </span>s<span style="color:#bbb"> </span><span style="font-weight:bold">=</span><span style="color:#bbb"> </span><span style="color:#999">String</span>::new();<span style="color:#bbb">
@@ -344,7 +344,7 @@ Otherwise, the only data-sharing option is to write your own serializer/deserial
 The Wasm API only has basic value types, so you end up converting to bytes and back on both sides.
 (And handling pointers into the Wasm memory).</p>
 <p>And generate the glider in the universe.</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#999;font-weight:bold">#[wasm_bindgen]</span><span style="color:#bbb">
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#999;font-weight:bold">#[wasm_bindgen]</span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="font-weight:bold">fn</span> <span style="color:#900;font-weight:bold">game</span>()<span style="color:#bbb"> </span>-&gt; <span style="color:#458;font-weight:bold">GameOfLife</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">    </span><span style="font-weight:bold">let</span><span style="color:#bbb"> </span><span style="font-weight:bold">mut</span><span style="color:#bbb"> </span>game<span style="color:#bbb"> </span><span style="font-weight:bold">=</span><span style="color:#bbb"> </span>gameoflife::GameOfLife::new();<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>game.set_alive(<span style="color:#099">1</span>,<span style="color:#bbb"> </span><span style="color:#099">2</span>);<span style="color:#bbb">
@@ -357,10 +357,10 @@ The Wasm API only has basic value types, so you end up converting to bytes and b
 </span></code></pre></div><p>Notice that all those functions are annotated with <code>#[wasm_bindgen]</code> so that they can be called from JS later on.
 Lastly, the template provides a function with <code>#[wasm_bindgen(start)]</code> that is run once the module is imported.
 In there, the game can be set up and the state is printed after each tick to <code>console.log()</code></p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#999;font-weight:bold">#[wasm_bindgen(start)]</span><span style="color:#bbb">
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#999;font-weight:bold">#[wasm_bindgen(start)]</span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="font-weight:bold">fn</span> <span style="color:#900;font-weight:bold">main_js</span>()<span style="color:#bbb"> </span>-&gt; <span style="color:#999">Result</span><span style="font-weight:bold">&lt;</span>(),<span style="color:#bbb"> </span>JsValue<span style="font-weight:bold">&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">    </span><span style="font-weight:bold">let</span><span style="color:#bbb"> </span><span style="font-weight:bold">mut</span><span style="color:#bbb"> </span>game<span style="color:#bbb"> </span><span style="font-weight:bold">=</span><span style="color:#bbb"> </span>game();<span style="color:#bbb">
-</span><span style="color:#bbb">    </span><span style="font-weight:bold">for</span><span style="color:#bbb"> </span>i<span style="color:#bbb"> </span><span style="font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#099">0</span><span style="font-weight:bold">..</span><span style="color:#099">100</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="font-weight:bold">for</span><span style="color:#bbb"> </span>i<span style="color:#bbb"> </span><span style="font-weight:bold">in</span><span style="color:#bbb"> </span><span style="color:#099">0</span>..<span style="color:#099">100</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">        </span>game.tick();<span style="color:#bbb">
 </span><span style="color:#bbb">        </span>console::log_1(<span style="font-weight:bold">&amp;</span>JsValue::from_str(<span style="font-weight:bold">&amp;</span>game.prettier_state()));<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>}<span style="color:#bbb">
@@ -402,13 +402,13 @@ But nobody looks there, so let&rsquo;s add some nicer visuals.</p>
 So I write a minimal amount of JS, that takes the output of <code>game.prettier_state()</code> and sets the <code>textContent</code> of a <code>&lt;pre&gt;</code> element.
 Wrap that in a closure and recursively call <code>requestAnimationFrame(closure)</code> to run the simulation at a stable 60 FPS.
 Now I am rendering on a poor man&rsquo;s canvas!</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="font-weight:bold">function</span> game(wasm) {
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="font-weight:bold">function</span> game(wasm) {
     <span style="font-weight:bold">const</span> gameElement <span style="font-weight:bold">=</span> <span style="color:#999">document</span>.getElementById(<span style="color:#b84">&#34;game&#34;</span>)
     <span style="font-weight:bold">const</span> g <span style="font-weight:bold">=</span> wasm.game()
-    <span style="font-weight:bold">const</span> renderloop <span style="font-weight:bold">=</span> <span style="font-weight:bold">async</span> () =&gt; {
+    <span style="font-weight:bold">const</span> renderloop <span style="font-weight:bold">=</span> async () =&gt; {
         gameElement.textContent <span style="font-weight:bold">=</span> g.prettier_state()
         g.tick()
-        <span style="font-weight:bold">await</span> <span style="font-weight:bold">new</span> <span style="color:#999">Promise</span>(r =&gt; setTimeout(r, <span style="color:#099">100</span>));
+        await <span style="font-weight:bold">new</span> <span style="color:#999">Promise</span>(r =&gt; setTimeout(r, <span style="color:#099">100</span>));
         requestAnimationFrame(renderloop)
     }
     requestAnimationFrame(renderloop)
@@ -429,7 +429,7 @@ Add an async splitpoint (i. e. import()) somewhere between your entrypoint and t
 </blockquote>
 <p>Hmm, alright it seems that the <code>import()</code> is needed after all.
 So I took the way of least resistance (and future spaghetti code) and added a callback to the <code>import()</code> statement, which calls the function with the imported module.</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="font-weight:bold">import</span>( <span style="color:#b84">&#34;../pkg/index.js&#34;</span> ).then(wasm =&gt; game(wasm)).<span style="font-weight:bold">catch</span>(console.error);
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="font-weight:bold">import</span>( <span style="color:#b84">&#34;../pkg/index.js&#34;</span> ).then(wasm =&gt; game(wasm)).<span style="font-weight:bold">catch</span>(console.error);
 </code></pre></div><p>Some more googling suggests, that this might be a <a href="https://github.com/webpack/webpack/issues/6615">limitation of webpack</a>.
 But it works for now and as long as I don&rsquo;t need to extend it, that&rsquo;s fine.</p>
 <h3 id="can-i-get-rid-of-manual-js-completely">Can I get rid of manual JS completely?</h3>
@@ -484,7 +484,7 @@ Suffice to say Rust copied the array instead of moving/sharing it and therefore 
 <p>But it also means, that for each tick, the Rust code copies the array (of arrays) once.
 Allocation is slow on normal architectures and it&rsquo;s the same here.
 So lets fix that:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-patch" data-lang="patch"><span style="color:#000;background-color:#dfd">+  let tmp = self.last;
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-patch" data-lang="patch"><span style="color:#000;background-color:#dfd">+  let tmp = self.last;
 </span><span style="color:#000;background-color:#dfd"></span>   self.last = self.state;
 <span style="color:#000;background-color:#dfd">+  self.state = tmp;
 </span></code></pre></div><p>Alternatively, I also tried using <code>mem::swap</code> to directly swap the pointers.
@@ -640,7 +640,7 @@ Reading a <a href="https://rustwasm.github.io/2019/03/26/gloo-onion-layers.html"
         </p>
         
         <p class="credits theme-by text-muted">
-          <a href="https://gohugo.io">Hugo v0.91.2</a> powered &nbsp;&bull;&nbsp; Theme <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> adapted from <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          <a href="https://gohugo.io">Hugo v0.68.3</a> powered &nbsp;&bull;&nbsp; Theme <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> adapted from <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
           
         </p>
       </div>

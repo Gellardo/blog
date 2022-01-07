@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Validate GitLab Repository Configuration With Semgrep - Frank&#39;s Blog</title>
+  <meta name="description" content="Imagine this: You are migrating 50&#43; Repositories to a new GitLab instance. In addition to changing CI from Jenkins to GitLab CI, you are also trying to enforce a certain set of best practices like &ldquo;don&rsquo;t allow people to force-push the main branch&rdquo;. And since those practices are new, they might change a few times before settling. How do you ensure that after multiple months of migration, all repositories are in a similar state?">
+  <meta name="author" content="Frank Schmidt"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "Frank\x27s Blog",
+    
+    "url": "https:\/\/gellardo.github.io\/blog\/"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/gellardo.github.io\/blog\/"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/gellardo.github.io\/blog\/",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/gellardo.github.io\/blog\/posts\/2021-09-17-validate-repo-config-with-semgrep\/",
+          "name": "Validate git lab repository configuration with semgrep"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "Frank Schmidt"
+  },
+  "headline": "Validate GitLab Repository Configuration With Semgrep",
+  "description" : "Imagine this: You are migrating 50\x2b Repositories to a new GitLab instance. In addition to changing CI from Jenkins to GitLab CI, you are also trying to enforce a certain set of best practices like \x26ldquo;don\x26rsquo;t allow people to force-push the main branch\x26rdquo;. And since those practices are new, they might change a few times before settling. How do you ensure that after multiple months of migration, all repositories are in a similar state?",
+  "inLanguage" : "en",
+  "wordCount":  2678 ,
+  "datePublished" : "2021-09-17T22:37:06",
+  "dateModified" : "2021-09-17T22:37:06",
+  "image" : "https:\/\/gellardo.github.io\/blog\/",
+  "keywords" : [ "Semgrep" ],
+  "mainEntityOfPage" : "https:\/\/gellardo.github.io\/blog\/posts\/2021-09-17-validate-repo-config-with-semgrep\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/gellardo.github.io\/blog\/",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/gellardo.github.io\/blog\/",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="Validate GitLab Repository Configuration With Semgrep" />
+<meta property="og:description" content="Imagine this: You are migrating 50&#43; Repositories to a new GitLab instance. In addition to changing CI from Jenkins to GitLab CI, you are also trying to enforce a certain set of best practices like &ldquo;don&rsquo;t allow people to force-push the main branch&rdquo;. And since those practices are new, they might change a few times before settling. How do you ensure that after multiple months of migration, all repositories are in a similar state?">
+<meta property="og:url" content="https://gellardo.github.io/blog/posts/2021-09-17-validate-repo-config-with-semgrep/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Frank&#39;s Blog" />
+
+  <meta name="twitter:title" content="Validate GitLab Repository Configuration With Semgrep" />
+  <meta name="twitter:description" content="Imagine this: You are migrating 50&#43; Repositories to a new GitLab instance. In addition to changing CI from Jenkins to GitLab CI, you are also trying to enforce a certain set of best practices like …">
+  <meta name="twitter:card" content="summary" />
+  <meta name="generator" content="Hugo 0.68.3" />
+  <link rel="alternate" href="https://gellardo.github.io/blog/index.xml" type="application/rss+xml" title="Frank&#39;s Blog"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://gellardo.github.io/blog/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://gellardo.github.io/blog/css/highlight.min.css" /><link rel="stylesheet" href="https://gellardo.github.io/blog/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://gellardo.github.io/blog/">Frank&#39;s Blog</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="Blog" href="/blog/">Blog</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="About" href="/blog/pages/about/">About</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Tags" href="/blog/tags">Tags</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="posts-heading">
+              
+                <h1>Validate GitLab Repository Configuration With Semgrep</h1>
+              
+              
+                <hr class="small">
+              
+              
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Imagine this: You are migrating 50+ Repositories to a new GitLab instance.
+In addition to changing CI from Jenkins to GitLab CI, you are also trying to enforce a certain set of best practices like &ldquo;don&rsquo;t allow people to force-push the main branch&rdquo;.
+And since those practices are new, they might change a few times before settling.
+How do you ensure that after multiple months of migration, all repositories are in a similar state?</p>
+<p>By writing automation that checks repositories against the best codified validation of the best practices possible.
+I want to explain to you why and how I ended up using Semgrep for most of those validations.</p>
+<p>If you want to see code, you can <a href="#finally-checking-things">skip all the fluff</a>.</p>
+<h2 id="the-problem">The Problem</h2>
+<p>There is a diverse and context-specific set of rules that need to be enforced.
+At the same time, those rules are still not finished and changing, otherwise just checking them once would be sufficient.
+But let&rsquo;s first look at the types of rules that you could encounter.</p>
+<ol>
+<li>checking existence and content of files in the repository (ownership information, changelog files, &hellip;)</li>
+<li>CI best practices (use templates where possible, use current versions, &hellip;)</li>
+<li>GitLab repository configurations (protect important branches, require signed commits, &hellip;)</li>
+</ol>
+<p>The main sources of repository specific GitLab configuration are either in YAML configuration files or JSON API responses.
+Most of the information necessary for 2 and 3 is stored in either YAML files (GitLab CI) or JSON (API responses).
+Those follow some schemata that are too complex to learn just to write a few rules.
+So we will write some ad-hoc checks that have to know just enough to validate that one assertion it has to check.</p>
+<!-- raw HTML omitted -->
+<h2 id="the-possible-solutions">The possible Solutions</h2>
+<p>So I want to have a simple way to look for a pattern in different languages (JSON, Python, &hellip;).
+If that pattern is found, I want to generate a finding with some kind of message.
+Optionally having some information about &ldquo;why is that a problem&rdquo; would be nice too.</p>
+<p>I am not looking for any kind of automatic enforcing or fixing for those findings.
+The results will be consumed by a human that knows what to do.</p>
+<h3 id="diy-how-hard-can-it-be-to-validate-files">DIY: How hard can it be to validate files</h3>
+<p>Well, since we are writing checks in python anyways, why not just write code to do it?
+No domain-specific language to learn, just normal code.</p>
+<ul>
+<li>very general, can do anything</li>
+<li>need to do anything
+<ul>
+<li>setup test framework</li>
+<li>need to remember to check all exceptional cases (json = dict = a lot of dict accesses that all can fail)</li>
+<li>can get very complex for more advanced patterns</li>
+</ul>
+</li>
+</ul>
+<h3 id="general-validation-frameworks-just-build-custom-rules-on-that">General validation frameworks: Just build custom rules on that</h3>
+<p>Hmm, so there should already be validation frameworks for json (since most of our checks are json anyways).
+So how about using a specialized framework for that.</p>
+<ul>
+<li>less problems for all the exceptional dict-access cases for json</li>
+<li>json (perhaps yaml) only, no solution for other languages if we ever need them</li>
+<li>the main use cases of those is to enforce schemata for APIs, which does not quite fit what I want to do.
+Too rigid in the cases I tried.</li>
+</ul>
+<h3 id="validation-engines">Validation engines</h3>
+<p>Next consideration was a n validation engine.
+When working with kubernetes, you will at one point come across <a href="https://www.openpolicyagent.org/docs/latest/kubernetes-tutorial/">OPA</a> (specifically Rego policies).
+This is technically another json validator but with a focus on writing/enforcing validation policies.</p>
+<ul>
+<li>very general</li>
+<li>big investment to be able to read/write rules</li>
+<li>json/yaml only again</li>
+</ul>
+<h3 id="semgrep-as-a-sast-with-custom-rules">Semgrep as a SAST with custom rules</h3>
+<p>As the title already spoiled, I will be using <a href="https://semgrep.dev">Semgrep</a> to perform most of the validations.
+The web page is heavily about their SaaS solution, but it can easily be run from python/the cli too.</p>
+<p>How it works: Basically write patterns in yaml and let Semgrep find all the matches.
+And since it works on ASTs, there is no need to be able to compile anything (not that relevant for JSON though).</p>
+<ul>
+<li>multi-language support in case I need it</li>
+<li>patterns are just the same format as what is being searched with some additional syntax</li>
+<li>can add messages (with parts of the match), metadata and rule identifiers</li>
+<li>patterns can be tricky / need some experience about pattern interactions and how Semgrep will group elements in the AST</li>
+<li>some of my rules are impractical to translate</li>
+<li>very simplistic testing possibilities</li>
+</ul>
+<p>So let us have a closer look instead of just singing praises at it.</p>
+<h2 id="semgrep-overview">Semgrep Overview</h2>
+<p>As I already mentioned, Semgrep is all about patterns and matching them to a wide variety of languages/file types.
+To do so robustly, it applies patterns on parsed abstract syntax trees instead of the original text.
+If you want to play around with it, have a look at the <a href="https://semgrep.dev/editor">playground</a>.</p>
+<p>The nice thing is that you don&rsquo;t have to know almost anything about ASTs, most of it is abstracted away from the pattern editor.
+Instead, patterns mostly look like the language that is being searched with some additional options for matching bits of code.
+The most important ones to understand are:</p>
+<ul>
+<li><code>$NAME</code> which matches (and stores) a single identifier/value, called a metavariable</li>
+<li><code>...</code> which is basically saying &ldquo;I don&rsquo;t care what is here&rdquo;</li>
+</ul>
+<!-- raw HTML omitted -->
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="font-weight:bold">print</span>(<span style="font-weight:bold">...</span>)
+</code></pre></div><p>This will find any <code>print</code> function call in your python code, no matter what parameters were supplied.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#a61717;background-color:#e3d2d2">$</span>SECRET <span style="font-weight:bold">=</span> get_secret(<span style="font-weight:bold">...</span>)
+<span style="font-weight:bold">...</span>
+logger<span style="font-weight:bold">.</span><span style="color:#a61717;background-color:#e3d2d2">$</span>FUNC(<span style="font-weight:bold">...</span>, <span style="color:#a61717;background-color:#e3d2d2">$</span>SECRET, <span style="font-weight:bold">...</span>)
+</code></pre></div><p>This will find any instance where a secret is retrieved and subsequently logged.</p>
+<p>Things to keep in mind:</p>
+<ul>
+<li>This pattern matches one very specific case for the underlying problem (secrets printed to the log). There can be others that do the same thing but would not match. For example, funneling the variable through a second variable/the identity function or using an <code>f&quot;&quot;</code> string instead of the logger string interpolation or &hellip;</li>
+<li>You can add additional patterns/false-positive patterns/pattern on metavariables to increase the coverage. But you will get false positives and negatives anyways.</li>
+<li>Malicious minds will always be able to get around those patterns. In the end, Semgrep rules are good for providing guardrails/codifying standards in a codebase, not preventing any possible issue. For example enforcing that a logger is used everywhere instead of <code>print</code> statements..</li>
+<li>There are efforts for adding taint analysis and joining findings across files to Semgrep but generally patterns are restricted to a single file/function.</li>
+</ul>
+<p>As you saw, the pattern was basically python code with placeholders wherever necessary.
+This becomes even more apparent when matching functions.</p>
+<pre><code>def $FUNC(...):
+  ...
+</code></pre><p>You need to provide an additional placeholder for the body.
+Otherwise Semgrep&rsquo;s parser will shout at you because it could not parse the pattern, since it was not a complete python function definition (even if the body is unspecified anyways).</p>
+<p>Semgrep is relatively consistent between languages, but there are some subtle changes to placeholder matching behavior depending on both the current code and the language that can be hard to catch without some experience.
+In JSON, <code>{&quot;a&quot;:1,...}</code> will match both <code>{&quot;b&quot;:2,&quot;a&quot;:1}</code> and <code>{&quot;a&quot;:1,&quot;b&quot;:2}</code>, but to match both <code>[1,2]</code> and <code>[2,1]</code>  you need to use <code>[...,2,...]</code>.
+We will see later on how this exact property can complicate things.</p>
+<p>Everything up until now is just a fancier way of grepping for strings.
+But Semgrep allows us to combine patterns using <code>and</code>, <code>or</code> and <code>not</code> as well as specifying patterns for captured meta variables.
+This allows us to further narrow down on what exactly you want to match.</p>
+<p>You already know that your pattern will match a known good case?
+Add a <code>pattern-not</code> pattern to exclude that false positive.
+There is a case that does not quite fit your original pattern but has the same problem?
+Wrap your original pattern in a <code>pattern-either</code> and add a specialized pattern for that case.
+Want to match all functions that start with <code>unsafe_</code>?
+Match all functions and capture the function name in a metavariable and add a <code>metavariable-regex</code> pattern to match the captured function name.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="font-weight:bold">patterns</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>- <span style="font-weight:bold">pattern</span>:<span style="color:#bbb"> </span>print(...)<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>- <span style="font-weight:bold">pattern-not-inside</span>:<span style="color:#bbb"> </span><span style="color:#b84">|
+</span><span style="color:#b84">      def log(...):</span><span style="color:#bbb">
+</span><span style="color:#bbb">          </span>...<span style="color:#bbb">
+</span></code></pre></div><p>Pretty easy to understand, right?
+Find all <code>print</code> calls, except if it is inside a <code>log</code> function because that is allowed for some reason.</p>
+<h2 id="finally-checking-things">Finally checking things</h2>
+<p>Now that we are past the basics, let&rsquo;s look at how to accomplish the original task: validating GitLab configs.</p>
+<h3 id="default-branch">Default branch</h3>
+<p>Let&rsquo;s start with a simple one, validating the default branch.
+Say our organization is using Gitflow or similar.
+Then all repositories should have a branch <code>develop</code> as the default branch.</p>
+<p>First let us find an API call that contains the information that we want:
+The <a href="https://docs.gitlab.com/ee/api/projects.html#get-single-project">/projects REST call</a> looks promising:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ curl -H <span style="color:#b84">&#34;Content-Type: application/json&#34;</span> -H <span style="color:#b84">&#34;PRIVATE_TOKEN:xxxxxx&#34;</span> gitlab.example.com/api/v4/projects/3
+<span style="font-weight:bold">{</span>
+  <span style="color:#b84">&#34;id&#34;</span>: 3,
+  <span style="color:#b84">&#34;default_branch&#34;</span>: <span style="color:#b84">&#34;develop&#34;</span>,
+  <span style="color:#b84">&#34;name&#34;</span>: <span style="color:#b84">&#34;Example Project&#34;</span>,
+  ...
+<span style="font-weight:bold">}</span>
+</code></pre></div><p>As a nice side-effect, the result also has other interesting fields for further checks, e.g. <code>only_allow_merge_if_pipeline_succeeds</code>.
+But the current rule is a pretty simple one, match all objects with a <code>default_branch</code> key, except if the branch name is <code>develop</code>.
+We can put this (and further rules) into a file <code>gitlab-configs.yaml</code>.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="font-weight:bold">rules</span>:<span style="color:#bbb">
+</span><span style="color:#bbb"></span>- <span style="font-weight:bold">id</span>:<span style="color:#bbb"> </span>default-branch-develop<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="font-weight:bold">patterns</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>- <span style="font-weight:bold">pattern</span>:<span style="color:#bbb"> </span><span style="color:#b84">|
+</span><span style="color:#b84">        { &#34;default_branch&#34;: $BRANCH, ...}</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span>- <span style="font-weight:bold">pattern-not</span>:<span style="color:#bbb"> </span><span style="color:#b84">|
+</span><span style="color:#b84">        { &#34;default_branch&#34;: &#34;develop&#34;, ...}</span><span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="font-weight:bold">message</span>:<span style="color:#bbb"> </span>default<span style="color:#bbb"> </span>branch<span style="color:#bbb"> </span>set<span style="color:#bbb"> </span>to<span style="color:#bbb"> </span>$BRANCH<span style="color:#bbb"> </span>instead<span style="color:#bbb"> </span>of<span style="color:#bbb"> </span>develop<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="font-weight:bold">languages</span>:<span style="color:#bbb"> </span>[json]<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="font-weight:bold">severity</span>:<span style="color:#bbb"> </span>INFO<span style="color:#bbb">
+</span></code></pre></div><p>We first need to have a matching pattern, which just finds all objects with a default branch.
+Once the initial scope has been set, we can use <code>pattern-not</code> to exclude the known good case where the branch is develop.
+We also specify a human readable message, an id for the rule and a severity to finish the configuration.</p>
+<p>Now if we want to test those rules, let&rsquo;s save the results of the last curl call to <code>project.json</code>.
+We can invoke Semgrep on that file using its CLI:</p>
+<pre><code>$ semgrep --config gitlab-configs.yaml project.json
+</code></pre><p>As long as the branch name is <code>develop</code>, only some status information is printed, but if the project has a different branch name, Semgrep will print a finding:</p>
+<pre><code>severity:info rule:default-branch-develop: default branch set to &quot;master&quot; instead of develop
+1:{
+2:  &quot;id&quot;: 3,
+3:  &quot;default_branch&quot;: &quot;master&quot;,
+4:  &quot;name&quot;: &quot;Example Project&quot;
+5:}
+</code></pre><p>One &ldquo;problem&rdquo; for larger json objects like in this case is that the smallest match seems to be a full object.
+Therefore even though we are only looking at one field, the full json object / the first <!-- raw HTML omitted --> lines are printed.
+This makes visually checking the result annoying and makes useful messages a necessity.</p>
+<p>Anyways, let&rsquo;s continue with a slightly more complex rule.</p>
+<h3 id="branch-protections">Branch protections</h3>
+<p>Since we are using Git flow, there should be some basic branch protections in place everywhere.</p>
+<ul>
+<li>Noone except the CI is allowed to push to protected branches</li>
+<li>must protect master and develop, feature branches are OK without (ignoring release/hotfix branches)</li>
+<li>roles &gt;=developer are allowed to merge</li>
+</ul>
+<p>Let&rsquo;s start with where to get the information necessary for those rules.
+Luckily there is an endpoint that does just what we want it to: <code>/api/v4/projects/&lt;project_id&gt;/protected_branches</code>.
+See <a href="https://docs.gitlab.com/ee/api/protected_branches.html#list-protected-branches">the docs</a> to view an example response.</p>
+<p>I will dump the Semgrep rules on you and then explain what is going on in detail.</p>
+<h4 id="branch-protection-targets">Branch protection targets</h4>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="font-weight:bold">id</span>:<span style="color:#bbb"> </span>branch-protection-unknown-targets<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="font-weight:bold">patterns</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>- <span style="font-weight:bold">pattern</span>:<span style="color:#bbb"> </span><span style="color:#b84">|
+</span><span style="color:#b84">        {&#34;name&#34;:$BRANCH,...}</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span>- <span style="font-weight:bold">metavariable-regex</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="font-weight:bold">metavariable</span>:<span style="color:#bbb"> </span>$BRANCH<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="font-weight:bold">regex</span>:<span style="color:#bbb"> </span>\<span style="color:#b84">&#34;(?!(develop|master)&#34;</span>).*<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="font-weight:bold">message</span>:<span style="color:#bbb"> </span>found<span style="color:#bbb"> </span>branch<span style="color:#bbb"> </span>protection<span style="color:#bbb"> </span>for<span style="color:#bbb"> </span>unknown<span style="color:#bbb"> </span>target<span style="color:#bbb"> </span>$BRANCH<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="font-weight:bold">languages</span>:<span style="color:#bbb"> </span>[json]<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="font-weight:bold">severity</span>:<span style="color:#bbb"> </span>WARNING<span style="color:#bbb">
+</span></code></pre></div><p>This is one case where the pattern matching can get very annoying.
+We are technically looking at a list of branch-protections and want to say:</p>
+<blockquote>
+<p>This contains exactly 1 entry for <code>develop</code> and one for <code>master</code></p>
+</blockquote>
+<p>After playing around with writing a pattern for a list with 2 objects with the right names, I basically gave up and put most of the logic into python.
+The main problem is that the order of a list is fixed (remember the foreshadowing?), so I would need to write a <code>pattern-not</code> for all possible good permutations.</p>
+<p>Now I hear you say: &ldquo;But that is only 2 permutations, just do that&rdquo; - yeah well, the actual rule had 4 branch patterns.
+That makes 24 permutations, which is a no-go.
+I also tried playing around with meta-variables, but meta-variables and <code>pattern-not</code> do not play well together.
+They are only assigned in a <code>pattern</code>, which we can not use to avoid matching only faulty lists with exactly 4 elements.
+Even if that worked, it is not clear to me how to formulate the &ldquo;all permutations&rdquo; part for the matched metavariables.</p>
+<p>Anyways, some quick python, collecting the branch names and doing a quick <code>set(actual) == set(expected)</code> and it&rsquo;s done.
+The rule above reports all unexpected names but mostly showcases what can be done with metavariables.
+After capturing the metavariable, it is run trough a regex that does a negative match (using negative look-ahead) to determine if there is a match.</p>
+<h4 id="branch-push-access">Branch push access</h4>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="font-weight:bold">id</span>:<span style="color:#bbb"> </span>branch-protection-push-access-user<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="font-weight:bold">patterns</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>- <span style="font-weight:bold">pattern</span>:<span style="color:#bbb"> </span><span style="color:#b84">|
+</span><span style="color:#b84">        {&#34;name&#34;:$BRANCH,...}</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span>- <span style="font-weight:bold">pattern</span>:<span style="color:#bbb"> </span><span style="color:#b84">|
+</span><span style="color:#b84">        { &#34;push_access_levels&#34;: [</span><span style="color:#bbb">
+</span><span style="color:#bbb">          </span>...,<span style="color:#bbb">
+</span><span style="color:#bbb">          </span>{<span style="color:#bbb"> </span><span style="font-weight:bold">&#34;access_level_description&#34;: </span>$GLUSER,<span style="color:#bbb"> </span>...<span style="color:#bbb">  </span>},<span style="color:#bbb">
+</span><span style="color:#bbb">          </span>...<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>],<span style="color:#bbb"> </span>...<span style="color:#bbb"> </span>}<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>- <span style="font-weight:bold">metavariable-regex</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="font-weight:bold">metavariable</span>:<span style="color:#bbb"> </span>$GLUSER<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="font-weight:bold">regex</span>:<span style="color:#bbb"> </span>\<span style="color:#b84">&#34;(?!.*\.gitlab|No one).*\&#34;</span><span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="font-weight:bold">message</span>:<span style="color:#bbb"> </span>push<span style="color:#bbb"> </span>allowed<span style="color:#bbb"> </span>to<span style="color:#bbb"> </span>non-team<span style="color:#bbb"> </span>user<span style="color:#bbb"> </span>$GLUSER<span style="color:#bbb"> </span>for<span style="color:#bbb"> </span>$BRANCH<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="font-weight:bold">languages</span>:<span style="color:#bbb"> </span>[json]<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="font-weight:bold">severity</span>:<span style="color:#bbb"> </span>WARNING<span style="color:#bbb">
+</span></code></pre></div><p>This rule checks who is allowed to push to protected branches.
+It is using the same logic as the previous rule but extends it to also capture the field that contains the user/group/roles required to push.
+Matching strings here is not ideal, but all my CI machine users are named <code>&lt;group&gt;.gitlab</code> so it is sufficient for my use case.</p>
+<p>The value also has the role name, meaning that we can match &ldquo;No one&rdquo; as another valid option.
+Therefore, the branch protection can only allow pushes to the machine users or noone, otherwise the rule will match.</p>
+<p>Since this is a little more complex logic going on now, it makes me want to have some assurance that the rules actually do what I expect them to do.
+Thankfully, Semgrep already has some rudimentary unit-test-like functionality built in.</p>
+<p>If our rules are in a file <code>rules.yaml</code>, we can create a <code>rules.json</code> file which contains individual test cases.
+For each test case, a &ldquo;comment&rdquo; with either <code>ruleid: &lt;rule-id&gt;</code> or <code>ok: &lt;rule-id&gt;</code> to indicate if a match should start at that location.
+Adding <code>ok</code> is useful to protect us against known good cases matching while <code>ruleid</code> marks known bad cases that should be matched.</p>
+<p>For our branch protection, this could look like:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#a61717;background-color:#e3d2d2">//</span> <span style="color:#a61717;background-color:#e3d2d2">ruleid:branch-protection-push-access-user,branch-protection-unknown-targets</span>
+{
+  <span style="color:#000080">&#34;id&#34;</span>: <span style="color:#099">128</span>,
+  <span style="color:#000080">&#34;name&#34;</span>: <span style="color:#b84">&#34;some-branch&#34;</span>,
+  <span style="color:#000080">&#34;push_access_levels&#34;</span>: [
+    {
+      <span style="color:#000080">&#34;access_level&#34;</span>: <span style="color:#099">40</span>,
+      <span style="color:#000080">&#34;access_level_description&#34;</span>: <span style="color:#b84">&#34;some.person&#34;</span>,
+      <span style="color:#000080">&#34;user_id&#34;</span>: <span style="color:#099">23</span>,
+      <span style="color:#000080">&#34;group_id&#34;</span>: <span style="font-weight:bold">null</span>
+    },
+  ],
+  <span style="color:#000080">&#34;merge_access_levels&#34;</span>: [
+    {
+      <span style="color:#000080">&#34;access_level&#34;</span>: <span style="color:#099">30</span>,
+      <span style="color:#000080">&#34;access_level_description&#34;</span>: <span style="color:#b84">&#34;Developers + Maintainers&#34;</span>,
+      <span style="color:#000080">&#34;user_id&#34;</span>: <span style="font-weight:bold">null</span>,
+      <span style="color:#000080">&#34;group_id&#34;</span>: <span style="font-weight:bold">null</span>
+    }
+  ],
+  <span style="color:#000080">&#34;allow_force_push&#34;</span>: <span style="font-weight:bold">true</span>,
+  <span style="color:#000080">&#34;unprotect_access_levels&#34;</span>: [],
+  <span style="color:#000080">&#34;code_owner_approval_required&#34;</span>: <span style="font-weight:bold">false</span>
+}
+</code></pre></div><p>Since the rules above always match the whole object, the test comments have to be at the beginning of the whole object.
+And both our rules will match this object because there is a non-standard team user and the protection is for a branch that is not &lsquo;master&rsquo; or &lsquo;develop&rsquo;.</p>
+<p>Now if we execute the tests, it looks like this:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">% semgrep --test
+100%|███████████████████████████████████████████████████████████████████████|2/2
+<span style="color:#099">1</span> yaml files tested
+check id scoring:
+--------------------------------------------------------------------------------
+<span style="font-weight:bold">(</span>TODO: 0<span style="font-weight:bold">)</span> branch-protection-rules.yaml
+	✔ branch-protection-push-access-user                   TP: <span style="color:#099">1</span> TN: <span style="color:#099">0</span> FP: <span style="color:#099">0</span> FN: <span style="color:#099">0</span>
+	✔ branch-protection-unknown-targets                    TP: <span style="color:#099">1</span> TN: <span style="color:#099">0</span> FP: <span style="color:#099">0</span> FN: <span style="color:#099">0</span>
+</code></pre></div><p>If one of the expectations fails, it produces output that only reports the expected line numbers and the actually matched lines.</p>
+<pre><code>test: &lt;path&gt;/branch-protection-rules.json, expected lines: [1], reported lines: [5]
+</code></pre><p>While that is not the best reporting, it is good enough to notice regressions and then run the rules again interactively to see what went wrong.</p>
+<h2 id="conclusion-and-what-else-to-do">Conclusion and what else to do?</h2>
+<p>I liked working with Semgrep.
+Starting off, it was a little annoying to find out the right combination of patterns for them to behave how I wanted.
+But once I got some experience on how to write rules, it felt pretty productive.
+I did open one <a href="https://github.com/returntocorp/semgrep/issues/3850">issue regarding test reporting</a>.
+(rant: The issue  was closed by stale bot. After migrating it to an internal tracker&hellip; so I don&rsquo;t know if/what is happening with it *angry grumbling noises*).</p>
+<p>One shortcoming was having to work with json lists, because the API returned items in an inconsistent order.
+I was not able to handle it in Semgrep, but luckily I could fall back to python for that and it might be a json/use case specific problem.</p>
+<p>The rules are relatively easy to explore and understand what is being enforced compared to arbitrary python.
+At least the ones that I wrote for this project.
+Having individual ids allows me to later add another layer on top.
+I&rsquo;m thinking about having different project types which might enforce different rules.
+So Gitflow based projects might enforce a different subset of the branch protection rules that trunk-based projects.
+Checking the matched ids against the &ldquo;allowed&rdquo; set for a project type is one way to do that.</p>
+<p>But that&rsquo;s a task for another time.</p>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://gellardo.github.io/blog//tags/semgrep/">Semgrep</a>&nbsp;
+            
+          </div>
+        
+
+        
+
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://gellardo.github.io/blog/posts/2021-06-10-self-documenting-makefile/" data-toggle="tooltip" data-placement="top" title="Self-Documenting Makefile">&larr; Previous Post</a>
+            </li>
+          
+          
+        </ul>
+      
+
+
+      
+
+    </div>
+  </div>
+</div>
+
+      
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+                <a href="https://github.com/Gellardo" title="GitHub">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            <a href="" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              Frank Schmidt
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2021
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://gellardo.github.io/blog/">Frank&#39;s Blog</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="https://gohugo.io">Hugo v0.68.3</a> powered &nbsp;&bull;&nbsp; Theme <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> adapted from <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://gellardo.github.io/blog/js/main.js"></script>
+<script src="https://gellardo.github.io/blog/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://gellardo.github.io/blog/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+

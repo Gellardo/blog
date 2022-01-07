@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Semgrep on Frank&#39;s Blog</title>
+    <link>https://gellardo.github.io/blog/tags/semgrep/</link>
+    <description>Recent content in Semgrep on Frank&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 17 Sep 2021 22:37:06 +0200</lastBuildDate>
+    
+	<atom:link href="https://gellardo.github.io/blog/tags/semgrep/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Validate GitLab Repository Configuration With Semgrep</title>
+      <link>https://gellardo.github.io/blog/posts/2021-09-17-validate-repo-config-with-semgrep/</link>
+      <pubDate>Fri, 17 Sep 2021 22:37:06 +0200</pubDate>
+      
+      <guid>https://gellardo.github.io/blog/posts/2021-09-17-validate-repo-config-with-semgrep/</guid>
+      <description>Imagine this: You are migrating 50+ Repositories to a new GitLab instance. In addition to changing CI from Jenkins to GitLab CI, you are also trying to enforce a certain set of best practices like &amp;ldquo;don&amp;rsquo;t allow people to force-push the main branch&amp;rdquo;. And since those practices are new, they might change a few times before settling. How do you ensure that after multiple months of migration, all repositories are in a similar state?</description>
+    </item>
+    
+  </channel>
+</rss>

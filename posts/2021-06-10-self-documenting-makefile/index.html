@@ -17,7 +17,7 @@ Enter: a short article about self-documenting Makefiles.">
 {
     "@context": "http://schema.org",
     "@type": "WebSite",
-    "name": "Frank\u0027s Blog",
+    "name": "Frank\x27s Blog",
     
     "url": "https:\/\/gellardo.github.io\/blog\/"
 }
@@ -61,7 +61,7 @@ Enter: a short article about self-documenting Makefiles.">
     "name" : "Frank Schmidt"
   },
   "headline": "Self-Documenting Makefile",
-  "description" : "A short one i really liked and I want to document for future-me: Self-documenting Makefiles. Just add a new help target and now you can comment all targets by using ## \u0026lt;comment\u0026gt; after the prerequisites.\nHaving to remembering which targets are available in each project (and what they do) is not ideal and I have not used them enough to standardize on a certain naming. Enter: a short article about self-documenting Makefiles.\n",
+  "description" : "A short one i really liked and I want to document for future-me: Self-documenting Makefiles. Just add a new help target and now you can comment all targets by using ## \x26lt;comment\x26gt; after the prerequisites.\nHaving to remembering which targets are available in each project (and what they do) is not ideal and I have not used them enough to standardize on a certain naming. Enter: a short article about self-documenting Makefiles.\n",
   "inLanguage" : "en",
   "wordCount":  328 ,
   "datePublished" : "2021-06-10T16:07:25",
@@ -97,7 +97,7 @@ Enter: a short article about self-documenting Makefiles.">
 Self-documenting Makefiles.
 Just add a new help target and now you can comment all targets by using ## &lt;comment&gt; after the …">
   <meta name="twitter:card" content="summary" />
-  <meta name="generator" content="Hugo 0.91.2" />
+  <meta name="generator" content="Hugo 0.68.3" />
   <link rel="alternate" href="https://gellardo.github.io/blog/index.xml" type="application/rss+xml" title="Frank&#39;s Blog"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://gellardo.github.io/blog/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
@@ -262,7 +262,7 @@ So either put that information into the <code>Readme.md</code> or&hellip; just a
 Some <code>awk</code> shenanigans to pretty print the result and it is done.
 Bonus points for setting <code>help</code> as the <code>.DEFAULT_GOAL</code> to run it if <code>make</code> is called without any arguments.</p>
 <p>Example:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-make" data-lang="make"><span style="color:#900;font-weight:bold">clean</span><span style="font-weight:bold">:</span> <span style="color:#998;font-style:italic">## clean up leftover files
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-make" data-lang="make"><span style="color:#900;font-weight:bold">clean</span><span style="font-weight:bold">:</span> <span style="color:#998;font-style:italic">## clean up leftover files
 </span><span style="color:#998;font-style:italic"></span>	@echo <span style="color:#b84">&#39;removing files&#39;</span>
 
 <span style="color:#998;font-style:italic"># will not be included in the help output
@@ -273,7 +273,7 @@ Bonus points for setting <code>help</code> as the <code>.DEFAULT_GOAL</code> to 
 <span style="color:#900;font-weight:bold">.PHONY</span><span style="font-weight:bold">:</span> help
 <span style="color:#900;font-weight:bold">help</span><span style="font-weight:bold">:</span> <span style="color:#998;font-style:italic">## prints all targets followed by a &#39;## Comment&#39; indicating they can be used in a CLI
 </span><span style="color:#998;font-style:italic"></span>	@grep -E <span style="color:#b84">&#39;^[a-zA-Z_-]+:.*?## .*$$&#39;</span> <span style="font-weight:bold">$(</span>MAKEFILE_LIST<span style="font-weight:bold">)</span> | sort | awk <span style="color:#b84">&#39;BEGIN {FS = &#34;:.*?## &#34;}; {printf &#34;\033[36m%-20s\033[0m %s\n&#34;, $$1, $$2}&#39;</span>
-</code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">% make
+</code></pre></div><div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">% make
 clean                clean up leftover files
 <span style="color:#999">help</span>                 Comment<span style="color:#a61717;background-color:#e3d2d2">&#39;</span> indicating they can be used in a CLI
 </code></pre></div><p><strong>TIP</strong>:Only use <code>##</code> as the seperator between prerequisites and comment, otherwise stuff like in the example happens ;)</p>
@@ -358,7 +358,7 @@ clean                clean up leftover files
         </p>
         
         <p class="credits theme-by text-muted">
-          <a href="https://gohugo.io">Hugo v0.91.2</a> powered &nbsp;&bull;&nbsp; Theme <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> adapted from <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          <a href="https://gohugo.io">Hugo v0.68.3</a> powered &nbsp;&bull;&nbsp; Theme <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> adapted from <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
           
         </p>
       </div>
