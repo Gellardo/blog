@@ -2,7 +2,6 @@
 title: "Validate GitLab Repository Configuration With Semgrep"
 date: 2021-09-17T22:37:06+02:00
 tags: ["Semgrep"]
-draft: true
 ---
 
 <!--
