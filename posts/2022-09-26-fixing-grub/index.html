@@ -7,9 +7,9 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <title>Tip: Spawn an interactive Python Shell anywhere in your code - Frank&#39;s Blog</title>
-  <meta name="description" content="This is post is a collection of useful commands I always have to google for whenever I play around with new APIs/libraries.
-Having an interactive shell to explore is incredibly helpful.">
+  <title>Fixing my GRUB install - Frank&#39;s Blog</title>
+  <meta name="description" content="After another instance of my Laptop no longer &ldquo;working&rdquo; after a firmware update, I decided to write down how to recover so I know where to look for it.
+How I probably broke it (again) Keeping firmware relatively up to date is a good thing. But fwupd seems to constantly break my UEFI boot, leading to my Laptop being confused and skipping the SSD, instead trying to boot vie PXE.">
   <meta name="author" content="Frank Schmidt"/><script type="application/ld+json">
 {
     "@context": "http://schema.org",
@@ -45,8 +45,8 @@ Having an interactive shell to explore is incredibly helpful.">
         "@type": "ListItem",
         "position": 3,
         "item": {
-          "@id": "https:\/\/gellardo.github.io\/blog\/posts\/2022-09-26-tip-python-shell\/",
-          "name": "Tip spawn an interactive python shell anywhere in your code"
+          "@id": "https:\/\/gellardo.github.io\/blog\/posts\/2022-09-26-fixing-grub\/",
+          "name": "Fixing my g r u b install"
         }
     }]
 }
@@ -57,15 +57,15 @@ Having an interactive shell to explore is incredibly helpful.">
   "author": {
     "name" : "Frank Schmidt"
   },
-  "headline": "Tip: Spawn an interactive Python Shell anywhere in your code",
-  "description" : "This is post is a collection of useful commands I always have to google for whenever I play around with new APIs\/libraries. Having an interactive shell to explore is incredibly helpful.\n",
+  "headline": "Fixing my GRUB install",
+  "description" : "After another instance of my Laptop no longer \x26ldquo;working\x26rdquo; after a firmware update, I decided to write down how to recover so I know where to look for it.\nHow I probably broke it (again) Keeping firmware relatively up to date is a good thing. But fwupd seems to constantly break my UEFI boot, leading to my Laptop being confused and skipping the SSD, instead trying to boot vie PXE.",
   "inLanguage" : "en",
-  "wordCount":  118 ,
-  "datePublished" : "2022-09-26T10:15:00",
-  "dateModified" : "2022-09-26T10:15:00",
+  "wordCount":  464 ,
+  "datePublished" : "2022-09-26T11:30:00",
+  "dateModified" : "2022-09-26T11:30:00",
   "image" : "https:\/\/gellardo.github.io\/blog\/",
-  "keywords" : [ "short, python" ],
-  "mainEntityOfPage" : "https:\/\/gellardo.github.io\/blog\/posts\/2022-09-26-tip-python-shell\/",
+  "keywords" : [ "shell" ],
+  "mainEntityOfPage" : "https:\/\/gellardo.github.io\/blog\/posts\/2022-09-26-fixing-grub\/",
   "publisher" : {
     "@type": "Organization",
     "name" : "https:\/\/gellardo.github.io\/blog\/",
@@ -79,16 +79,16 @@ Having an interactive shell to explore is incredibly helpful.">
 }
 </script>
 
-<meta property="og:title" content="Tip: Spawn an interactive Python Shell anywhere in your code" />
-<meta property="og:description" content="This is post is a collection of useful commands I always have to google for whenever I play around with new APIs/libraries.
-Having an interactive shell to explore is incredibly helpful.">
-<meta property="og:url" content="https://gellardo.github.io/blog/posts/2022-09-26-tip-python-shell/" />
+<meta property="og:title" content="Fixing my GRUB install" />
+<meta property="og:description" content="After another instance of my Laptop no longer &ldquo;working&rdquo; after a firmware update, I decided to write down how to recover so I know where to look for it.
+How I probably broke it (again) Keeping firmware relatively up to date is a good thing. But fwupd seems to constantly break my UEFI boot, leading to my Laptop being confused and skipping the SSD, instead trying to boot vie PXE.">
+<meta property="og:url" content="https://gellardo.github.io/blog/posts/2022-09-26-fixing-grub/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Frank&#39;s Blog" />
 
-  <meta name="twitter:title" content="Tip: Spawn an interactive Python Shell anywhere in your code" />
-  <meta name="twitter:description" content="This is post is a collection of useful commands I always have to google for whenever I play around with new APIs/libraries.
-Having an interactive shell to explore is incredibly helpful.">
+  <meta name="twitter:title" content="Fixing my GRUB install" />
+  <meta name="twitter:description" content="After another instance of my Laptop no longer &ldquo;working&rdquo; after a firmware update, I decided to write down how to recover so I know where to look for it.
+How I probably broke it (again) …">
   <meta name="twitter:card" content="summary" />
   <meta name="generator" content="Hugo 0.68.3" />
   <link rel="alternate" href="https://gellardo.github.io/blog/index.xml" type="application/rss+xml" title="Frank&#39;s Blog"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
@@ -217,7 +217,7 @@ Having an interactive shell to explore is incredibly helpful.">
           <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
             <div class="posts-heading">
               
-                <h1>Tip: Spawn an interactive Python Shell anywhere in your code</h1>
+                <h1>Fixing my GRUB install</h1>
               
               
                 <hr class="small">
@@ -237,28 +237,60 @@ Having an interactive shell to explore is incredibly helpful.">
   <div class="row">
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
       <article role="main" class="blog-post">
-        <p>This is post is a collection of useful commands I always have to google for whenever I play around with new APIs/libraries.
-Having an interactive shell to explore is incredibly helpful.</p>
-<p>So how do I spawn one anywhere in my code?</p>
-<p>Well, either spawn a python shell (like when running <code>python</code>)</p>
-<pre><code class="language-import" data-lang="import">import code
-code.interact(local=locals)
-</code></pre><p>Or just spawn <code>pdb</code> if you actually want to step through the following code.</p>
-<pre><code class="language-import" data-lang="import">import pdb
-pdb.set_trace()
-</code></pre><p>Or just run your whole script and then get dropped into the usual python shell (including anything declared in the script), run it with:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">python -i script.py
-</code></pre></div><p>Or if you like to have a helpful python shell (requires ipython to be available):</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="font-weight:bold">from</span> <span style="color:#555">IPython</span> <span style="font-weight:bold">import</span> embed
-embed()
-</code></pre></div>
+        <p>After another instance of my Laptop no longer &ldquo;working&rdquo; after a firmware update, I decided to write down how to recover so I know where to look for it.</p>
+<h2 id="how-i-probably-broke-it-again">How I probably broke it (again)</h2>
+<p>Keeping firmware relatively up to date is a good thing.
+But <code>fwupd</code> seems to constantly break my UEFI boot, leading to my Laptop being confused and skipping the SSD, instead trying to boot vie PXE.</p>
+<p>The first time this was terrifying but after a few repetitions, it is only annoying.
+It seems the firmware updater is written into the EFI partition without any regard for the existing boot loader.
+Or (more unlikely) actively breaks it during the firmware update.</p>
+<p>But I won&rsquo;t pretend I have any clue about what actually happens, so let&rsquo;s fix the boot.</p>
+<h2 id="fixing-it">Fixing it</h2>
+<p>Again, there might be a better way of doing it, but this worked for me.</p>
+<p>General approach:</p>
+<ol>
+<li>Boot a live Linux</li>
+<li>Mount the filesystem(s)</li>
+<li>chroot into the system</li>
+<li>run grub-install</li>
+</ol>
+<h3 id="boot-a-live-linux">Boot a live Linux</h3>
+<p>Somehow we need something to install GRUB, where the easiest solution is a live-cd with Linux.
+In my case, I have a USB-Stick created with <a href="https://www.ventoy.net/en/index.html">Ventoy</a> lying around.
+This enables me to just copy an <code>.iso</code> onto it and boot from it.
+I already have a relatively recent Arch Linux live-cd on it.</p>
+<p>Insert USB stick, start computer and it is happy that there is actually something to boot.</p>
+<h3 id="mount-the-filesystems">Mount the filesystem(s)</h3>
+<p>I remember from the Arch install, that I chrooted into the system before installing GRUB.
+Technically, I need <code>/boot</code> which has the GRUB config and <code>/boot/efi</code> which contains the UEFI &ldquo;stuff&rdquo;.</p>
+<p>So minimal setup (I guess):
+I want to mount everything up to <code>/boot/efi</code>, which in my case is 3 partitions: <code>/</code>, <code>/boot</code> and <code>/boot/efi</code>.
+My setup has BTRFS on <code>/</code> (with some subvolumes), but I don&rsquo;t want to remember the actual commands.
+Luckily I could just copy <code>/etc/fstab</code> to the live system, adopt it and then just <code>mount</code> it.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">mount /dev/nvme0n1p3 /mnt <span style="color:#998;font-style:italic"># mount the root filesystem to /mnt</span>
+cp /mnt/root/etc/fstab /etc/fstab <span style="color:#998;font-style:italic"># copy out the fstab from the root subvolume</span>
+umount /mnt
+vim /etc/fstab <span style="color:#998;font-style:italic"># replace / with /mnt since we already have a /</span>
+mount /mnt
+mount /mnt/boot
+mount /mnt/boot/efi
+</code></pre></div><h3 id="chroot-into-the-system"><code>chroot</code> into the system</h3>
+<p>Simple (on the archlinux live system): <code>arch-chroot /mnt</code></p>
+<p>I guess this might be a bit more involved if you need to run <code>chroot</code> directly.</p>
+<h3 id="reinstall-grub">Reinstall GRUB</h3>
+<p>Everything has been set up, we just need to install grub to the SSD again and then reboot (and 🤞)</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">grub-install --target<span style="font-weight:bold">=</span>x86_64-efi --efi-directory<span style="font-weight:bold">=</span>/boot/efi --recheck /dev/nvme0n1
+</code></pre></div><h2 id="future-additions">Future additions</h2>
+<ul>
+<li>how to handle encrypted root/boot filesystem (yeah I know, I should have done that a long time ago)</li>
+<li>can I do this, only mounting <code>/boot/efi</code> and copying grub-config to the live system (aka without chroot)?</li>
+</ul>
+
 
         
           <div class="blog-tags">
             
-              <a href="https://gellardo.github.io/blog//tags/short/">short</a>&nbsp;
-            
-              <a href="https://gellardo.github.io/blog//tags/python/">python</a>&nbsp;
+              <a href="https://gellardo.github.io/blog//tags/shell/">shell</a>&nbsp;
             
           </div>
         
@@ -272,13 +304,9 @@ embed()
         <ul class="pager blog-pager">
           
             <li class="previous">
-              <a href="https://gellardo.github.io/blog/posts/2021-09-17-validate-repo-config-with-semgrep/" data-toggle="tooltip" data-placement="top" title="Validate GitLab Repository Configuration With Semgrep">&larr; Previous Post</a>
+              <a href="https://gellardo.github.io/blog/posts/2022-09-26-tip-python-shell/" data-toggle="tooltip" data-placement="top" title="Tip: Spawn an interactive Python Shell anywhere in your code">&larr; Previous Post</a>
             </li>
           
-          
-            <li class="next">
-              <a href="https://gellardo.github.io/blog/posts/2022-09-26-fixing-grub/" data-toggle="tooltip" data-placement="top" title="Fixing my GRUB install">Next Post &rarr;</a>
-            </li>
           
         </ul>
       

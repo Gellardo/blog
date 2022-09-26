@@ -6,10 +6,20 @@
     <description>Recent content on Frank&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 26 Sep 2022 10:15:00 +0200</lastBuildDate>
+    <lastBuildDate>Mon, 26 Sep 2022 11:30:00 +0200</lastBuildDate>
     
 	<atom:link href="https://gellardo.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Fixing my GRUB install</title>
+      <link>https://gellardo.github.io/blog/posts/2022-09-26-fixing-grub/</link>
+      <pubDate>Mon, 26 Sep 2022 11:30:00 +0200</pubDate>
+      
+      <guid>https://gellardo.github.io/blog/posts/2022-09-26-fixing-grub/</guid>
+      <description>After another instance of my Laptop no longer &amp;ldquo;working&amp;rdquo; after a firmware update, I decided to write down how to recover so I know where to look for it.
+How I probably broke it (again) Keeping firmware relatively up to date is a good thing. But fwupd seems to constantly break my UEFI boot, leading to my Laptop being confused and skipping the SSD, instead trying to boot vie PXE.</description>
+    </item>
     
     <item>
       <title>Tip: Spawn an interactive Python Shell anywhere in your code</title>
