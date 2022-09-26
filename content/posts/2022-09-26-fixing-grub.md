@@ -5,6 +5,7 @@ tags: [shell]
 ---
 
 After another instance of my Laptop no longer "working" after a firmware update, I decided to write down how to recover so I know where to look for it.
+<!--more-->
 
 ## How I probably broke it (again)
 Keeping firmware relatively up to date is a good thing.
