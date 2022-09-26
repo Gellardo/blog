@@ -1,7 +1,7 @@
 ---
 title: "Self-Documenting Makefile"
 date: 2021-06-10T16:07:25+02:00
-tags: [shell]
+tags: [shell, short]
 ---
 
 A short one i really liked and I want to document for future-me:
