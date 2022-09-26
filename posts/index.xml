@@ -17,8 +17,7 @@
       <pubDate>Mon, 26 Sep 2022 11:30:00 +0200</pubDate>
       
       <guid>https://gellardo.github.io/blog/posts/2022-09-26-fixing-grub/</guid>
-      <description>After another instance of my Laptop no longer &amp;ldquo;working&amp;rdquo; after a firmware update, I decided to write down how to recover so I know where to look for it.
-How I probably broke it (again) Keeping firmware relatively up to date is a good thing. But fwupd seems to constantly break my UEFI boot, leading to my Laptop being confused and skipping the SSD, instead trying to boot vie PXE.</description>
+      <description>&lt;p&gt;After another instance of my Laptop no longer &amp;ldquo;working&amp;rdquo; after a firmware update, I decided to write down how to recover so I know where to look for it.&lt;/p&gt;</description>
     </item>
     
     <item>

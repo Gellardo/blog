@@ -8,8 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
   <title>Fixing my GRUB install - Frank&#39;s Blog</title>
-  <meta name="description" content="After another instance of my Laptop no longer &ldquo;working&rdquo; after a firmware update, I decided to write down how to recover so I know where to look for it.
-How I probably broke it (again) Keeping firmware relatively up to date is a good thing. But fwupd seems to constantly break my UEFI boot, leading to my Laptop being confused and skipping the SSD, instead trying to boot vie PXE.">
+  <meta name="description" content="After another instance of my Laptop no longer &ldquo;working&rdquo; after a firmware update, I decided to write down how to recover so I know where to look for it.">
   <meta name="author" content="Frank Schmidt"/><script type="application/ld+json">
 {
     "@context": "http://schema.org",
@@ -58,7 +57,7 @@ How I probably broke it (again) Keeping firmware relatively up to date is a good
     "name" : "Frank Schmidt"
   },
   "headline": "Fixing my GRUB install",
-  "description" : "After another instance of my Laptop no longer \x26ldquo;working\x26rdquo; after a firmware update, I decided to write down how to recover so I know where to look for it.\nHow I probably broke it (again) Keeping firmware relatively up to date is a good thing. But fwupd seems to constantly break my UEFI boot, leading to my Laptop being confused and skipping the SSD, instead trying to boot vie PXE.",
+  "description" : "After another instance of my Laptop no longer \x26ldquo;working\x26rdquo; after a firmware update, I decided to write down how to recover so I know where to look for it.\n",
   "inLanguage" : "en",
   "wordCount":  464 ,
   "datePublished" : "2022-09-26T11:30:00",
@@ -80,15 +79,13 @@ How I probably broke it (again) Keeping firmware relatively up to date is a good
 </script>
 
 <meta property="og:title" content="Fixing my GRUB install" />
-<meta property="og:description" content="After another instance of my Laptop no longer &ldquo;working&rdquo; after a firmware update, I decided to write down how to recover so I know where to look for it.
-How I probably broke it (again) Keeping firmware relatively up to date is a good thing. But fwupd seems to constantly break my UEFI boot, leading to my Laptop being confused and skipping the SSD, instead trying to boot vie PXE.">
+<meta property="og:description" content="After another instance of my Laptop no longer &ldquo;working&rdquo; after a firmware update, I decided to write down how to recover so I know where to look for it.">
 <meta property="og:url" content="https://gellardo.github.io/blog/posts/2022-09-26-fixing-grub/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Frank&#39;s Blog" />
 
   <meta name="twitter:title" content="Fixing my GRUB install" />
-  <meta name="twitter:description" content="After another instance of my Laptop no longer &ldquo;working&rdquo; after a firmware update, I decided to write down how to recover so I know where to look for it.
-How I probably broke it (again) …">
+  <meta name="twitter:description" content="After another instance of my Laptop no longer &ldquo;working&rdquo; after a firmware update, I decided to write down how to recover so I know where to look for it.">
   <meta name="twitter:card" content="summary" />
   <meta name="generator" content="Hugo 0.68.3" />
   <link rel="alternate" href="https://gellardo.github.io/blog/index.xml" type="application/rss+xml" title="Frank&#39;s Blog"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
@@ -285,7 +282,6 @@ mount /mnt/boot/efi
 <li>how to handle encrypted root/boot filesystem (yeah I know, I should have done that a long time ago)</li>
 <li>can I do this, only mounting <code>/boot/efi</code> and copying grub-config to the live system (aka without chroot)?</li>
 </ul>
-
 
         
           <div class="blog-tags">
