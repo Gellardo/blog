@@ -6,10 +6,28 @@
     <description>Recent content in Tags on Frank&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 17 Sep 2021 22:37:06 +0200</lastBuildDate>
+    <lastBuildDate>Mon, 26 Sep 2022 10:15:00 +0200</lastBuildDate>
     
 	<atom:link href="https://gellardo.github.io/blog/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>python</title>
+      <link>https://gellardo.github.io/blog/tags/python/</link>
+      <pubDate>Mon, 26 Sep 2022 10:15:00 +0200</pubDate>
+      
+      <guid>https://gellardo.github.io/blog/tags/python/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>short</title>
+      <link>https://gellardo.github.io/blog/tags/short/</link>
+      <pubDate>Mon, 26 Sep 2022 10:15:00 +0200</pubDate>
+      
+      <guid>https://gellardo.github.io/blog/tags/short/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Semgrep</title>

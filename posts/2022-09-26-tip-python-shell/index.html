@@ -7,8 +7,9 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <title>Overview of all pages with categories, ordered by category - Frank&#39;s Blog</title>
-  <meta name="description" content="A full overview of all pages with categories, ordered by category">
+  <title>Tip: Spawn an interactive Python Shell anywhere in your code - Frank&#39;s Blog</title>
+  <meta name="description" content="This is post is a collection of useful commands I always have to google for whenever I play around with new APIs/libraries.
+Having an interactive shell to explore is incredibly helpful.">
   <meta name="author" content="Frank Schmidt"/><script type="application/ld+json">
 {
     "@context": "http://schema.org",
@@ -29,13 +30,65 @@
   
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/gellardo.github.io\/blog\/",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/gellardo.github.io\/blog\/posts\/2022-09-26-tip-python-shell\/",
+          "name": "Tip spawn an interactive python shell anywhere in your code"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "Frank Schmidt"
+  },
+  "headline": "Tip: Spawn an interactive Python Shell anywhere in your code",
+  "description" : "This is post is a collection of useful commands I always have to google for whenever I play around with new APIs\/libraries. Having an interactive shell to explore is incredibly helpful.\n",
+  "inLanguage" : "en",
+  "wordCount":  118 ,
+  "datePublished" : "2022-09-26T10:15:00",
+  "dateModified" : "2022-09-26T10:15:00",
+  "image" : "https:\/\/gellardo.github.io\/blog\/",
+  "keywords" : [ "short, python" ],
+  "mainEntityOfPage" : "https:\/\/gellardo.github.io\/blog\/posts\/2022-09-26-tip-python-shell\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/gellardo.github.io\/blog\/",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/gellardo.github.io\/blog\/",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
 
-<meta property="og:title" content="Categories" />
-<meta property="og:url" content="https://gellardo.github.io/blog/categories/" />
+<meta property="og:title" content="Tip: Spawn an interactive Python Shell anywhere in your code" />
+<meta property="og:description" content="This is post is a collection of useful commands I always have to google for whenever I play around with new APIs/libraries.
+Having an interactive shell to explore is incredibly helpful.">
+<meta property="og:url" content="https://gellardo.github.io/blog/posts/2022-09-26-tip-python-shell/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Frank&#39;s Blog" />
 
-  <meta name="twitter:title" content="Categories" />
+  <meta name="twitter:title" content="Tip: Spawn an interactive Python Shell anywhere in your code" />
+  <meta name="twitter:description" content="This is post is a collection of useful commands I always have to google for whenever I play around with new APIs/libraries.
+Having an interactive shell to explore is incredibly helpful.">
   <meta name="twitter:card" content="summary" />
   <meta name="generator" content="Hugo 0.68.3" />
   <link rel="alternate" href="https://gellardo.github.io/blog/index.xml" type="application/rss+xml" title="Frank&#39;s Blog"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
@@ -162,9 +215,9 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-            <div class="categories-heading">
+            <div class="posts-heading">
               
-                <h1>Categories</h1>
+                <h1>Tip: Spawn an interactive Python Shell anywhere in your code</h1>
               
               
                 <hr class="small">
@@ -180,20 +233,58 @@
 
 
     
-
-
-
 <div class="container" role="main">
-  <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"> 
-    <article class="post-preview">
-      <div class="panel-group" id="accordion">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <p>This is post is a collection of useful commands I always have to google for whenever I play around with new APIs/libraries.
+Having an interactive shell to explore is incredibly helpful.</p>
+<p>So how do I spawn one anywhere in my code?</p>
+<p>Well, either spawn a python shell (like when running <code>python</code>)</p>
+<pre><code class="language-import" data-lang="import">import code
+code.interact(local=locals)
+</code></pre><p>Or just spawn <code>pdb</code> if you actually want to step through the following code.</p>
+<pre><code class="language-import" data-lang="import">import pdb
+pdb.set_trace()
+</code></pre><p>Or just run your whole script and then get dropped into the usual python shell (including anything declared in the script), run it with:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">python -i script.py
+</code></pre></div><p>Or if you like to have a helpful python shell (requires ipython to be available):</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="font-weight:bold">from</span> <span style="color:#555">IPython</span> <span style="font-weight:bold">import</span> embed
+embed()
+</code></pre></div>
+
         
-      </div>
-    </article>
+          <div class="blog-tags">
+            
+              <a href="https://gellardo.github.io/blog//tags/short/">short</a>&nbsp;
+            
+              <a href="https://gellardo.github.io/blog//tags/python/">python</a>&nbsp;
+            
+          </div>
+        
+
+        
+
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://gellardo.github.io/blog/posts/2021-09-17-validate-repo-config-with-semgrep/" data-toggle="tooltip" data-placement="top" title="Validate GitLab Repository Configuration With Semgrep">&larr; Previous Post</a>
+            </li>
+          
+          
+        </ul>
+      
+
+
+      
+
+    </div>
   </div>
 </div>
-
-
 
       
 <footer>
@@ -212,7 +303,7 @@
               </li>
           
           <li>
-            <a href="/blog/categories/index.xml" title="RSS">
+            <a href="" title="RSS">
               <span class="fa-stack fa-lg">
                 <i class="fas fa-circle fa-stack-2x"></i>
                 <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
