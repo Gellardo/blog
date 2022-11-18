@@ -41,31 +41,74 @@ And the inconspicuous `willfarrell/autoheal` container in the compose file will 
 
 Simple fix:
 Copy the boilder plate from the [docker best practices](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#run) and install curl into the image.
+Also add `HEALTHCHECK` to the Dockerfile itself to make the origin of the dependency obvious.
 
 Now the basic problem is fixed, but I noticed something else that seemed to be a simple fix: the `openjdk` image has a deprecation notice in it's documentation.
 
 ## Step 2: The base image
-try eclipse temurin.
-Run into a bunch of runtime errors.
-run locally, it works
+Thankfully the deprecation also provides a few alternative images that should be actively supported.
+After cross-checking the list with [whichjdk.com/](https://whichjdk.com/), I decided to try migrating to `eclipse-temurin`.
 
-be very confused.
-Try increasingly weird stuff, like pinning the image by sha256, looking into if jenkins does weird stuff to the runner
-even looking into mvnw vs dash even though that makes no sense because it is the same image locally and on CI
-patching mvnw script to print debug infos
+After replacing the base image and running a successful local `docker build`, I committed the changes and went for lunch.
+That was as easy as I hoped it to be.
 
-playing with the different variants of the image and suddenly, one works.
+But when I came back after the break, the CI Jenkins server did not agree with my assessment.
+For some reason the build failed when executing `./mvnw package`, which is... unexpected.
+
+```
+# docker build .
+[...]
+Step 11/22 : RUN ./mvnw clean package
+ ---> Running in 3eee9a97e249
+[91mError: JAVA_HOME is not defined correctly.
+  We cannot execute /opt/java/openjdk/bin/java
+[0mThe command '/bin/sh -c ./mvnw clean package' returned a non-zero code: 1
+```
+
+Once a Dockerfile has been successfully built, it is supposed to work anywhere.
+So why isn't it working in the CI?
+I ran down any rabithole I could think of, including:
+- adding printf-style logging to the mvnw script via `set -x` and checking that `java` is actually a binary
+- patching out the mvnw check in the script
+- pinning the container image by specifying `eclipse-temurin:17-jdk@sha256:333ff936365bd7187f7bb943194f9581a4a84a1e925a826399ae7fd8de078965` to avoid the CI pulling a different image (possible if it had a different cpu architecture)
+- a quick look, if the jenkins runner could be using a different shell that broke the script (totally not possible since 1) the script specifies it's interpreter and 2) how could jenkins even do that in the general case)
+
+Just before giving up, I decided to play around with the different image variants, since there was an image for ubuntu jammy (default) and focal.
+And to my surprise, the `eclipse-temurin:17-jdk-focal` image works?!
 
 ## Step 3: The environment
-
 experimenting why one works but the other does not
 give up and google
 
+```
+Step 11/22 : RUN ./mvnw clean package
+ ---> Running in 5f55c1fd9436
+[91mError: JAVA_HOME is not defined correctly.
+  We cannot execute /opt/java/openjdk/bin/java
+[0m[91m--2022-11-18 22:34:23--  https://repo.maven.apache.org/maven2/org/apache/maven/wrapper/maven-wrapper/3.1.1/maven-wrapper-3.1.1.jar
+[0m[91mResolving repo.maven.apache.org (repo.maven.apache.org)... [0m[91m151.101.112.215
+Connecting to repo.maven.apache.org (repo.maven.apache.org)|151.101.112.215|:443... [0m[91mconnected.
+[0m[91mHTTP request sent, awaiting response... [0m[91m200 OK
+Length: 59925 (59K) [application/java-archive]
+[0m[91mSaving to: ‘/tmp/.mvn/wrapper/maven-wrapper.jar’
+[0m[91m
+     0K .[0m[91m.[0m[91m..[0m[91m.[0m[91m.[0m[91m..[0m[91m.[0m[91m.[0m[91m ..[0m[91m.[0m[91m...[0m[91m..[0m[91m.[0m[91m. ..[0m[91m.[0m[91m.[0m[91m..[0m[91m.[0m[91m.[0m[91m..[0m[91m ..[0m[91m...[0m[91m..... .......... 85% 4.07M 0s
+    50K ........                                      [0m[91m        100% 12.2M=0.01s
+
+[0m[91m2022-11-18 22:34:24 (4.51 MB/s) - ‘/tmp/.mvn/wrapper/maven-wrapper.jar’ saved [59925/59925]
+
+[0m[0.066s][warning][os,thread] Failed to start thread "GC Thread#0" - pthread_create failed (EPERM) for attributes: stacksize: 1024k, guardsize: 4k, detached.
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Cannot create worker GC thread. Out of system resources.
+# An error report file with more information is saved as:
+# /tmp/hs_err_pid6.log
+The command '/bin/sh -c ./mvnw clean package' returned a non-zero code: 1
+```
 find issue indicating old docker version, check and see: local docker 1.20 >> jenkins 1.19
 accept the hint of the gods and just use the working base image
 
 ## Setp 4: Optimisations
 multistage: use jre for final image
-reoder stages to reduce image size
-add health check
+reorder stages to reduce image size
 security: don't chown the binary to the runtime user
