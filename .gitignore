@@ -2,3 +2,5 @@
 public/
 # cached files?
 resources/
+
+.hugo_build.lock

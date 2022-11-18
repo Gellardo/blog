@@ -1,6 +1,13 @@
+# #!/usr/bin/env just --justfile
+
 # run development server
 run-dev:
   hugo server -D
+
+# create a new post
+create-post +title:
+  hugo new "posts/$(date -I)_$(echo {{title}} | tr ' ' '-').md"
+  $EDITOR "content/posts/$(date -I)_$(echo {{title}} | tr ' ' '-').md"
 
 # publish the current state to github pages
 publish:  setup
