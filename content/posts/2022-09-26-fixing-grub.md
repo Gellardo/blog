@@ -9,7 +9,7 @@ After another instance of my Laptop no longer "working" after a firmware update,
 
 ## How I probably broke it (again)
 Keeping firmware relatively up to date is a good thing.
-But `fwupd` seems to constantly break my UEFI boot, leading to my Laptop being confused and skipping the SSD, instead trying to boot vie PXE.
+But `fwupd` seems to constantly break my UEFI boot, leading to my Laptop being confused and skipping the SSD, instead trying to boot via PXE.
 
 The first time this was terrifying but after a few repetitions, it is only annoying.
 It seems the firmware updater is written into the EFI partition without any regard for the existing boot loader.
