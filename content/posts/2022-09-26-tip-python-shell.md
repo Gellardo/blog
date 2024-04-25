@@ -33,7 +33,7 @@ from IPython import embed
 embed()
 ```
 or if the current context already is running in an asyncio eventloop:
-```
+```python
 from IPython import embed
 import nest_asyncio
 nest_asyncio.apply()
