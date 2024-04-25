@@ -32,3 +32,10 @@ Or if you like to have a helpful python shell (requires ipython to be available)
 from IPython import embed
 embed()
 ```
+or if the current context already is running in an asyncio eventloop:
+```
+from IPython import embed
+import nest_asyncio
+nest_asyncio.apply()
+embed(using="asyncio")
+```
