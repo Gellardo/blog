@@ -6,11 +6,7 @@
     <description>Recent content in Semgrep on Frank&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 17 Sep 2021 22:37:06 +0200</lastBuildDate>
-    
-	<atom:link href="https://gellardo.github.io/blog/tags/semgrep/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Fri, 17 Sep 2021 22:37:06 +0200</lastBuildDate><atom:link href="https://gellardo.github.io/blog/tags/semgrep/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Validate GitLab Repository Configuration With Semgrep</title>
       <link>https://gellardo.github.io/blog/posts/2021-09-17-validate-repo-config-with-semgrep/</link>

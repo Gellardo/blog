@@ -13,7 +13,7 @@
 {
     "@context": "http://schema.org",
     "@type": "WebSite",
-    "name": "Frank\x27s Blog",
+    "name": "Frank\u0027s Blog",
     
     "url": "https:\/\/gellardo.github.io\/blog\/"
 }
@@ -45,7 +45,7 @@
         "position": 3,
         "item": {
           "@id": "https:\/\/gellardo.github.io\/blog\/posts\/2022-09-26-fixing-grub\/",
-          "name": "Fixing my g r u b install"
+          "name": "Fixing my grub install"
         }
     }]
 }
@@ -57,7 +57,7 @@
     "name" : "Frank Schmidt"
   },
   "headline": "Fixing my GRUB install",
-  "description" : "After another instance of my Laptop no longer \x26ldquo;working\x26rdquo; after a firmware update, I decided to write down how to recover so I know where to look for it.\n",
+  "description" : "After another instance of my Laptop no longer \u0026ldquo;working\u0026rdquo; after a firmware update, I decided to write down how to recover so I know where to look for it.\n",
   "inLanguage" : "en",
   "wordCount":  464 ,
   "datePublished" : "2022-09-26T11:30:00",
@@ -87,7 +87,7 @@
   <meta name="twitter:title" content="Fixing my GRUB install" />
   <meta name="twitter:description" content="After another instance of my Laptop no longer &ldquo;working&rdquo; after a firmware update, I decided to write down how to recover so I know where to look for it.">
   <meta name="twitter:card" content="summary" />
-  <meta name="generator" content="Hugo 0.68.3" />
+  <meta name="generator" content="Hugo 0.92.2" />
   <link rel="alternate" href="https://gellardo.github.io/blog/index.xml" type="application/rss+xml" title="Frank&#39;s Blog"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://gellardo.github.io/blog/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
@@ -264,7 +264,7 @@ Technically, I need <code>/boot</code> which has the GRUB config and <code>/boot
 I want to mount everything up to <code>/boot/efi</code>, which in my case is 3 partitions: <code>/</code>, <code>/boot</code> and <code>/boot/efi</code>.
 My setup has BTRFS on <code>/</code> (with some subvolumes), but I don&rsquo;t want to remember the actual commands.
 Luckily I could just copy <code>/etc/fstab</code> to the live system, adopt it and then just <code>mount</code> it.</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">mount /dev/nvme0n1p3 /mnt <span style="color:#998;font-style:italic"># mount the root filesystem to /mnt</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">mount /dev/nvme0n1p3 /mnt <span style="color:#998;font-style:italic"># mount the root filesystem to /mnt</span>
 cp /mnt/root/etc/fstab /etc/fstab <span style="color:#998;font-style:italic"># copy out the fstab from the root subvolume</span>
 umount /mnt
 vim /etc/fstab <span style="color:#998;font-style:italic"># replace / with /mnt since we already have a /</span>
@@ -276,7 +276,7 @@ mount /mnt/boot/efi
 <p>I guess this might be a bit more involved if you need to run <code>chroot</code> directly.</p>
 <h3 id="reinstall-grub">Reinstall GRUB</h3>
 <p>Everything has been set up, we just need to install grub to the SSD again and then reboot (and 🤞)</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">grub-install --target<span style="font-weight:bold">=</span>x86_64-efi --efi-directory<span style="font-weight:bold">=</span>/boot/efi --recheck /dev/nvme0n1
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">grub-install --target<span style="font-weight:bold">=</span>x86_64-efi --efi-directory<span style="font-weight:bold">=</span>/boot/efi --recheck /dev/nvme0n1
 </code></pre></div><h2 id="future-additions">Future additions</h2>
 <ul>
 <li>how to handle encrypted root/boot filesystem (yeah I know, I should have done that a long time ago)</li>
@@ -359,7 +359,7 @@ mount /mnt/boot/efi
         </p>
         
         <p class="credits theme-by text-muted">
-          <a href="https://gohugo.io">Hugo v0.68.3</a> powered &nbsp;&bull;&nbsp; Theme <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> adapted from <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          <a href="https://gohugo.io">Hugo v0.92.2</a> powered &nbsp;&bull;&nbsp; Theme <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> adapted from <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
           
         </p>
       </div>

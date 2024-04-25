@@ -5,11 +5,7 @@
     <link>https://gellardo.github.io/blog/pages/</link>
     <description>Recent content in Pages on Frank&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    
-	<atom:link href="https://gellardo.github.io/blog/pages/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <language>en-us</language><atom:link href="https://gellardo.github.io/blog/pages/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title></title>
       <link>https://gellardo.github.io/blog/pages/about/</link>

@@ -13,7 +13,7 @@
 {
     "@context": "http://schema.org",
     "@type": "WebSite",
-    "name": "Frank\x27s Blog",
+    "name": "Frank\u0027s Blog",
     
     "url": "https:\/\/gellardo.github.io\/blog\/"
 }
@@ -57,9 +57,9 @@
     "name" : "Frank Schmidt"
   },
   "headline": "Validate GitLab Repository Configuration With Semgrep",
-  "description" : "Imagine this: You are migrating 50\x2b Repositories to a new GitLab instance. In addition to changing CI from Jenkins to GitLab CI, you are also trying to enforce a certain set of best practices like \x26ldquo;don\x26rsquo;t allow people to force-push the main branch\x26rdquo;. And since those practices are new, they might change a few times before settling. How do you ensure that after multiple months of migration, all repositories are in a similar state?",
+  "description" : "Imagine this: You are migrating 50\u002b Repositories to a new GitLab instance. In addition to changing CI from Jenkins to GitLab CI, you are also trying to enforce a certain set of best practices like \u0026ldquo;don\u0026rsquo;t allow people to force-push the main branch\u0026rdquo;. And since those practices are new, they might change a few times before settling. How do you ensure that after multiple months of migration, all repositories are in a similar state?",
   "inLanguage" : "en",
-  "wordCount":  2678 ,
+  "wordCount":  2699 ,
   "datePublished" : "2021-09-17T22:37:06",
   "dateModified" : "2021-09-17T22:37:06",
   "image" : "https:\/\/gellardo.github.io\/blog\/",
@@ -87,7 +87,7 @@
   <meta name="twitter:title" content="Validate GitLab Repository Configuration With Semgrep" />
   <meta name="twitter:description" content="Imagine this: You are migrating 50&#43; Repositories to a new GitLab instance. In addition to changing CI from Jenkins to GitLab CI, you are also trying to enforce a certain set of best practices like …">
   <meta name="twitter:card" content="summary" />
-  <meta name="generator" content="Hugo 0.68.3" />
+  <meta name="generator" content="Hugo 0.92.2" />
   <link rel="alternate" href="https://gellardo.github.io/blog/index.xml" type="application/rss+xml" title="Frank&#39;s Blog"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://gellardo.github.io/blog/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
@@ -322,9 +322,9 @@ The most important ones to understand are:</p>
 <li><code>...</code> which is basically saying &ldquo;I don&rsquo;t care what is here&rdquo;</li>
 </ul>
 <!-- raw HTML omitted -->
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="font-weight:bold">print</span>(<span style="font-weight:bold">...</span>)
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#999">print</span>(<span style="font-weight:bold">...</span>)
 </code></pre></div><p>This will find any <code>print</code> function call in your python code, no matter what parameters were supplied.</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#a61717;background-color:#e3d2d2">$</span>SECRET <span style="font-weight:bold">=</span> get_secret(<span style="font-weight:bold">...</span>)
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#a61717;background-color:#e3d2d2">$</span>SECRET <span style="font-weight:bold">=</span> get_secret(<span style="font-weight:bold">...</span>)
 <span style="font-weight:bold">...</span>
 logger<span style="font-weight:bold">.</span><span style="color:#a61717;background-color:#e3d2d2">$</span>FUNC(<span style="font-weight:bold">...</span>, <span style="color:#a61717;background-color:#e3d2d2">$</span>SECRET, <span style="font-weight:bold">...</span>)
 </code></pre></div><p>This will find any instance where a secret is retrieved and subsequently logged.</p>
@@ -337,7 +337,7 @@ logger<span style="font-weight:bold">.</span><span style="color:#a61717;backgrou
 </ul>
 <p>As you saw, the pattern was basically python code with placeholders wherever necessary.
 This becomes even more apparent when matching functions.</p>
-<pre><code>def $FUNC(...):
+<pre tabindex="0"><code>def $FUNC(...):
   ...
 </code></pre><p>You need to provide an additional placeholder for the body.
 Otherwise Semgrep&rsquo;s parser will shout at you because it could not parse the pattern, since it was not a complete python function definition (even if the body is unspecified anyways).</p>
@@ -353,11 +353,11 @@ There is a case that does not quite fit your original pattern but has the same p
 Wrap your original pattern in a <code>pattern-either</code> and add a specialized pattern for that case.
 Want to match all functions that start with <code>unsafe_</code>?
 Match all functions and capture the function name in a metavariable and add a <code>metavariable-regex</code> pattern to match the captured function name.</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="font-weight:bold">patterns</span>:<span style="color:#bbb">
-</span><span style="color:#bbb">  </span>- <span style="font-weight:bold">pattern</span>:<span style="color:#bbb"> </span>print(...)<span style="color:#bbb">
-</span><span style="color:#bbb">  </span>- <span style="font-weight:bold">pattern-not-inside</span>:<span style="color:#bbb"> </span><span style="color:#b84">|
-</span><span style="color:#b84">      def log(...):</span><span style="color:#bbb">
-</span><span style="color:#bbb">          </span>...<span style="color:#bbb">
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#000080">patterns</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>- <span style="color:#000080">pattern</span>:<span style="color:#bbb"> </span>print(...)<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>- <span style="color:#000080">pattern-not-inside</span>:<span style="color:#bbb"> </span>|<span style="color:#b84">
+</span><span style="color:#b84">      def log(...):
+</span><span style="color:#b84">          ...</span><span style="color:#bbb">      
 </span></code></pre></div><p>Pretty easy to understand, right?
 Find all <code>print</code> calls, except if it is inside a <code>log</code> function because that is allowed for some reason.</p>
 <h2 id="finally-checking-things">Finally checking things</h2>
@@ -368,7 +368,7 @@ Say our organization is using Gitflow or similar.
 Then all repositories should have a branch <code>develop</code> as the default branch.</p>
 <p>First let us find an API call that contains the information that we want:
 The <a href="https://docs.gitlab.com/ee/api/projects.html#get-single-project">/projects REST call</a> looks promising:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ curl -H <span style="color:#b84">&#34;Content-Type: application/json&#34;</span> -H <span style="color:#b84">&#34;PRIVATE_TOKEN:xxxxxx&#34;</span> gitlab.example.com/api/v4/projects/3
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ curl -H <span style="color:#b84">&#34;Content-Type: application/json&#34;</span> -H <span style="color:#b84">&#34;PRIVATE_TOKEN:xxxxxx&#34;</span> gitlab.example.com/api/v4/projects/3
 <span style="font-weight:bold">{</span>
   <span style="color:#b84">&#34;id&#34;</span>: 3,
   <span style="color:#b84">&#34;default_branch&#34;</span>: <span style="color:#b84">&#34;develop&#34;</span>,
@@ -378,24 +378,24 @@ The <a href="https://docs.gitlab.com/ee/api/projects.html#get-single-project">/p
 </code></pre></div><p>As a nice side-effect, the result also has other interesting fields for further checks, e.g. <code>only_allow_merge_if_pipeline_succeeds</code>.
 But the current rule is a pretty simple one, match all objects with a <code>default_branch</code> key, except if the branch name is <code>develop</code>.
 We can put this (and further rules) into a file <code>gitlab-configs.yaml</code>.</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="font-weight:bold">rules</span>:<span style="color:#bbb">
-</span><span style="color:#bbb"></span>- <span style="font-weight:bold">id</span>:<span style="color:#bbb"> </span>default-branch-develop<span style="color:#bbb">
-</span><span style="color:#bbb">  </span><span style="font-weight:bold">patterns</span>:<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>- <span style="font-weight:bold">pattern</span>:<span style="color:#bbb"> </span><span style="color:#b84">|
-</span><span style="color:#b84">        { &#34;default_branch&#34;: $BRANCH, ...}</span><span style="color:#bbb">
-</span><span style="color:#bbb">    </span>- <span style="font-weight:bold">pattern-not</span>:<span style="color:#bbb"> </span><span style="color:#b84">|
-</span><span style="color:#b84">        { &#34;default_branch&#34;: &#34;develop&#34;, ...}</span><span style="color:#bbb">
-</span><span style="color:#bbb">  </span><span style="font-weight:bold">message</span>:<span style="color:#bbb"> </span>default<span style="color:#bbb"> </span>branch<span style="color:#bbb"> </span>set<span style="color:#bbb"> </span>to<span style="color:#bbb"> </span>$BRANCH<span style="color:#bbb"> </span>instead<span style="color:#bbb"> </span>of<span style="color:#bbb"> </span>develop<span style="color:#bbb">
-</span><span style="color:#bbb">  </span><span style="font-weight:bold">languages</span>:<span style="color:#bbb"> </span>[json]<span style="color:#bbb">
-</span><span style="color:#bbb">  </span><span style="font-weight:bold">severity</span>:<span style="color:#bbb"> </span>INFO<span style="color:#bbb">
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#000080">rules</span>:<span style="color:#bbb">
+</span><span style="color:#bbb"></span>- <span style="color:#000080">id</span>:<span style="color:#bbb"> </span>default-branch-develop<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#000080">patterns</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>- <span style="color:#000080">pattern</span>:<span style="color:#bbb"> </span>|<span style="color:#b84">
+</span><span style="color:#b84">        </span><span style="color:#bbb">        </span>{<span style="color:#bbb"> </span><span style="color:#000080">&#34;default_branch&#34;: </span>$BRANCH, ...}<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>- <span style="color:#000080">pattern-not</span>:<span style="color:#bbb"> </span>|<span style="color:#b84">
+</span><span style="color:#b84">        </span><span style="color:#bbb">        </span>{<span style="color:#bbb"> </span><span style="color:#000080">&#34;default_branch&#34;: </span><span style="color:#b84">&#34;develop&#34;</span>,<span style="color:#bbb"> </span>...}<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#000080">message</span>:<span style="color:#bbb"> </span>default branch set to $BRANCH instead of develop<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#000080">languages</span>:<span style="color:#bbb"> </span>[json]<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#000080">severity</span>:<span style="color:#bbb"> </span>INFO<span style="color:#bbb">
 </span></code></pre></div><p>We first need to have a matching pattern, which just finds all objects with a default branch.
 Once the initial scope has been set, we can use <code>pattern-not</code> to exclude the known good case where the branch is develop.
 We also specify a human readable message, an id for the rule and a severity to finish the configuration.</p>
 <p>Now if we want to test those rules, let&rsquo;s save the results of the last curl call to <code>project.json</code>.
 We can invoke Semgrep on that file using its CLI:</p>
-<pre><code>$ semgrep --config gitlab-configs.yaml project.json
+<pre tabindex="0"><code>$ semgrep --config gitlab-configs.yaml project.json
 </code></pre><p>As long as the branch name is <code>develop</code>, only some status information is printed, but if the project has a different branch name, Semgrep will print a finding:</p>
-<pre><code>severity:info rule:default-branch-develop: default branch set to &quot;master&quot; instead of develop
+<pre tabindex="0"><code>severity:info rule:default-branch-develop: default branch set to &quot;master&quot; instead of develop
 1:{
 2:  &quot;id&quot;: 3,
 3:  &quot;default_branch&quot;: &quot;master&quot;,
@@ -417,16 +417,16 @@ Luckily there is an endpoint that does just what we want it to: <code>/api/v4/pr
 See <a href="https://docs.gitlab.com/ee/api/protected_branches.html#list-protected-branches">the docs</a> to view an example response.</p>
 <p>I will dump the Semgrep rules on you and then explain what is going on in detail.</p>
 <h4 id="branch-protection-targets">Branch protection targets</h4>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="font-weight:bold">id</span>:<span style="color:#bbb"> </span>branch-protection-unknown-targets<span style="color:#bbb">
-</span><span style="color:#bbb">  </span><span style="font-weight:bold">patterns</span>:<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>- <span style="font-weight:bold">pattern</span>:<span style="color:#bbb"> </span><span style="color:#b84">|
-</span><span style="color:#b84">        {&#34;name&#34;:$BRANCH,...}</span><span style="color:#bbb">
-</span><span style="color:#bbb">    </span>- <span style="font-weight:bold">metavariable-regex</span>:<span style="color:#bbb">
-</span><span style="color:#bbb">        </span><span style="font-weight:bold">metavariable</span>:<span style="color:#bbb"> </span>$BRANCH<span style="color:#bbb">
-</span><span style="color:#bbb">        </span><span style="font-weight:bold">regex</span>:<span style="color:#bbb"> </span>\<span style="color:#b84">&#34;(?!(develop|master)&#34;</span>).*<span style="color:#bbb">
-</span><span style="color:#bbb">  </span><span style="font-weight:bold">message</span>:<span style="color:#bbb"> </span>found<span style="color:#bbb"> </span>branch<span style="color:#bbb"> </span>protection<span style="color:#bbb"> </span>for<span style="color:#bbb"> </span>unknown<span style="color:#bbb"> </span>target<span style="color:#bbb"> </span>$BRANCH<span style="color:#bbb">
-</span><span style="color:#bbb">  </span><span style="font-weight:bold">languages</span>:<span style="color:#bbb"> </span>[json]<span style="color:#bbb">
-</span><span style="color:#bbb">  </span><span style="font-weight:bold">severity</span>:<span style="color:#bbb"> </span>WARNING<span style="color:#bbb">
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#000080">id</span>:<span style="color:#bbb"> </span>branch-protection-unknown-targets<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#000080">patterns</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>- <span style="color:#000080">pattern</span>:<span style="color:#bbb"> </span>|<span style="color:#b84">
+</span><span style="color:#b84">        </span><span style="color:#bbb">        </span>{<span style="color:#b84">&#34;name&#34;</span>:$BRANCH,...}<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>- <span style="color:#000080">metavariable-regex</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#000080">metavariable</span>:<span style="color:#bbb"> </span>$BRANCH<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#000080">regex</span>:<span style="color:#bbb"> </span>\&#34;(?!(develop|master)&#34;).*<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#000080">message</span>:<span style="color:#bbb"> </span>found branch protection for unknown target $BRANCH<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#000080">languages</span>:<span style="color:#bbb"> </span>[json]<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#000080">severity</span>:<span style="color:#bbb"> </span>WARNING<span style="color:#bbb">
 </span></code></pre></div><p>This is one case where the pattern matching can get very annoying.
 We are technically looking at a list of branch-protections and want to say:</p>
 <blockquote>
@@ -443,22 +443,22 @@ Even if that worked, it is not clear to me how to formulate the &ldquo;all permu
 The rule above reports all unexpected names but mostly showcases what can be done with metavariables.
 After capturing the metavariable, it is run trough a regex that does a negative match (using negative look-ahead) to determine if there is a match.</p>
 <h4 id="branch-push-access">Branch push access</h4>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="font-weight:bold">id</span>:<span style="color:#bbb"> </span>branch-protection-push-access-user<span style="color:#bbb">
-</span><span style="color:#bbb">  </span><span style="font-weight:bold">patterns</span>:<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>- <span style="font-weight:bold">pattern</span>:<span style="color:#bbb"> </span><span style="color:#b84">|
-</span><span style="color:#b84">        {&#34;name&#34;:$BRANCH,...}</span><span style="color:#bbb">
-</span><span style="color:#bbb">    </span>- <span style="font-weight:bold">pattern</span>:<span style="color:#bbb"> </span><span style="color:#b84">|
-</span><span style="color:#b84">        { &#34;push_access_levels&#34;: [</span><span style="color:#bbb">
-</span><span style="color:#bbb">          </span>...,<span style="color:#bbb">
-</span><span style="color:#bbb">          </span>{<span style="color:#bbb"> </span><span style="font-weight:bold">&#34;access_level_description&#34;: </span>$GLUSER,<span style="color:#bbb"> </span>...<span style="color:#bbb">  </span>},<span style="color:#bbb">
-</span><span style="color:#bbb">          </span>...<span style="color:#bbb">
-</span><span style="color:#bbb">        </span>],<span style="color:#bbb"> </span>...<span style="color:#bbb"> </span>}<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>- <span style="font-weight:bold">metavariable-regex</span>:<span style="color:#bbb">
-</span><span style="color:#bbb">        </span><span style="font-weight:bold">metavariable</span>:<span style="color:#bbb"> </span>$GLUSER<span style="color:#bbb">
-</span><span style="color:#bbb">        </span><span style="font-weight:bold">regex</span>:<span style="color:#bbb"> </span>\<span style="color:#b84">&#34;(?!.*\.gitlab|No one).*\&#34;</span><span style="color:#bbb">
-</span><span style="color:#bbb">  </span><span style="font-weight:bold">message</span>:<span style="color:#bbb"> </span>push<span style="color:#bbb"> </span>allowed<span style="color:#bbb"> </span>to<span style="color:#bbb"> </span>non-team<span style="color:#bbb"> </span>user<span style="color:#bbb"> </span>$GLUSER<span style="color:#bbb"> </span>for<span style="color:#bbb"> </span>$BRANCH<span style="color:#bbb">
-</span><span style="color:#bbb">  </span><span style="font-weight:bold">languages</span>:<span style="color:#bbb"> </span>[json]<span style="color:#bbb">
-</span><span style="color:#bbb">  </span><span style="font-weight:bold">severity</span>:<span style="color:#bbb"> </span>WARNING<span style="color:#bbb">
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#000080">id</span>:<span style="color:#bbb"> </span>branch-protection-push-access-user<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#000080">patterns</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>- <span style="color:#000080">pattern</span>:<span style="color:#bbb"> </span>|<span style="color:#b84">
+</span><span style="color:#b84">        </span><span style="color:#bbb">        </span>{<span style="color:#b84">&#34;name&#34;</span>:$BRANCH,...}<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>- <span style="color:#000080">pattern</span>:<span style="color:#bbb"> </span>|<span style="color:#b84">
+</span><span style="color:#b84">        { &#34;push_access_levels&#34;: [
+</span><span style="color:#b84">          ...,
+</span><span style="color:#b84">          { &#34;access_level_description&#34;: $GLUSER, ...  },
+</span><span style="color:#b84">          ...
+</span><span style="color:#b84">        ], ... }</span><span style="color:#bbb">        
+</span><span style="color:#bbb">    </span>- <span style="color:#000080">metavariable-regex</span>:<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#000080">metavariable</span>:<span style="color:#bbb"> </span>$GLUSER<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#000080">regex</span>:<span style="color:#bbb"> </span>\&#34;(?!.*\.gitlab|No one).*\&#34;<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#000080">message</span>:<span style="color:#bbb"> </span>push allowed to non-team user $GLUSER for $BRANCH<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#000080">languages</span>:<span style="color:#bbb"> </span>[json]<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#000080">severity</span>:<span style="color:#bbb"> </span>WARNING<span style="color:#bbb">
 </span></code></pre></div><p>This rule checks who is allowed to push to protected branches.
 It is using the same logic as the previous rule but extends it to also capture the field that contains the user/group/roles required to push.
 Matching strings here is not ideal, but all my CI machine users are named <code>&lt;group&gt;.gitlab</code> so it is sufficient for my use case.</p>
@@ -470,8 +470,8 @@ Thankfully, Semgrep already has some rudimentary unit-test-like functionality bu
 For each test case, a &ldquo;comment&rdquo; with either <code>ruleid: &lt;rule-id&gt;</code> or <code>ok: &lt;rule-id&gt;</code> to indicate if a match should start at that location.
 Adding <code>ok</code> is useful to protect us against known good cases matching while <code>ruleid</code> marks known bad cases that should be matched.</p>
 <p>For our branch protection, this could look like:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#a61717;background-color:#e3d2d2">//</span> <span style="color:#a61717;background-color:#e3d2d2">ruleid:branch-protection-push-access-user,branch-protection-unknown-targets</span>
-{
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#998;font-style:italic">// ruleid:branch-protection-push-access-user,branch-protection-unknown-targets
+</span><span style="color:#998;font-style:italic"></span>{
   <span style="color:#000080">&#34;id&#34;</span>: <span style="color:#099">128</span>,
   <span style="color:#000080">&#34;name&#34;</span>: <span style="color:#b84">&#34;some-branch&#34;</span>,
   <span style="color:#000080">&#34;push_access_levels&#34;</span>: [
@@ -497,7 +497,7 @@ Adding <code>ok</code> is useful to protect us against known good cases matching
 </code></pre></div><p>Since the rules above always match the whole object, the test comments have to be at the beginning of the whole object.
 And both our rules will match this object because there is a non-standard team user and the protection is for a branch that is not &lsquo;master&rsquo; or &lsquo;develop&rsquo;.</p>
 <p>Now if we execute the tests, it looks like this:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">% semgrep --test
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">% semgrep --test
 100%|███████████████████████████████████████████████████████████████████████|2/2
 <span style="color:#099">1</span> yaml files tested
 check id scoring:
@@ -506,7 +506,7 @@ check id scoring:
 	✔ branch-protection-push-access-user                   TP: <span style="color:#099">1</span> TN: <span style="color:#099">0</span> FP: <span style="color:#099">0</span> FN: <span style="color:#099">0</span>
 	✔ branch-protection-unknown-targets                    TP: <span style="color:#099">1</span> TN: <span style="color:#099">0</span> FP: <span style="color:#099">0</span> FN: <span style="color:#099">0</span>
 </code></pre></div><p>If one of the expectations fails, it produces output that only reports the expected line numbers and the actually matched lines.</p>
-<pre><code>test: &lt;path&gt;/branch-protection-rules.json, expected lines: [1], reported lines: [5]
+<pre tabindex="0"><code>test: &lt;path&gt;/branch-protection-rules.json, expected lines: [1], reported lines: [5]
 </code></pre><p>While that is not the best reporting, it is good enough to notice regressions and then run the rules again interactively to see what went wrong.</p>
 <h2 id="conclusion-and-what-else-to-do">Conclusion and what else to do?</h2>
 <p>I liked working with Semgrep.
@@ -605,7 +605,7 @@ Checking the matched ids against the &ldquo;allowed&rdquo; set for a project typ
         </p>
         
         <p class="credits theme-by text-muted">
-          <a href="https://gohugo.io">Hugo v0.68.3</a> powered &nbsp;&bull;&nbsp; Theme <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> adapted from <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          <a href="https://gohugo.io">Hugo v0.92.2</a> powered &nbsp;&bull;&nbsp; Theme <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> adapted from <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
           
         </p>
       </div>
