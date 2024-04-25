@@ -60,7 +60,7 @@ Having an interactive shell to explore is incredibly helpful.">
   "headline": "Tip: Spawn an interactive Python Shell anywhere in your code",
   "description" : "This is post is a collection of useful commands I always have to google for whenever I play around with new APIs\/libraries. Having an interactive shell to explore is incredibly helpful.\n",
   "inLanguage" : "en",
-  "wordCount":  118 ,
+  "wordCount":  138 ,
   "datePublished" : "2022-09-26T10:15:00",
   "dateModified" : "2022-09-26T10:15:00",
   "image" : "https:\/\/gellardo.github.io\/blog\/",
@@ -251,7 +251,12 @@ pdb.set_trace()
 </code></pre></div><p>Or if you like to have a helpful python shell (requires ipython to be available):</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="font-weight:bold">from</span> <span style="color:#555">IPython</span> <span style="font-weight:bold">import</span> embed
 embed()
-</code></pre></div>
+</code></pre></div><p>or if the current context already is running in an asyncio eventloop:</p>
+<pre tabindex="0"><code>from IPython import embed
+import nest_asyncio
+nest_asyncio.apply()
+embed(using=&quot;asyncio&quot;)
+</code></pre>
 
         
           <div class="blog-tags">
