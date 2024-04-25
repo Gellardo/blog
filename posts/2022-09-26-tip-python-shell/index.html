@@ -252,11 +252,11 @@ pdb.set_trace()
 <div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="font-weight:bold">from</span> <span style="color:#555">IPython</span> <span style="font-weight:bold">import</span> embed
 embed()
 </code></pre></div><p>or if the current context already is running in an asyncio eventloop:</p>
-<pre tabindex="0"><code>from IPython import embed
-import nest_asyncio
-nest_asyncio.apply()
-embed(using=&quot;asyncio&quot;)
-</code></pre>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="font-weight:bold">from</span> <span style="color:#555">IPython</span> <span style="font-weight:bold">import</span> embed
+<span style="font-weight:bold">import</span> <span style="color:#555">nest_asyncio</span>
+nest_asyncio<span style="font-weight:bold">.</span>apply()
+embed(using<span style="font-weight:bold">=</span><span style="color:#b84">&#34;asyncio&#34;</span>)
+</code></pre></div>
 
         
           <div class="blog-tags">
