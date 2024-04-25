@@ -13,7 +13,7 @@ So how do I spawn one anywhere in my code?
 Well, either spawn a python shell (like when running `python`)
 ```import
 import code
-code.interact(local=locals)
+code.interact(local=locals())
 ```
 
 Or just spawn `pdb` if you actually want to step through the following code.
